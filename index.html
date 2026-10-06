@@ -227,7 +227,9 @@ section{position:relative;}
 .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ivory);}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:56px 36px;margin-top:64px;}
 @media (max-width:1000px){.grid{grid-template-columns:repeat(2,1fr);gap:44px 24px;}}
-@media (max-width:560px){.grid{grid-template-columns:1fr;}}
+.grid.n1{grid-template-columns:minmax(0,440px);justify-content:center;}
+.grid.n2{grid-template-columns:repeat(2,minmax(0,400px));justify-content:center;}
+@media (max-width:560px){.grid,.grid.n1,.grid.n2{grid-template-columns:1fr;}}
 .card{display:block;text-align:left;width:100%;}
 .card-media{
   position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:2px;background:var(--cream);
@@ -369,7 +371,7 @@ section{position:relative;}
 .line{display:grid;grid-template-columns:86px 1fr auto;gap:18px;padding:22px 0;border-bottom:1px solid var(--line);animation:rise .6s var(--ease-out) both;}
 .line img{width:86px;height:106px;object-fit:cover;background:var(--cream);}
 .line-name{font-size:19px;line-height:1.3;}
-.line-desc{color:var(--ink-soft);font-size:15px;margin-top:2px;}
+.line-desc{color:var(--ink-soft);font-size:15px;margin-top:2px;white-space:pre-line;line-height:1.45;}
 .line-price{font-size:18px;white-space:nowrap;}
 .qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;margin-top:12px;}
 .qty button{width:34px;height:32px;font-size:18px;color:var(--ink-soft);}
@@ -415,6 +417,40 @@ section{position:relative;}
 .choice:hover{border-color:var(--ink-soft);}
 .choice[aria-pressed="true"]{background:var(--ink);color:var(--ivory);border-color:var(--ink);}
 .choice:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed;}
+.opt-picked{margin-left:10px;font-size:17px;letter-spacing:0;text-transform:none;font-style:italic;color:var(--ink);}
+.swatches{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px;}
+.swatch{
+  position:relative;width:34px;height:34px;border-radius:50%;
+  background:var(--sw);box-shadow:inset 0 0 0 1px rgba(74,60,47,.22);
+  transition:transform .3s var(--ease-out);
+}
+.swatch::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--ink);
+  opacity:0;transform:scale(.8);transition:opacity .3s var(--ease),transform .4s var(--ease-out);
+}
+.swatch:hover{transform:scale(1.1);}
+.swatch[aria-pressed="true"]::after{opacity:1;transform:none;}
+.swatch:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.swatch:disabled::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--ink);transform:rotate(45deg);}
+.mod{margin-top:28px;}
+.letter-row{display:flex;align-items:center;gap:20px;margin-top:14px;}
+.letter-input{
+  width:88px;height:100px;flex:none;border:1px solid var(--line);border-radius:4px;background:var(--white);
+  text-align:center;font-family:var(--serif);font-weight:600;font-size:58px;line-height:1;text-transform:uppercase;
+  color:var(--ink);caret-color:var(--gold);padding:0;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+}
+.letter-input::placeholder{color:var(--sand);font-weight:500;}
+.letter-input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(180,138,78,.16);}
+.letter-input.filled{border-color:var(--ink-soft);}
+.letter-input.shake{animation:shake .45s var(--ease);}
+@keyframes shake{20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
+.letter-help{font-size:16px;color:var(--ink-soft);font-style:italic;line-height:1.45;}
+.letter-help strong{display:block;font-style:normal;font-weight:500;color:var(--ink);font-size:17px;}
+.text-input{
+  width:100%;margin-top:12px;padding:13px 16px;border:1px solid var(--line);border-radius:4px;background:var(--white);font-size:18px;
+}
+.text-input:focus{outline:none;border-color:var(--gold);}
 .pd-actions{display:flex;gap:14px;align-items:center;margin-top:32px;flex-wrap:wrap;}
 .pd-actions .qty{margin-top:0;height:56px;}
 .pd-actions .qty button{width:42px;height:54px;}
@@ -608,6 +644,7 @@ section{position:relative;}
       <p class="pd-price" id="pd-price"></p>
       <div class="pd-desc" id="pd-desc"></div>
       <div id="pd-options"></div>
+      <div id="pd-mods"></div>
       <div class="pd-actions">
         <div class="qty" aria-label="Cantidad">
           <button type="button" id="pd-minus" aria-label="Quitar una">−</button>
@@ -835,7 +872,10 @@ section{position:relative;}
 
   function renderGrid() {
     var list = visibleProducts();
-    $("grid").innerHTML = list.map(cardHtml).join("");
+    var grid = $("grid");
+    grid.classList.toggle("n1", list.length === 1);
+    grid.classList.toggle("n2", list.length === 2);
+    grid.innerHTML = list.map(cardHtml).join("");
     observeReveals($("grid"));
   }
 
@@ -878,7 +918,22 @@ section{position:relative;}
   var current = null;
   var variants = [];
   var picked = {};
+  var texts = {};
   var qty = 1;
+
+  function textMods() {
+    return (current && current.modifiers || []).filter(function (m) { return m.modifierRenderType === "FREE_TEXT"; });
+  }
+  function modKey(m) {
+    return m.freeTextSettings && m.freeTextSettings.key || m.key || m.name;
+  }
+  function modMax(m) {
+    return m.freeTextSettings && Number(m.freeTextSettings.maxCharCount) || 0;
+  }
+  // Solo letras (incluidas Ñ y acentos) o números.
+  function validChar(ch) {
+    return ch.toLowerCase() !== ch.toUpperCase() || "0123456789".indexOf(ch) !== -1;
+  }
 
   function findProduct(id) {
     for (var i = 0; i < products.length; i++) if (products[i].id === id) return products[i];
@@ -927,9 +982,13 @@ section{position:relative;}
     var add = $("pd-add");
     var note = $("pd-note");
     note.classList.remove("error");
+    var missing = textMods().filter(function (m) { return m.mandatory && !texts[modKey(m)]; });
     if (!allPicked) {
       add.disabled = true;
       note.textContent = "Elige " + opts.filter(function (o) { return !picked[o.id]; }).map(function (o) { return (o.name || "").toLowerCase(); }).join(" y ") + ".";
+    } else if (missing.length) {
+      add.disabled = true;
+      note.textContent = modMax(missing[0]) === 1 ? "Escribe la letra que quieres." : "Completa: " + (missing[0].name || "").toLowerCase() + ".";
     } else if (variants.length && !v) {
       add.disabled = true;
       note.textContent = "Esta combinación no está disponible.";
@@ -948,12 +1007,33 @@ section{position:relative;}
   function renderOptions() {
     var opts = current.options || [];
     $("pd-options").innerHTML = opts.map(function (o) {
-      var choices = o.choicesSettings && o.choicesSettings.choices || [];
-      return '<div class="opt"><div class="opt-label">' + esc(o.name) + '</div><div class="choices">' +
-        choices.filter(function (c) { return c.visible !== false; }).map(function (c) {
-          var avail = choiceAvailable(o.id, c.choiceId);
-          return '<button type="button" class="choice" data-opt="' + esc(o.id) + '" data-choice="' + esc(c.choiceId) + '" aria-pressed="' + (picked[o.id] === c.choiceId) + '"' + (avail ? "" : " disabled") + ">" + esc(c.name) + "</button>";
-        }).join("") + "</div></div>";
+      var choices = (o.choicesSettings && o.choicesSettings.choices || []).filter(function (c) { return c.visible !== false; });
+      var isSwatch = o.optionRenderType === "SWATCH_CHOICES";
+      var chosen = null;
+      choices.forEach(function (c) { if (picked[o.id] === c.choiceId) chosen = c; });
+      var label = '<div class="opt-label">' + esc(o.name) + (chosen ? '<span class="opt-picked">' + esc(chosen.name) + "</span>" : "") + "</div>";
+      var items = choices.map(function (c) {
+        var avail = choiceAvailable(o.id, c.choiceId);
+        var common = ' data-opt="' + esc(o.id) + '" data-choice="' + esc(c.choiceId) + '" aria-pressed="' + (picked[o.id] === c.choiceId) + '"' + (avail ? "" : " disabled");
+        if (isSwatch && c.colorCode) {
+          return '<button type="button" class="swatch"' + common + ' style="--sw:' + esc(c.colorCode) + '" title="' + esc(c.name) + '" aria-label="' + esc(c.name) + '"></button>';
+        }
+        return '<button type="button" class="choice"' + common + ">" + esc(c.name) + "</button>";
+      }).join("");
+      return '<div class="opt">' + label + '<div class="' + (isSwatch ? "swatches" : "choices") + '">' + items + "</div></div>";
+    }).join("");
+  }
+
+  function renderMods() {
+    $("pd-mods").innerHTML = textMods().map(function (m, i) {
+      var title = m.freeTextSettings && m.freeTextSettings.title || m.name || "";
+      var max = modMax(m);
+      if (max === 1) {
+        return '<div class="mod"><div class="opt-label">' + esc(m.name || "Letra") + '</div><div class="letter-row">' +
+          '<input class="letter-input" type="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="A" data-mod="' + i + '" aria-label="' + esc(title) + '">' +
+          '<p class="letter-help"><strong>' + esc(title) + "</strong>Escribe una sola letra o número.</p></div></div>";
+      }
+      return '<div class="mod"><div class="opt-label">' + esc(m.name || "") + '</div><input class="text-input" type="text" autocomplete="off"' + (max ? ' maxlength="' + max + '"' : "") + ' data-mod="' + i + '" placeholder="' + esc(title) + '" aria-label="' + esc(title) + '"></div>';
     }).join("");
   }
 
@@ -969,6 +1049,7 @@ section{position:relative;}
     if (!current) return;
     variants = [];
     picked = {};
+    texts = {};
     qty = 1;
     $("pd-qty").textContent = "1";
     $("pd-name").textContent = current.name || "";
@@ -984,6 +1065,7 @@ section{position:relative;}
       if (choices.length === 1) picked[o.id] = choices[0].choiceId;
     });
     renderOptions();
+    renderMods();
     renderPdState();
     openLayer("product");
     var vq = { query: { filter: { "productData.productId": { "$eq": current.id } } } };
@@ -1019,6 +1101,34 @@ section{position:relative;}
     renderOptions();
     renderPdState();
   });
+  $("pd-mods").addEventListener("input", function (e) {
+    var input = e.target.closest("[data-mod]");
+    if (!input) return;
+    var m = textMods()[Number(input.getAttribute("data-mod"))];
+    if (!m) return;
+    var max = modMax(m);
+    var val = input.value;
+    if (max === 1) {
+      var ch = val.trim().slice(-1);
+      if (ch && !validChar(ch)) {
+        ch = "";
+        input.classList.remove("shake");
+        void input.offsetWidth;
+        input.classList.add("shake");
+      }
+      val = ch.toUpperCase();
+      input.value = val;
+      input.classList.toggle("filled", !!val);
+    } else if (max && val.length > max) {
+      val = val.slice(0, max);
+      input.value = val;
+    }
+    texts[modKey(m)] = val.trim();
+    renderPdState();
+  });
+  $("pd-mods").addEventListener("animationend", function (e) {
+    e.target.classList.remove("shake");
+  });
   $("pd-minus").addEventListener("click", function () { qty = Math.max(1, qty - 1); $("pd-qty").textContent = qty; });
   $("pd-plus").addEventListener("click", function () { qty = Math.min(99, qty + 1); $("pd-qty").textContent = qty; });
 
@@ -1028,12 +1138,20 @@ section{position:relative;}
     var btn = $("pd-add");
     btn.disabled = true;
     $("pd-note").textContent = "Añadiendo…";
+    var refOptions = { variantId: v.variantId || v.id };
+    var custom = {};
+    var hasCustom = false;
+    textMods().forEach(function (m) {
+      var val = texts[modKey(m)];
+      if (val) { custom[modKey(m)] = val; hasCustom = true; }
+    });
+    if (hasCustom) refOptions.customTextFields = custom;
     var body = {
       catalogItems: [{
         catalogReference: {
           catalogItemId: current.id,
           appId: STORES_APP_ID,
-          options: { variantId: v.variantId || v.id }
+          options: refOptions
         },
         quantity: qty
       }]
@@ -1062,10 +1180,12 @@ section{position:relative;}
     var lines = li.attributes && li.attributes.descriptionLines || [];
     return lines.map(function (d) {
       var n = d.name && (d.name.translated || d.name.original) || "";
+      // La pregunta del campo de letra se muestra abreviada en la cesta.
+      if (n.indexOf("?") !== -1 && n.toLowerCase().indexOf("letra") !== -1) n = "Letra";
       var val = d.plainText && (d.plainText.translated || d.plainText.original) ||
         d.colorInfo && (d.colorInfo.translated || d.colorInfo.original) || "";
       return n && val ? n + ": " + val : (n || val);
-    }).filter(Boolean).join(" · ");
+    }).filter(Boolean).join(String.fromCharCode(10));
   }
 
   function setCart(c) {
