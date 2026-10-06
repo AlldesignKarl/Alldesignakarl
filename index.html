@@ -317,6 +317,47 @@ section{position:relative;}
 .foot-col a.foot-ic{display:flex;align-items:center;gap:10px;}
 .foot-ic svg{width:17px;height:17px;flex:none;color:var(--gold-soft);}
 
+/* ---------------- tarjeta regalo ---------------- */
+.gift{background:linear-gradient(180deg,var(--ivory) 0%,var(--cream) 100%);overflow:hidden;}
+.gift-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:84px;align-items:center;margin-top:72px;}
+@media (max-width:900px){.gift-grid{grid-template-columns:1fr;gap:50px;margin-top:56px;}}
+.gift-art{position:relative;padding:22px;}
+.gift-art::before{content:"";position:absolute;inset:4px;border:1px solid var(--gold-soft);border-radius:28px;transform:rotate(2.2deg);pointer-events:none;}
+.gift-card{
+  position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;
+  background:radial-gradient(ellipse at 30% 20%,#FFFDF9 0%,var(--cream) 70%);
+  box-shadow:0 46px 80px -44px rgba(48,38,28,.6),0 0 0 1px rgba(180,138,78,.35);
+  animation:gift-float 7s ease-in-out infinite alternate;will-change:transform;
+}
+@keyframes gift-float{
+  0%{transform:translate3d(0,-11px,0) rotate(-1.4deg);}
+  100%{transform:translate3d(0,11px,0) rotate(.4deg);}
+}
+.gift-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.gift-card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 50%,transparent 65%);
+  background-size:260% 100%;animation:shimmer 8s var(--ease) infinite;
+}
+.gift-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink);}
+.gift-fallback .script{font-size:clamp(40px,5vw,64px);line-height:1.1;}
+.gift-fallback .caps{color:var(--gold);font-size:12px;}
+.gift-lead{color:var(--ink-soft);font-size:20px;font-style:italic;line-height:1.55;}
+.gift-copy .opt{margin-top:30px;}
+.gift-amounts{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+.gift-amt{
+  min-width:86px;padding:12px 20px;border:1px solid var(--line);border-radius:999px;
+  font-size:21px;line-height:1.2;background:rgba(255,253,249,.65);transition:all .3s var(--ease);
+}
+.gift-amt:hover{border-color:var(--ink-soft);transform:translateY(-1px);}
+.gift-amt[aria-pressed="true"]{background:var(--ink);color:var(--ivory);border-color:var(--ink);}
+.gift-amt small{display:block;font-size:13px;opacity:.75;}
+.gift-how{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:12px;}
+.gift-how li{display:flex;gap:14px;align-items:flex-start;color:var(--ink-soft);font-size:18px;line-height:1.45;}
+.gift-how svg{width:14px;height:14px;flex:none;margin-top:6px;color:var(--gold);}
+.gift-copy .pd-actions .pill{flex:none;min-width:260px;}
+@media (max-width:560px){.gift-copy .pd-actions .pill{flex:1;min-width:0;}.gift-art{padding:14px;}}
+
 /* ---------------- footer ---------------- */
 .site-footer{background:var(--ink);color:rgba(246,241,232,.72);padding:90px 0 36px;}
 .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;}
@@ -350,6 +391,7 @@ section{position:relative;}
 .menu.open nav a:nth-child(2){transition-delay:.32s;}
 .menu.open nav a:nth-child(3){transition-delay:.39s;}
 .menu.open nav a:nth-child(4){transition-delay:.46s;}
+.menu.open nav a:nth-child(5){transition-delay:.53s;}
 .menu nav a:hover{color:var(--blue);}
 .menu-foot{text-align:center;padding:0 20px 44px;color:var(--ink-soft);}
 
@@ -596,6 +638,41 @@ section{position:relative;}
       <p class="contact-hint reveal">Pulsa el correo para escribirnos por Gmail o el teléfono para hablar por WhatsApp</p>
     </div>
   </section>
+
+  <section class="gift sec" id="tarjeta-regalo">
+    <div class="wrap">
+      <div class="sec-title">
+        <p class="caps reveal">Para regalar</p>
+        <h2 class="reveal">Tarjeta regalo</h2>
+        <p class="reveal">El regalo perfecto cuando no sabes qué elegir: que elijan ellos su pieza favorita.</p>
+        <div class="ornament reveal" aria-hidden="true"><svg class="star"><use href="#i-star"/></svg></div>
+      </div>
+      <div class="gift-grid">
+        <div class="gift-art reveal">
+          <div class="gift-card">
+            <div class="gift-fallback" aria-hidden="true"><span class="script">Alldesign Karl</span><span class="caps">Tarjeta regalo</span></div>
+            <img id="gc-img" src="https://static.wixstatic.com/media/43eaa1_00dfa66a8f50423f811ca9d58bdb650b~mv2.png/v1/fit/w_1200,h_700,q_90,enc_auto/tarjeta-regalo.png" alt="Tarjeta regalo de Alldesign Karl" loading="lazy">
+          </div>
+        </div>
+        <div class="gift-copy reveal">
+          <p class="gift-lead" id="gc-desc">Regala la libertad de elegir. Una tarjeta regalo perfecta para disfrutar de sus piezas favoritas y encontrar algo especial.</p>
+          <div class="opt">
+            <div class="opt-label">Elige el importe<span class="opt-picked" id="gc-picked"></span></div>
+            <div class="gift-amounts" id="gc-amounts"></div>
+          </div>
+          <ul class="gift-how">
+            <li><svg><use href="#i-star"/></svg><span>Al comprarla, recibes la tarjeta con su código en tu correo.</span></li>
+            <li><svg><use href="#i-star"/></svg><span>Puedes reenviarla o imprimirla para regalarla a quien quieras.</span></li>
+            <li><svg><use href="#i-star"/></svg><span id="gc-expiry">Se canjea al pagar en nuestra tienda y no caduca.</span></li>
+          </ul>
+          <div class="pd-actions">
+            <button class="pill dark caps" id="gc-add" type="button" disabled>Añadir a la cesta <svg class="arrow"><use href="#i-arrow"/></svg></button>
+          </div>
+          <p class="pd-note" id="gc-note">Elige un importe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -610,6 +687,7 @@ section{position:relative;}
         <a href="#colecciones">Colecciones</a>
         <a href="#nosotros">Sobre nosotros</a>
         <a href="#contacto">Contacto</a>
+        <a href="#tarjeta-regalo">Tarjeta regalo</a>
       </div>
       <div class="foot-col">
         <h4 class="caps">Tu compra</h4>
@@ -637,6 +715,7 @@ section{position:relative;}
     <a href="#colecciones">Colecciones</a>
     <a href="#nosotros">Sobre nosotros</a>
     <a href="#contacto">Contacto</a>
+    <a href="#tarjeta-regalo">Tarjeta regalo</a>
   </nav>
   <p class="menu-foot caps">Porcelana · Arte · Tradición</p>
 </div>
@@ -1201,6 +1280,7 @@ section{position:relative;}
     var lines = li.attributes && li.attributes.descriptionLines || [];
     return lines.map(function (d) {
       var n = d.name && (d.name.translated || d.name.original) || "";
+      if (d.name && d.name.original === "Amount") n = "Importe";
       // La pregunta del campo de letra se muestra abreviada en la cesta.
       if (n.indexOf("?") !== -1 && n.toLowerCase().indexOf("letra") !== -1) n = "Letra";
       var val = d.plainText && (d.plainText.translated || d.plainText.original) ||
@@ -1277,6 +1357,94 @@ section{position:relative;}
       btn.disabled = false;
       toast("No se ha podido abrir el pago. Escríbenos por WhatsApp al 614 65 37 36 o a alldesignkarl@gmail.com");
     });
+  });
+
+  /* ---------------- tarjeta regalo ---------------- */
+  var GIFT_APP_ID = "d80111c5-a0f4-47a8-b63a-65b54d774a27";
+  // Copia de la tarjeta creada en Wix, por si la consulta en directo no responde.
+  var gift = {
+    id: "5ea526f8-dd14-40bb-952d-e20812c0ff3f",
+    description: "",
+    expirationType: "NONE",
+    presetVariants: [
+      { id: "647602a9-f447-485b-9c66-924f30ab5ff0", price: { amount: "25" }, value: { amount: "25" } },
+      { id: "a9f0412e-e17a-4c60-965f-e368deeaf61a", price: { amount: "50" }, value: { amount: "50" } },
+      { id: "f71bf7e3-4184-4084-9f15-0b8c33fa6e00", price: { amount: "100" }, value: { amount: "100" } },
+      { id: "c8d9b683-e848-4d95-b08c-3dd9695e2cc5", price: { amount: "150" }, value: { amount: "150" } },
+      { id: "d47c107a-628b-483d-ab0f-ba8a1d9f0b5f", price: { amount: "200" }, value: { amount: "200" } }
+    ]
+  };
+  var giftPicked = null;
+
+  function giftVariant() {
+    var list = gift.presetVariants || [];
+    for (var i = 0; i < list.length; i++) if (list[i].id === giftPicked) return list[i];
+    return null;
+  }
+  function renderGift() {
+    var list = gift.presetVariants || [];
+    $("gc-amounts").innerHTML = list.map(function (v) {
+      var val = v.value && v.value.amount;
+      var price = v.price && v.price.amount;
+      var extra = price && val && Number(price) < Number(val) ? "<small>pagas " + esc(money(price)) + "</small>" : "";
+      return '<button type="button" class="gift-amt" data-gc="' + esc(v.id) + '" aria-pressed="' + (giftPicked === v.id) + '">' + esc(money(val)) + extra + "</button>";
+    }).join("");
+    var v = giftVariant();
+    $("gc-picked").textContent = v ? money(v.price && v.price.amount) : "";
+    $("gc-add").disabled = !v;
+    var note = $("gc-note");
+    note.classList.remove("error");
+    note.textContent = v ? "" : "Elige un importe.";
+    if (gift.description) $("gc-desc").textContent = gift.description.trim();
+    var exp = $("gc-expiry");
+    if (gift.expirationType === "NONE") exp.textContent = "Se canjea al pagar en nuestra tienda y no caduca.";
+    else exp.textContent = "Se canjea al pagar en nuestra tienda.";
+  }
+  function loadGift() {
+    renderGift();
+    return api("POST", "/gift-cards/v1/gift-card-products/query", { query: { cursorPaging: { limit: 1 } } }).then(function (data) {
+      var p = data.giftCardProducts && data.giftCardProducts[0];
+      if (!p || !p.presetVariants || !p.presetVariants.length) return;
+      gift = p;
+      if (!giftVariant()) giftPicked = null;
+      if (p.image && p.image.url) {
+        var name = p.image.url.split("/media/")[1];
+        if (name) $("gc-img").src = "https://static.wixstatic.com/media/" + name + "/v1/fit/w_1200,h_700,q_90,enc_auto/tarjeta-regalo.png";
+      }
+      renderGift();
+    }).catch(function () {});
+  }
+  $("gc-img").addEventListener("error", function () { this.style.display = "none"; });
+  $("gc-amounts").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-gc]");
+    if (!b) return;
+    giftPicked = b.getAttribute("data-gc");
+    renderGift();
+  });
+  $("gc-add").addEventListener("click", function () {
+    var v = giftVariant();
+    if (!v) return;
+    var btn = $("gc-add");
+    btn.disabled = true;
+    $("gc-note").textContent = "Añadiendo…";
+    var body = {
+      catalogItems: [{
+        catalogReference: { catalogItemId: gift.id, appId: GIFT_APP_ID, options: { variantId: v.id } },
+        quantity: 1
+      }]
+    };
+    api("POST", "/ecom/v2/carts/current/add-line-items", body).then(function (data) {
+      setCart(data.cart);
+      $("gc-note").textContent = "";
+      openLayer("cart");
+      var badge = $("bag-count");
+      badge.classList.remove("bump");
+      void badge.offsetWidth;
+      badge.classList.add("bump");
+    }).catch(function () {
+      $("gc-note").textContent = "No se ha podido añadir. Inténtalo de nuevo en unos segundos.";
+      $("gc-note").classList.add("error");
+    }).then(function () { btn.disabled = !giftVariant(); });
   });
 
   /* ---------------- búsqueda ---------------- */
@@ -1446,6 +1614,7 @@ section{position:relative;}
   });
 
   loadProducts();
+  loadGift();
   loadCart();
 })();
 </script>
