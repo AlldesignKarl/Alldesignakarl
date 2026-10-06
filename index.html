@@ -96,7 +96,7 @@ h1,h2,h3,p{margin:0;}
   position:absolute;inset:-3%;
   background-image:url("https://static.wixstatic.com/media/43eaa1_72cd58cd4eda4174852a42b5db8ec470~mv2.jpg");
   background-size:cover;background-position:center;
-  animation:drift 28s ease-in-out infinite alternate;
+  animation:drift 20s ease-in-out infinite alternate;
   will-change:transform;
 }
 @media (max-width:760px){
@@ -107,6 +107,11 @@ h1,h2,h3,p{margin:0;}
   100%{transform:scale(1.1) translate3d(-1.2%,-1%,0);}
 }
 .hero-parallax{position:absolute;inset:0;transition:transform 1.2s var(--ease-out);will-change:transform;}
+.hero-float{position:absolute;inset:0;animation:float 6.5s ease-in-out infinite alternate;will-change:transform;}
+@keyframes float{
+  0%{transform:translate3d(0,-13px,0) rotate(-.25deg);}
+  100%{transform:translate3d(0,13px,0) rotate(.25deg);}
+}
 .hero-veil{
   position:absolute;inset:0;
   background:radial-gradient(ellipse 46% 42% at 50% 47%,rgba(246,241,232,.78),rgba(246,241,232,.35) 60%,transparent 100%);
@@ -276,6 +281,11 @@ section{position:relative;}
   background-image:url("https://static.wixstatic.com/media/43eaa1_72cd58cd4eda4174852a42b5db8ec470~mv2.jpg");
   background-size:300% auto;background-position:12% 52%;
   transition:background-position 2.2s var(--ease-out);
+  animation:float-soft 7.5s ease-in-out infinite alternate;will-change:transform;
+}
+@keyframes float-soft{
+  0%{transform:translate3d(0,-9px,0);}
+  100%{transform:translate3d(0,9px,0);}
 }
 .story-art:hover .story-frame{background-position:15% 50%;}
 .story-art::after{
@@ -300,6 +310,12 @@ section{position:relative;}
 }
 .contact-mail::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:var(--gold);transform:scaleX(.3);transition:transform .6s var(--ease-out);}
 .contact-mail:hover::after{transform:scaleX(1);}
+.contact-links{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:34px;}
+.contact-links .contact-mail{margin-top:0;display:inline-flex;align-items:center;gap:14px;}
+.contact-mail svg{width:26px;height:26px;flex:none;color:var(--gold);}
+.contact-hint{margin-top:18px;font-size:15px;color:var(--ink-faint);letter-spacing:.04em;}
+.foot-col a.foot-ic{display:flex;align-items:center;gap:10px;}
+.foot-ic svg{width:17px;height:17px;flex:none;color:var(--gold-soft);}
 
 /* ---------------- footer ---------------- */
 .site-footer{background:var(--ink);color:rgba(246,241,232,.72);padding:90px 0 36px;}
@@ -508,7 +524,7 @@ section{position:relative;}
 
 <main>
   <section class="hero" id="inicio">
-    <div class="hero-parallax" id="parallax"><div class="hero-bg"></div></div>
+    <div class="hero-parallax" id="parallax"><div class="hero-float"><div class="hero-bg"></div></div></div>
     <div class="hero-veil"></div>
     <div class="hero-shimmer"></div>
     <div class="motes" id="motes" aria-hidden="true"></div>
@@ -541,7 +557,7 @@ section{position:relative;}
       <div class="empty" id="empty" hidden>
         <span class="script">Nueva colección muy pronto</span>
         <p>Estamos dando los últimos retoques a las primeras piezas. Escríbenos y te avisaremos en cuanto estén disponibles.</p>
-        <a class="pill caps" href="mailto:alldesignkarl@gmail.com?subject=Av%C3%ADsame%20de%20la%20nueva%20colecci%C3%B3n">Avísame <svg class="arrow"><use href="#i-arrow"/></svg></a>
+        <a class="pill caps" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=alldesignkarl@gmail.com&amp;su=Av%C3%ADsame%20de%20la%20nueva%20colecci%C3%B3n" target="_blank" rel="noopener">Avísame <svg class="arrow"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
   </section>
@@ -573,7 +589,11 @@ section{position:relative;}
         <h2 class="reveal">Hablemos</h2>
         <p class="reveal">¿Un encargo especial, un regalo o una duda sobre alguna pieza? Estaremos encantados de ayudarte.</p>
       </div>
-      <a class="contact-mail reveal" href="mailto:alldesignkarl@gmail.com">alldesignkarl@gmail.com</a>
+      <div class="contact-links reveal">
+        <a class="contact-mail" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=alldesignkarl@gmail.com" target="_blank" rel="noopener" aria-label="Escribir un correo a alldesignkarl@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>alldesignkarl@gmail.com</a>
+        <a class="contact-mail" href="https://wa.me/34614653736" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp al 614 65 37 36"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4.5 19.5l1.2-3.7A8 8 0 1 1 8.4 18.5z"/><path d="M9.2 8.4c.3-.6.8-.6 1-.2l.7 1.5c.1.3 0 .6-.2.8l-.5.5c.5 1.1 1.4 2 2.5 2.5l.5-.5c.2-.2.5-.3.8-.2l1.5.7c.4.2.4.7-.2 1-1 .6-2.3.4-3.6-.4a8 8 0 0 1-2.9-2.9c-.8-1.3-1-2.6-.6-3.8z"/></svg>614 65 37 36</a>
+      </div>
+      <p class="contact-hint reveal">Pulsa el correo para escribirnos por Gmail o el teléfono para hablar por WhatsApp</p>
     </div>
   </section>
 </main>
@@ -594,7 +614,8 @@ section{position:relative;}
       <div class="foot-col">
         <h4 class="caps">Tu compra</h4>
         <button type="button" data-open-cart>Mi cesta</button>
-        <a href="mailto:alldesignkarl@gmail.com">alldesignkarl@gmail.com</a>
+        <a class="foot-ic" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=alldesignkarl@gmail.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>alldesignkarl@gmail.com</a>
+        <a class="foot-ic" href="https://wa.me/34614653736" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4.5 19.5l1.2-3.7A8 8 0 1 1 8.4 18.5z"/><path d="M9.2 8.4c.3-.6.8-.6 1-.2l.7 1.5c.1.3 0 .6-.2.8l-.5.5c.5 1.1 1.4 2 2.5 2.5l.5-.5c.2-.2.5-.3.8-.2l1.5.7c.4.2.4.7-.2 1-1 .6-2.3.4-3.6-.4a8 8 0 0 1-2.9-2.9c-.8-1.3-1-2.6-.6-3.8z"/></svg>614 65 37 36</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1254,7 +1275,7 @@ section{position:relative;}
       window.location.href = d.checkoutUrl;
     }).catch(function () {
       btn.disabled = false;
-      toast("No se ha podido abrir el pago. Escríbenos a alldesignkarl@gmail.com");
+      toast("No se ha podido abrir el pago. Escríbenos por WhatsApp al 614 65 37 36 o a alldesignkarl@gmail.com");
     });
   });
 
