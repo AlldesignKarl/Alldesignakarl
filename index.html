@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alldesignkarl — Streetwear con alma artesana</title>
+<meta name="description" content="Alldesignkarl: streetwear gráfico de edición limitada y piezas artesanales hechas a mano en piel, palma y yute.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,wght@1,500;1,600&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#14213D;
+  --ink-deep:#101B30;
+  --ink-soft:#1C2D4F;
+  --ink-line:#33456B;
+  --stone:#F7F3E9;
+  --mint-light:#E3F1E7;
+  --mint-line:#CFE3D4;
+  --mint:#3FA07A;
+  --azure:#1B4B8C;
+  --azure-dark:#123566;
+  --azure-bright:#7FB2E8;
+  --on-ink:#F3EFE3;
+  --on-ink-dim:#AAB8CC;
+  --on-stone:#17202B;
+  --on-stone-dim:#5A6672;
+  --ease-out:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--stone);
+  color:var(--on-stone);
+  font-family:'Work Sans',ui-sans-serif,system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body.menu-open{overflow:hidden;}
+h1,h2,h3{font-family:'Anton',ui-sans-serif,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;margin:0;text-wrap:balance;}
+p{margin:0;}
+a{color:inherit;}
+img{display:block;max-width:100%;}
+.eyebrow{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:500;letter-spacing:.02em;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+section{padding:112px 0;}
+@media (max-width:720px){
+  section{padding:72px 0;}
+  .wrap{padding:0 16px;}
+}
+:focus-visible{outline:2px solid var(--azure-bright);outline-offset:3px;}
+
+/* ---------- botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Work Sans',sans-serif;font-weight:700;font-size:13px;
+  letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+  padding:16px 28px;border-radius:2px;border:1px solid transparent;cursor:pointer;
+  transition:background-color .15s ease,transform .15s ease,border-color .15s ease,color .15s ease;
+}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--azure);color:#fff;}
+.btn-primary:hover{background:var(--azure-dark);}
+.btn-ghost{border-color:rgba(243,239,227,.55);color:var(--on-ink);background:transparent;}
+.btn-ghost:hover{border-color:var(--on-ink);background:rgba(243,239,227,.08);}
+.btn-mint{background:var(--mint);color:#fff;}
+.btn-mint:hover{background:#358a69;}
+
+/* ---------- header ---------- */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  transition:background-color .25s ease,box-shadow .25s ease,color .25s ease;
+  color:var(--on-ink);
+}
+.site-header::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(16,27,48,.55),transparent);
+  transition:opacity .25s ease;
+}
+.site-header.solid{background:#fff;color:var(--on-stone);box-shadow:0 2px 14px rgba(20,33,61,.08);}
+.site-header.solid::before{opacity:0;}
+.hdr{display:flex;align-items:center;justify-content:space-between;height:76px;gap:24px;}
+.logo{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.04em;text-decoration:none;}
+.logo span{color:var(--azure-bright);transition:color .25s ease;}
+.site-header.solid .logo span{color:var(--azure);}
+.nav{display:flex;align-items:center;gap:34px;}
+.nav a{
+  position:relative;text-decoration:none;font-size:13px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:6px 0;
+}
+.nav a::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform .25s var(--ease-out);
+}
+.nav a:hover::after{transform:scaleX(1);}
+.hdr-cta{padding:12px 20px;}
+.burger{
+  display:none;width:44px;height:44px;border:0;background:transparent;color:inherit;
+  cursor:pointer;align-items:center;justify-content:center;
+}
+.burger span{display:block;width:22px;height:2px;background:currentColor;position:relative;}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:22px;height:2px;background:currentColor;}
+.burger span::before{top:-7px;}
+.burger span::after{top:7px;}
+@media (max-width:900px){
+  .nav,.hdr-cta{display:none;}
+  .burger{display:inline-flex;}
+  .hdr{height:64px;}
+}
+
+/* ---------- menú móvil ---------- */
+.scrim{
+  position:fixed;inset:0;z-index:60;background:rgba(16,27,48,.6);
+  opacity:0;pointer-events:none;transition:opacity .3s ease-out;
+}
+.scrim.show{opacity:1;pointer-events:auto;}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:70;width:min(360px,88vw);
+  background:var(--ink);color:var(--on-ink);
+  transform:translateX(100%);transition:transform .3s ease-out;
+  display:flex;flex-direction:column;padding:20px 28px 32px;
+}
+.drawer.open{transform:none;}
+.drawer-top{display:flex;justify-content:space-between;align-items:center;height:44px;}
+.drawer-close{width:44px;height:44px;border:0;background:transparent;color:var(--on-ink);font-size:28px;cursor:pointer;line-height:1;}
+.drawer nav{display:flex;flex-direction:column;margin-top:36px;}
+.drawer nav a{
+  font-family:'Anton',sans-serif;font-size:34px;text-transform:uppercase;text-decoration:none;
+  padding:10px 0;border-bottom:1px solid var(--ink-line);
+}
+.drawer nav a:hover{color:var(--azure-bright);}
+.drawer .btn{margin-top:auto;}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;
+  color:var(--on-ink);overflow:hidden;padding:140px 0 96px;
+  background:
+    radial-gradient(ellipse 900px 600px at 12% -10%,rgba(127,178,232,.28),transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 110%,rgba(63,160,122,.22),transparent 60%),
+    repeating-linear-gradient(115deg,rgba(243,239,227,.035) 0 2px,transparent 2px 34px),
+    var(--ink);
+}
+.hero-inner{position:relative;z-index:2;max-width:860px;}
+.hero .eyebrow{color:var(--azure-bright);font-size:20px;display:block;}
+.hero h1{font-size:clamp(56px,11vw,148px);line-height:.9;margin-top:18px;}
+.hero h1 .line{display:block;}
+.hero h1 .accent{color:var(--azure-bright);}
+.hero .lead{font-size:clamp(17px,2vw,20px);max-width:540px;margin-top:28px;color:var(--on-ink-dim);}
+.hero-cta{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;}
+.hero-mark{
+  position:absolute;right:-4vw;bottom:-6vw;z-index:1;
+  font-family:'Anton',sans-serif;font-size:34vw;line-height:.8;color:transparent;
+  -webkit-text-stroke:1px rgba(127,178,232,.12);pointer-events:none;user-select:none;
+}
+.scroll-hint{
+  position:absolute;left:50%;bottom:28px;z-index:2;transform:translateX(-50%);
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-ink-dim);
+  display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;
+}
+.scroll-hint::after{content:"";width:1px;height:36px;background:linear-gradient(var(--on-ink-dim),transparent);}
+
+/* entrada del hero: una sola vez al cargar */
+.intro{opacity:0;transform:translateY(16px);}
+.loaded .intro{animation:intro .6s var(--ease-out) forwards;}
+.loaded .intro.d1{animation-delay:.05s;}
+.loaded .intro.d2{animation-delay:.2s;}
+.loaded .intro.d3{animation-delay:.35s;}
+.loaded .intro.d4{animation-delay:.5s;}
+@keyframes intro{to{opacity:1;transform:none;}}
+
+/* ---------- aparición al hacer scroll ---------- */
+.reveal{opacity:0;}
+.reveal.in{animation:rise .4s ease-out both;}
+@keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.reveal.done{opacity:1;animation:none;}
+
+/* ---------- barra de confianza ---------- */
+.trust{background:var(--ink-deep);color:var(--on-ink);padding:0;}
+.trust-row{display:grid;grid-template-columns:repeat(3,1fr);}
+.trust-item{padding:30px 24px;text-align:center;border-left:1px solid var(--ink-line);}
+.trust-item:first-child{border-left:0;}
+.trust-item strong{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:18px;letter-spacing:.03em;text-transform:uppercase;}
+.trust-item span{display:block;font-size:13px;color:var(--on-ink-dim);margin-top:4px;}
+@media (max-width:720px){
+  .trust-row{grid-template-columns:1fr;}
+  .trust-item{border-left:0;border-top:1px solid var(--ink-line);padding:22px 16px;}
+  .trust-item:first-child{border-top:0;}
+}
+
+/* ---------- títulos de sección ---------- */
+.kicker{display:flex;align-items:baseline;gap:16px;}
+.kicker .num{font-family:'Anton',sans-serif;font-size:16px;color:var(--mint);}
+.kicker h2{font-size:clamp(36px,5.4vw,64px);line-height:.95;}
+.section-lead{max-width:600px;color:var(--on-stone-dim);font-size:17px;margin-top:18px;}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:48px;}
+
+/* ---------- categorías ---------- */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+@media (max-width:1000px){.cat-grid{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:640px){.cat-grid{grid-template-columns:repeat(2,1fr);gap:12px;}}
+.cat{
+  position:relative;display:block;aspect-ratio:3/4;border-radius:6px;overflow:hidden;
+  text-decoration:none;color:#fff;isolation:isolate;
+  box-shadow:0 0 0 rgba(20,33,61,0);transition:box-shadow .5s var(--ease-out);
+}
+.cat:hover{box-shadow:0 24px 40px -24px rgba(20,33,61,.55);}
+.cat-bg{position:absolute;inset:0;z-index:-2;transition:transform .5s var(--ease-out);}
+.cat:hover .cat-bg{transform:scale(1.06);}
+.cat::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 38%,rgba(10,18,34,.75));}
+.cat-name{position:absolute;left:16px;right:16px;bottom:16px;font-family:'Anton',sans-serif;font-size:22px;text-transform:uppercase;line-height:1;}
+.cat-tag{
+  position:absolute;top:12px;left:12px;font-family:'Fraunces',serif;font-style:italic;font-size:12px;
+  background:var(--mint);color:var(--stone);padding:4px 9px;border-radius:3px;
+}
+.cat-arrow{
+  position:absolute;right:16px;bottom:16px;width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:16px;
+  transform:translateX(-6px);opacity:0;transition:transform .3s var(--ease-out),opacity .3s ease;
+}
+.cat:hover .cat-arrow{transform:none;opacity:1;}
+.cat-big{font-family:'Anton',sans-serif;position:absolute;top:18%;left:-6%;font-size:120px;line-height:.8;color:rgba(255,255,255,.08);z-index:-1;white-space:nowrap;}
+.bg-tee{background:linear-gradient(135deg,#14213D 0%,#1B4B8C 55%,#7FB2E8 100%);}
+.bg-hoodie{background:linear-gradient(160deg,#14213D 0%,#1C2D4F 55%,#3FA07A 140%);}
+.bg-women{background:linear-gradient(135deg,#1C2D4F 0%,#3FA07A 60%,#E3F1E7 120%);}
+.bg-craft{background:repeating-linear-gradient(45deg,#E3F1E7 0 10px,#BFE0CB 10px 13px),#E3F1E7;}
+.bg-premium{background:linear-gradient(200deg,#7FB2E8 -20%,#1B4B8C 40%,#101B30 100%);}
+.cat.craft{color:var(--ink);}
+.cat.craft::after{background:linear-gradient(180deg,transparent 45%,rgba(227,241,231,.95));}
+.cat.craft .cat-big{color:rgba(20,33,61,.07);}
+.cat.craft .cat-arrow{background:rgba(20,33,61,.1);}
+
+/* ---------- colección (estado sin productos) ---------- */
+.collection{background:#fff;}
+.drop{
+  position:relative;overflow:hidden;border-radius:10px;background:var(--ink);color:var(--on-ink);
+  display:grid;grid-template-columns:1.2fr .8fr;min-height:420px;
+}
+@media (max-width:860px){.drop{grid-template-columns:1fr;}}
+.drop-copy{padding:56px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
+@media (max-width:720px){.drop-copy{padding:36px 24px;}}
+.drop-copy .eyebrow{color:var(--azure-bright);font-size:18px;}
+.drop-copy h3{font-size:clamp(34px,4.6vw,58px);line-height:.95;margin-top:12px;}
+.drop-copy p{color:var(--on-ink-dim);margin-top:18px;max-width:440px;}
+.drop-copy .btn{margin-top:30px;align-self:flex-start;}
+.drop-visual{
+  position:relative;min-height:260px;
+  background:
+    repeating-linear-gradient(115deg,rgba(243,239,227,.05) 0 2px,transparent 2px 26px),
+    linear-gradient(135deg,#1B4B8C 0%,#7FB2E8 120%);
+  display:grid;place-items:center;overflow:hidden;
+}
+.drop-badge{
+  width:200px;height:200px;border-radius:50%;border:1px solid rgba(243,239,227,.45);
+  display:grid;place-items:center;text-align:center;
+  font-family:'Anton',sans-serif;text-transform:uppercase;font-size:30px;line-height:1;
+  transform:rotate(-8deg);transition:transform .6s var(--ease-out);
+}
+.drop:hover .drop-badge{transform:rotate(0deg) scale(1.04);}
+.drop-badge small{display:block;font-family:'Fraunces',serif;font-style:italic;text-transform:none;font-size:15px;margin-top:8px;color:var(--stone);}
+
+/* ---------- artesanía ---------- */
+.craft-sec{background:var(--mint-light);}
+.spot{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+@media (max-width:860px){.spot{grid-template-columns:1fr;gap:40px;}}
+.spot-visual{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;}
+.spot-visual .layer{position:absolute;inset:0;transition:transform .5s var(--ease-out);}
+.spot-visual:hover .layer{transform:scale(1.05);}
+.weave{
+  background:
+    repeating-linear-gradient(0deg,rgba(20,33,61,.06) 0 6px,transparent 6px 14px),
+    repeating-linear-gradient(90deg,rgba(63,160,122,.18) 0 6px,transparent 6px 14px),
+    linear-gradient(160deg,#F7F3E9 0%,#CFE3D4 100%);
+}
+.spot-label{
+  position:absolute;left:24px;bottom:24px;right:24px;background:var(--stone);border-radius:6px;padding:18px 20px;
+  box-shadow:0 18px 40px -24px rgba(20,33,61,.5);
+}
+.spot-label .eyebrow{color:var(--mint);font-size:14px;}
+.spot-label strong{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;margin-top:2px;}
+.spot-copy .eyebrow{color:var(--mint);font-size:18px;}
+.spot-copy h2{font-size:clamp(34px,4.6vw,56px);line-height:.95;margin-top:10px;}
+.spot-copy p{color:var(--on-stone-dim);margin-top:20px;max-width:480px;}
+.materials{list-style:none;padding:0;margin:32px 0 0;display:grid;gap:12px;}
+.materials li{
+  display:flex;gap:16px;align-items:baseline;padding:16px 0;border-top:1px solid var(--mint-line);
+}
+.materials li:last-child{border-bottom:1px solid var(--mint-line);}
+.materials .m-name{font-family:'Anton',sans-serif;font-size:18px;text-transform:uppercase;min-width:150px;}
+.materials .m-desc{font-size:15px;color:var(--on-stone-dim);}
+
+/* ---------- nosotros ---------- */
+.about{background:var(--ink);color:var(--on-ink);}
+.about .kicker .num{color:var(--azure-bright);}
+.manifesto{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(34px,5vw,66px);line-height:1;margin-top:28px;max-width:1000px;}
+.manifesto em{font-family:'Fraunces',serif;font-style:italic;text-transform:none;color:var(--azure-bright);font-weight:500;}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;}
+@media (max-width:860px){.pillars{grid-template-columns:1fr;}}
+.pillar{border-top:1px solid var(--ink-line);padding-top:24px;}
+.pillar .pn{font-family:'Anton',sans-serif;font-size:15px;color:var(--mint);}
+.pillar h3{font-size:24px;margin-top:10px;}
+.pillar p{color:var(--on-ink-dim);margin-top:10px;font-size:15px;}
+
+/* ---------- contacto ---------- */
+.contact-box{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;
+  background:#fff;border:1px solid var(--mint-line);border-radius:10px;padding:56px;
+}
+@media (max-width:860px){.contact-box{grid-template-columns:1fr;padding:36px 24px;gap:28px;}}
+.contact-box h2{font-size:clamp(34px,4.6vw,56px);line-height:.95;}
+.contact-box p{color:var(--on-stone-dim);margin-top:16px;}
+.mail-link{
+  display:block;font-family:'Anton',sans-serif;font-size:clamp(20px,2.6vw,30px);
+  color:var(--azure);text-decoration:none;word-break:break-all;
+  background-image:linear-gradient(var(--azure),var(--azure));background-size:0 2px;background-repeat:no-repeat;background-position:0 100%;
+  transition:background-size .3s var(--ease-out);padding-bottom:4px;
+}
+.mail-link:hover{background-size:100% 2px;}
+.contact-side .btn{margin-top:22px;}
+
+/* ---------- footer ---------- */
+.site-footer{background:var(--ink-deep);color:var(--on-ink-dim);padding:72px 0 32px;font-size:14px;}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;}
+@media (max-width:860px){.foot-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:520px){.foot-grid{grid-template-columns:1fr;}}
+.foot-brand .logo{color:var(--on-ink);font-size:26px;}
+.foot-brand p{margin-top:12px;max-width:280px;}
+.foot-col h4{font-family:'Work Sans',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-ink);margin:0 0 14px;}
+.foot-col a{display:block;text-decoration:none;padding:5px 0;transition:color .15s ease;}
+.foot-col a:hover{color:var(--azure-bright);}
+.foot-bottom{border-top:1px solid var(--ink-line);margin-top:56px;padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;}
+.to-top{color:var(--on-ink);text-decoration:none;}
+
+/* ---------- reducir movimiento ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-delay:0s!important;}
+  .intro,.reveal{opacity:1;transform:none;animation:none!important;}
+  .cat:hover .cat-bg,.spot-visual:hover .layer{transform:none;}
+  .btn:hover{transform:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="wrap hdr">
+    <a class="logo" href="#inicio" aria-label="Alldesignkarl, inicio">ALL<span>DESIGN</span>KARL</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#tienda">Tienda</a>
+      <a href="#artesania">Artesanía</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <a class="btn btn-primary hdr-cta" href="#coleccion">Nueva colección</a>
+    <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="drawer"><span></span></button>
+  </div>
+</header>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menú" aria-hidden="true">
+  <div class="drawer-top">
+    <span class="logo">ALL<span style="color:var(--azure-bright)">DESIGN</span>KARL</span>
+    <button class="drawer-close" id="drawer-close" aria-label="Cerrar menú">&times;</button>
+  </div>
+  <nav>
+    <a href="#tienda">Tienda</a>
+    <a href="#artesania">Artesanía</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+  <a class="btn btn-primary" href="#coleccion">Nueva colección</a>
+</aside>
+
+<main>
+
+  <section class="hero" id="inicio">
+    <div class="hero-mark" aria-hidden="true">ADK</div>
+    <div class="wrap" style="width:100%">
+      <div class="hero-inner">
+        <span class="eyebrow intro d1">Nueva colección</span>
+        <h1 class="intro d2"><span class="line">Actitud</span><span class="line accent">hecha a mano</span></h1>
+        <p class="lead intro d3">Streetwear gráfico de edición limitada y piezas artesanales que no se repiten. Diseño con carácter, hecho para durar.</p>
+        <div class="hero-cta intro d4">
+          <a class="btn btn-primary" href="#tienda">Comprar streetwear</a>
+          <a class="btn btn-ghost" href="#artesania">Descubrir artesanía</a>
+        </div>
+      </div>
+    </div>
+    <a class="scroll-hint" href="#confianza">Desliza</a>
+  </section>
+
+  <section class="trust" id="confianza" aria-label="Por qué Alldesignkarl">
+    <div class="trust-row">
+      <div class="trust-item reveal"><strong>Envío gratuito</strong><span>España y resto de Europa</span></div>
+      <div class="trust-item reveal"><strong>Hecho a mano</strong><span>No hay dos piezas iguales</span></div>
+      <div class="trust-item reveal"><strong>Ediciones limitadas</strong><span>Streetwear y artesanía</span></div>
+    </div>
+  </section>
+
+  <section id="tienda">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="kicker reveal"><span class="num">01</span><h2>Compra por categoría</h2></div>
+          <p class="section-lead reveal">Del estampado gráfico a la pieza trenzada a mano: elige tu línea.</p>
+        </div>
+        <a class="btn btn-primary reveal" href="#coleccion">Ver la colección</a>
+      </div>
+      <div class="cat-grid">
+        <a class="cat reveal" href="#coleccion"><div class="cat-bg bg-tee"></div><span class="cat-big" aria-hidden="true">TEES</span><span class="cat-name">Camisetas</span><span class="cat-arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="cat reveal" href="#coleccion"><div class="cat-bg bg-hoodie"></div><span class="cat-big" aria-hidden="true">HOOD</span><span class="cat-name">Sudaderas</span><span class="cat-arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="cat reveal" href="#coleccion"><div class="cat-bg bg-women"></div><span class="cat-big" aria-hidden="true">MUJER</span><span class="cat-name">Mujer</span><span class="cat-arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="cat craft reveal" href="#artesania"><div class="cat-bg bg-craft"></div><span class="cat-tag">Hecho a mano</span><span class="cat-big" aria-hidden="true">CRAFT</span><span class="cat-name">Artesanía</span><span class="cat-arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="cat reveal" href="#coleccion"><div class="cat-bg bg-premium"></div><span class="cat-big" aria-hidden="true">PACK</span><span class="cat-name">Pack premium</span><span class="cat-arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="collection" id="coleccion">
+    <div class="wrap">
+      <div class="drop reveal">
+        <div class="drop-copy">
+          <span class="eyebrow">Próximo lanzamiento</span>
+          <h3>La nueva colección está en camino</h3>
+          <p>Estamos preparando un catálogo nuevo de streetwear y piezas artesanales. Escríbenos y te avisamos en cuanto salga, antes que a nadie.</p>
+          <a class="btn btn-primary" href="mailto:alldesignkarl@gmail.com?subject=Av%C3%ADsame%20de%20la%20nueva%20colecci%C3%B3n">Avísame del lanzamiento</a>
+        </div>
+        <div class="drop-visual" aria-hidden="true">
+          <div class="drop-badge">Drop<br>2026<small>edición limitada</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="craft-sec" id="artesania">
+    <div class="wrap spot">
+      <div class="spot-visual reveal">
+        <div class="layer weave"></div>
+        <div class="spot-label">
+          <span class="eyebrow">Pieza a pieza</span>
+          <strong>Ninguna es igual a otra</strong>
+        </div>
+      </div>
+      <div class="spot-copy">
+        <span class="eyebrow reveal">La línea artesanal</span>
+        <h2 class="reveal">Piel italiana, palma mexicana, yute trenzado</h2>
+        <p class="reveal">Junto al streetwear crece una línea de bolsos, capazos y mochilas hechos a mano. Materiales nobles, trabajo lento y pequeñas diferencias que hacen única cada pieza.</p>
+        <ul class="materials">
+          <li class="reveal"><span class="m-name">Piel</span><span class="m-desc">Bolsos y mochilas confeccionados en Italia.</span></li>
+          <li class="reveal"><span class="m-name">Palma</span><span class="m-desc">Tejida a mano en México, color a color.</span></li>
+          <li class="reveal"><span class="m-name">Yute</span><span class="m-desc">Capazos trenzados y personalizables.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="nosotros">
+    <div class="wrap">
+      <div class="kicker reveal"><span class="num">02</span><h2>Nosotros</h2></div>
+      <p class="manifesto reveal">Streetwear con <em>alma artesana.</em> Gráficos que se ven de lejos, piezas que se sienten de cerca.</p>
+      <div class="pillars">
+        <div class="pillar reveal"><span class="pn">01</span><h3>Diseño propio</h3><p>Estampados gráficos inspirados en el motor y la cultura pop, en tiradas cortas.</p></div>
+        <div class="pillar reveal"><span class="pn">02</span><h3>Hecho a mano</h3><p>La línea artesanal se trabaja pieza a pieza, sin producción en serie.</p></div>
+        <div class="pillar reveal"><span class="pn">03</span><h3>Pensado para durar</h3><p>Materiales elegidos para usarse mucho y envejecer bien.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact-box reveal">
+        <div>
+          <div class="kicker"><span class="num">03</span><h2>Hablemos</h2></div>
+          <p>¿Un encargo personalizado, un pedido para tu equipo o una duda sobre una pieza? Escríbenos y te respondemos.</p>
+        </div>
+        <div class="contact-side">
+          <a class="mail-link" href="mailto:alldesignkarl@gmail.com">alldesignkarl@gmail.com</a>
+          <a class="btn btn-mint" href="mailto:alldesignkarl@gmail.com">Enviar un email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="#inicio">ALL<span style="color:var(--azure-bright)">DESIGN</span>KARL</a>
+        <p>Streetwear con alma artesana.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Tienda</h4>
+        <a href="#tienda">Camisetas</a>
+        <a href="#tienda">Sudaderas</a>
+        <a href="#tienda">Mujer</a>
+        <a href="#tienda">Pack premium</a>
+      </div>
+      <div class="foot-col">
+        <h4>Artesanía</h4>
+        <a href="#artesania">Piel</a>
+        <a href="#artesania">Palma</a>
+        <a href="#artesania">Yute</a>
+      </div>
+      <div class="foot-col">
+        <h4>Ayuda</h4>
+        <a href="#nosotros">Sobre nosotros</a>
+        <a href="#contacto">Contacto</a>
+        <a href="mailto:alldesignkarl@gmail.com">alldesignkarl@gmail.com</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; <span id="year">2026</span> Alldesignkarl</span>
+      <a class="to-top" href="#inicio">Volver arriba &uarr;</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // Entrada del hero, una sola vez.
+  requestAnimationFrame(function () {
+    document.documentElement.classList.add("loaded");
+  });
+
+  document.getElementById("year").textContent = String(new Date().getFullYear());
+
+  // Header: transparente sobre el hero, sólido a partir de 80px de scroll.
+  var header = document.getElementById("header");
+  function onScroll() {
+    header.classList.toggle("solid", window.scrollY > 80);
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Menú móvil.
+  var burger = document.getElementById("burger");
+  var drawer = document.getElementById("drawer");
+  var scrim = document.getElementById("scrim");
+  var closeBtn = document.getElementById("drawer-close");
+
+  function setMenu(open) {
+    drawer.classList.toggle("open", open);
+    scrim.classList.toggle("show", open);
+    document.body.classList.toggle("menu-open", open);
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    drawer.setAttribute("aria-hidden", open ? "false" : "true");
+    if (open) closeBtn.focus();
+  }
+  burger.addEventListener("click", function () { setMenu(true); });
+  closeBtn.addEventListener("click", function () { setMenu(false); });
+  scrim.addEventListener("click", function () { setMenu(false); });
+  drawer.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () { setMenu(false); });
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && drawer.classList.contains("open")) {
+      setMenu(false);
+      burger.focus();
+    }
+  });
+
+  // Aparición al hacer scroll, con 80ms de desfase entre elementos de un mismo grupo.
+  var items = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if (!("IntersectionObserver" in window)) {
+    items.forEach(function (el) { el.classList.add("in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    var batch = entries.filter(function (e) { return e.isIntersecting; });
+    batch.forEach(function (entry, i) {
+      entry.target.style.animationDelay = (i * 80) + "ms";
+      entry.target.classList.add("in");
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+  items.forEach(function (el) {
+    // Al terminar, se quita la animación para que los efectos de hover vuelvan a funcionar.
+    el.addEventListener("animationend", function () {
+      el.classList.add("done");
+      el.style.animationDelay = "";
+    }, { once: true });
+    io.observe(el);
+  });
+})();
+</script>
+</body>
+</html>
