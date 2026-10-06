@@ -474,7 +474,17 @@ section{position:relative;}
 .pd h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,40px);line-height:1.15;margin-top:10px;}
 .pd-price{font-size:26px;margin-top:14px;color:var(--ink);}
 .pd-price s{color:var(--ink-faint);font-size:20px;margin-right:10px;}
-.pd-desc{color:var(--ink-soft);margin-top:20px;font-size:18px;}
+.pd-desc{color:var(--ink-soft);margin-top:18px;padding-top:22px;border-top:1px solid var(--line);font-size:18px;}
+.pd-desc:empty{display:none;}
+.pd-desc p + p{margin-top:12px;}
+.pd-howto{font-family:var(--script);font-weight:400;font-size:38px;line-height:1.1;color:var(--ink);margin:28px 0 6px;}
+.pd-step{display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;margin-top:14px;}
+.pd-step-n{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;}
+.pd-step strong{display:block;font-weight:500;color:var(--ink);font-size:19px;}
+.pd-step div > span{display:block;font-size:17px;line-height:1.5;}
+.pd-thanks{font-family:var(--script);font-size:30px;color:var(--ink);margin-top:22px;}
+.pd-pack{margin-top:10px;color:var(--gold);font-size:15px;letter-spacing:.04em;}
+.pd-pack[hidden]{display:none;}
 .opt{margin-top:26px;}
 .opt-label{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);}
 .choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
@@ -749,7 +759,7 @@ section{position:relative;}
       <p class="caps">Alldesign Karl</p>
       <h3 id="pd-name"></h3>
       <p class="pd-price" id="pd-price"></p>
-      <div class="pd-desc" id="pd-desc"></div>
+      <p class="pd-pack" id="pd-pack" hidden></p>
       <div id="pd-options"></div>
       <div id="pd-mods"></div>
       <div class="pd-actions">
@@ -761,6 +771,7 @@ section{position:relative;}
         <button class="pill dark caps" id="pd-add" type="button">Añadir a la cesta <svg class="arrow"><use href="#i-arrow"/></svg></button>
       </div>
       <p class="pd-note" id="pd-note"></p>
+      <div class="pd-desc" id="pd-desc"></div>
     </div>
   </div>
 </div>
@@ -910,12 +921,26 @@ section{position:relative;}
     var name = u.split("/media/")[1].split("/")[0];
     return "https://static.wixstatic.com/media/" + name + "/v1/fill/w_" + w + ",h_" + Math.round(w * 1.25) + ",al_c,q_85,enc_auto/" + name;
   }
+  // Productos que solo se venden en packs (p. ej. "Pack de 5"): se compran de N en N.
+  var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5 };
+  function packOf(p) {
+    if (!p) return 1;
+    if (PACKS[p.id]) return PACKS[p.id];
+    var r = (p.ribbon && p.ribbon.name || "").toLowerCase();
+    var i = r.indexOf("pack de ");
+    var n = i === -1 ? 0 : parseInt(r.slice(i + 8), 10);
+    return n > 1 ? n : 1;
+  }
+  function packOfItem(id) {
+    return PACKS[id] || packOf(findProduct(id));
+  }
   function priceOf(p) {
     var r = p.actualPriceRange || {};
-    var min = r.minValue && r.minValue.amount;
-    var max = r.maxValue && r.maxValue.amount;
+    var pk = packOf(p);
+    var min = r.minValue && r.minValue.amount * pk;
+    var max = r.maxValue && r.maxValue.amount * pk;
     var cur = p.currency || "EUR";
-    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && p.compareAtPriceRange.minValue.amount;
+    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && p.compareAtPriceRange.minValue.amount * pk;
     var html = "";
     if (cmp && Number(cmp) > Number(min)) html += "<s>" + esc(money(cmp, cur)) + "</s>";
     html += (max && Number(max) > Number(min) ? "Desde " : "") + esc(money(min, cur));
@@ -1081,7 +1106,9 @@ section{position:relative;}
     var cur = current.currency || "EUR";
     if (v && v.price && v.price.actualPrice && v.price.actualPrice.amount) {
       var cmp = v.price.compareAtPrice && v.price.compareAtPrice.amount;
-      var a = v.price.actualPrice.amount;
+      var pk = packOf(current);
+      var a = v.price.actualPrice.amount * pk;
+      if (cmp) cmp = cmp * pk;
       priceEl.innerHTML = (cmp && Number(cmp) > Number(a) ? "<s>" + esc(money(cmp, cur)) + "</s>" : "") + esc(money(a, cur));
     } else {
       priceEl.innerHTML = priceOf(current);
@@ -1157,10 +1184,17 @@ section{position:relative;}
     variants = [];
     picked = {};
     texts = {};
-    qty = 1;
-    $("pd-qty").textContent = "1";
+    qty = packOf(current);
+    $("pd-qty").textContent = String(qty);
+    var pkInfo = $("pd-pack");
+    if (qty > 1) {
+      pkInfo.textContent = "Pack de " + qty + " unidades · pedido mínimo " + qty + ", de " + qty + " en " + qty + " · envío gratis";
+      pkInfo.hidden = false;
+    } else {
+      pkInfo.hidden = true;
+    }
     $("pd-name").textContent = current.name || "";
-    $("pd-desc").textContent = current.plainDescription ? stripHtml(current.plainDescription) : "";
+    $("pd-desc").innerHTML = current.plainDescription ? descHtml(current.plainDescription) : "";
     var imgs = allImages(current);
     $("pd-img").alt = current.name || "";
     $("pd-thumbs").innerHTML = imgs.length > 1 ? imgs.map(function (u, i) {
@@ -1187,6 +1221,28 @@ section{position:relative;}
       $("pd-note").textContent = "No se ha podido cargar la disponibilidad. Inténtalo de nuevo.";
       $("pd-note").classList.add("error");
     });
+  }
+
+  // Descripción en párrafos; "Instrucciones de uso" y los pasos "1. Título: texto" se muestran con su propio estilo.
+  function descHtml(s) {
+    var d = document.createElement("div");
+    d.innerHTML = s;
+    var blocks = Array.prototype.map.call(d.querySelectorAll("p, li, h1, h2, h3, h4"), function (el) { return el.textContent.trim(); }).filter(Boolean);
+    if (!blocks.length) blocks = [(d.textContent || "").trim()].filter(Boolean);
+    return blocks.map(function (t) {
+      var low = t.toLowerCase();
+      if (low === "instrucciones de uso" || low === "instrucciones de uso:") return '<h4 class="pd-howto">Instrucciones de uso</h4>';
+      if ("0123456789".indexOf(t.charAt(0)) !== -1 && t.charAt(1) === ".") {
+        var rest = t.slice(2).trim();
+        var c = rest.indexOf(":");
+        var title = c === -1 ? rest : rest.slice(0, c);
+        var body = c === -1 ? "" : rest.slice(c + 1).trim();
+        if (body) body = body.charAt(0).toUpperCase() + body.slice(1);
+        return '<div class="pd-step"><span class="pd-step-n">' + esc(t.charAt(0)) + '</span><div><strong>' + esc(title) + "</strong>" + (body ? "<span>" + esc(body) + "</span>" : "") + "</div></div>";
+      }
+      if (low.indexOf("gracias por apoyar") === 0) return '<p class="pd-thanks">' + esc(t) + "</p>";
+      return "<p>" + esc(t) + "</p>";
+    }).join("");
   }
 
   function stripHtml(s) {
@@ -1236,8 +1292,8 @@ section{position:relative;}
   $("pd-mods").addEventListener("animationend", function (e) {
     e.target.classList.remove("shake");
   });
-  $("pd-minus").addEventListener("click", function () { qty = Math.max(1, qty - 1); $("pd-qty").textContent = qty; });
-  $("pd-plus").addEventListener("click", function () { qty = Math.min(99, qty + 1); $("pd-qty").textContent = qty; });
+  $("pd-minus").addEventListener("click", function () { var pk = packOf(current); qty = Math.max(pk, qty - pk); $("pd-qty").textContent = qty; });
+  $("pd-plus").addEventListener("click", function () { var pk = packOf(current); qty = Math.min(99 * pk, qty + pk); $("pd-qty").textContent = qty; });
 
   $("pd-add").addEventListener("click", function () {
     var v = matchVariant();
@@ -1314,11 +1370,15 @@ section{position:relative;}
       var img = imgUrl(li.attributes && li.attributes.image && li.attributes.image.url);
       var total = li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount;
       var q = lineQty(li);
+      var step = packOfItem(li.catalogReference && li.catalogReference.catalogItemId);
+      var less = q - step < step ? 0 : q - step;
+      var packNote = step > 1 ? "Pack de " + step + " · " + q + " unidades" : "";
+      var dl = [descLines(li), packNote].filter(Boolean).join(String.fromCharCode(10));
       return '<div class="line">' +
         (img ? '<img src="' + esc(sized(img, 200)) + '" alt="">' : '<span></span>') +
         '<div><div class="line-name">' + esc(name) + '</div>' +
-        (descLines(li) ? '<div class="line-desc">' + esc(descLines(li)) + "</div>" : "") +
-        '<div class="qty"><button type="button" data-line="' + esc(li.id) + '" data-q="' + (q - 1) + '" aria-label="Quitar una">−</button><span>' + q + '</span><button type="button" data-line="' + esc(li.id) + '" data-q="' + (q + 1) + '" aria-label="Añadir una">+</button></div>' +
+        (dl ? '<div class="line-desc">' + esc(dl) + "</div>" : "") +
+        '<div class="qty"><button type="button" data-line="' + esc(li.id) + '" data-q="' + less + '" aria-label="Quitar">−</button><span>' + q + '</span><button type="button" data-line="' + esc(li.id) + '" data-q="' + (q + step) + '" aria-label="Añadir">+</button></div>' +
         '<button type="button" class="remove" data-remove="' + esc(li.id) + '">Eliminar</button></div>' +
         '<div class="line-price">' + esc(money(total, cart.currency || "EUR")) + "</div></div>";
     }).join("");
