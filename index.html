@@ -324,7 +324,7 @@ section{position:relative;}
 .gift-art{position:relative;padding:22px;}
 .gift-art::before{content:"";position:absolute;inset:4px;border:1px solid var(--gold-soft);border-radius:28px;transform:rotate(2.2deg);pointer-events:none;}
 .gift-card{
-  position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;
+  position:relative;aspect-ratio:3/2;border-radius:20px;overflow:hidden;
   background:radial-gradient(ellipse at 30% 20%,#FFFDF9 0%,var(--cream) 70%);
   box-shadow:0 46px 80px -44px rgba(48,38,28,.6),0 0 0 1px rgba(180,138,78,.35);
   animation:gift-float 7s ease-in-out infinite alternate;will-change:transform;
@@ -668,7 +668,7 @@ section{position:relative;}
         <div class="gift-art reveal">
           <div class="gift-card">
             <div class="gift-fallback" aria-hidden="true"><span class="script">Alldesign Karl</span><span class="caps">Tarjeta regalo</span></div>
-            <img id="gc-img" src="https://static.wixstatic.com/media/43eaa1_00dfa66a8f50423f811ca9d58bdb650b~mv2.png/v1/fit/w_1200,h_700,q_90,enc_auto/tarjeta-regalo.png" alt="Tarjeta regalo de Alldesign Karl" loading="lazy">
+            <img id="gc-img" src="https://static.wixstatic.com/media/43eaa1_5439905b93b943498e6a185ac4867adb~mv2.jpg/v1/fit/w_1200,h_800,q_90,enc_auto/tarjeta-regalo.jpg" alt="Tarjeta regalo de Alldesign Karl" loading="lazy">
           </div>
         </div>
         <div class="gift-copy reveal">
@@ -1476,7 +1476,7 @@ section{position:relative;}
       if (!giftVariant()) giftPicked = null;
       if (p.image && p.image.url) {
         var name = p.image.url.split("/media/")[1];
-        if (name) $("gc-img").src = "https://static.wixstatic.com/media/" + name + "/v1/fit/w_1200,h_700,q_90,enc_auto/tarjeta-regalo.png";
+        if (name) $("gc-img").src = "https://static.wixstatic.com/media/" + name + "/v1/fit/w_1200,h_800,q_90,enc_auto/tarjeta-regalo.jpg";
       }
       renderGift();
     }).catch(function () {});
