@@ -792,7 +792,7 @@ section{position:relative;}
     <div class="subtotal"><span>IVA (21 %)</span><strong id="cart-vat"></strong></div>
     <div class="subtotal"><span>Envío</span><strong>Gratis</strong></div>
     <div class="subtotal total"><span>Total</span><strong id="cart-total"></strong></div>
-    <small>Precios sin IVA. El IVA del 21 % se aplica a los envíos dentro de España.</small>
+    <small>Precios sin IVA. El total ya incluye el IVA del 21 %.</small>
     <button class="pill dark caps" id="checkout" type="button">Finalizar compra <svg class="arrow"><use href="#i-arrow"/></svg></button>
   </div>
 </aside>
@@ -931,9 +931,10 @@ section{position:relative;}
   }
   // Productos que solo se venden en packs (p. ej. "Pack de 5"): se compran de N en N.
   var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5 };
-  // Los precios de la tienda no incluyen IVA; en España se añade el 21 % (las tarjetas regalo no llevan IVA).
+  // Los precios guardados en Wix incluyen el IVA (21 %). La tienda los muestra sin IVA y la cesta desglosa el IVA,
+  // así el total coincide con el precio con IVA. Las tarjetas regalo no llevan IVA.
   var VAT = 0.21;
-  function withVat(n) { return Math.round(Number(n) * (1 + VAT) * 100) / 100; }
+  function net(n) { return Math.round(Number(n) / (1 + VAT) * 100) / 100; }
   function packOf(p) {
     if (!p) return 1;
     if (PACKS[p.id]) return PACKS[p.id];
@@ -948,10 +949,10 @@ section{position:relative;}
   function priceOf(p) {
     var r = p.actualPriceRange || {};
     var pk = packOf(p);
-    var min = r.minValue && r.minValue.amount * pk;
-    var max = r.maxValue && r.maxValue.amount * pk;
+    var min = r.minValue && net(r.minValue.amount * pk);
+    var max = r.maxValue && net(r.maxValue.amount * pk);
     var cur = p.currency || "EUR";
-    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && p.compareAtPriceRange.minValue.amount * pk;
+    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && net(p.compareAtPriceRange.minValue.amount * pk);
     var html = "";
     if (cmp && Number(cmp) > Number(min)) html += "<s>" + esc(money(cmp, cur)) + "</s>";
     html += (max && Number(max) > Number(min) ? "Desde " : "") + esc(money(min, cur)) + '<span class="vat">+ IVA</span>';
@@ -1139,7 +1140,7 @@ section{position:relative;}
     }
   }
 
-  // Precio total según la cantidad elegida (sin IVA), con el total con IVA debajo.
+  // Precio total según la cantidad elegida: sin IVA en grande y con IVA debajo.
   function renderPrice(v) {
     var cur = current.currency || "EUR";
     var unit = v && v.price && v.price.actualPrice && v.price.actualPrice.amount;
@@ -1150,8 +1151,8 @@ section{position:relative;}
     }
     var total = Math.round(Number(unit) * qty * 100) / 100;
     var cmp = cmpUnit ? Math.round(Number(cmpUnit) * qty * 100) / 100 : 0;
-    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(cmp, cur)) + "</s>" : "") + esc(money(total, cur)) +
-      '<span class="pd-vat">IVA no incluido · ' + esc(money(withVat(total), cur)) + " con IVA</span>";
+    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(net(cmp), cur)) + "</s>" : "") + esc(money(net(total), cur)) +
+      '<span class="pd-vat">IVA no incluido · ' + esc(money(total, cur)) + " con IVA</span>";
   }
 
   function renderOptions() {
@@ -1386,6 +1387,7 @@ section{position:relative;}
       var img = imgUrl(li.attributes && li.attributes.image && li.attributes.image.url);
       var total = li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount;
       var q = lineQty(li);
+      var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
       var step = packOfItem(li.catalogReference && li.catalogReference.catalogItemId);
       var less = q - step < step ? 0 : q - step;
       var packNote = step > 1 ? "Pack de " + step + " · " + q + " unidades" : "";
@@ -1396,17 +1398,17 @@ section{position:relative;}
         (dl ? '<div class="line-desc">' + esc(dl) + "</div>" : "") +
         '<div class="qty"><button type="button" data-line="' + esc(li.id) + '" data-q="' + less + '" aria-label="Quitar">−</button><span>' + q + '</span><button type="button" data-line="' + esc(li.id) + '" data-q="' + (q + step) + '" aria-label="Añadir">+</button></div>' +
         '<button type="button" class="remove" data-remove="' + esc(li.id) + '">Eliminar</button></div>' +
-        '<div class="line-price">' + esc(money(total, cart.currency || "EUR")) + "</div></div>";
+        '<div class="line-price">' + esc(money(isProduct ? net(total) : total, cart.currency || "EUR")) + "</div></div>";
     }).join("");
     var sub = Number(cart.subtotal && (cart.subtotal.amount || cart.subtotal.convertedAmount)) || 0;
     var taxable = items.reduce(function (s, li) {
       var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
       return s + (isProduct ? Number(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount) || 0 : 0);
     }, 0);
-    var vat = Math.round(taxable * VAT * 100) / 100;
-    $("cart-subtotal").textContent = money(sub, cart.currency || "EUR");
+    var vat = Math.round((taxable - net(taxable)) * 100) / 100;
+    $("cart-subtotal").textContent = money(Math.round((sub - vat) * 100) / 100, cart.currency || "EUR");
     $("cart-vat").textContent = money(vat, cart.currency || "EUR");
-    $("cart-total").textContent = money(Math.round((sub + vat) * 100) / 100, cart.currency || "EUR");
+    $("cart-total").textContent = money(sub, cart.currency || "EUR");
     $("cart-foot").hidden = false;
   }
 
