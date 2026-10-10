@@ -399,6 +399,7 @@ section{position:relative;}
 .menu.open nav a:nth-child(3){transition-delay:.39s;}
 .menu.open nav a:nth-child(4){transition-delay:.46s;}
 .menu.open nav a:nth-child(5){transition-delay:.53s;}
+.menu.open nav a:nth-child(6){transition-delay:.6s;}
 .menu nav a:hover{color:var(--blue);}
 .menu-foot{flex:none;text-align:center;padding:0 20px 44px;color:var(--ink-soft);}
 @media (max-width:900px){.menu .hdr{height:76px;}}
@@ -450,6 +451,74 @@ section{position:relative;}
 .remove:hover{color:var(--ink);}
 .cart-empty{text-align:center;padding:70px 10px;color:var(--ink-soft);}
 .cart-empty .script{font-size:42px;color:var(--ink);display:block;}
+.cart-min{margin-top:16px;padding:14px 16px;border:1px solid var(--line);border-radius:4px;background:rgba(255,253,249,.7);font-size:15px;color:var(--ink-soft);}
+.cart-min strong{color:var(--ink);font-weight:500;}
+.cart-min .track{height:4px;border-radius:4px;background:var(--sand);overflow:hidden;margin-top:10px;}
+.cart-min .fill{height:100%;background:var(--gold);transition:width .6s var(--ease-out);}
+.cart-min.ok{border-color:var(--gold-soft);}
+.cart-clash{margin-top:10px;font-size:15px;}
+.cart-clash button{color:var(--ink);text-decoration:underline;text-underline-offset:3px;}
+
+/* ---------------- mayoristas ---------------- */
+.b2b{background:linear-gradient(180deg,var(--cream) 0%,var(--ivory) 100%);overflow:hidden;}
+.b2b-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-top:64px;}
+@media (max-width:900px){.b2b-grid{grid-template-columns:1fr;gap:44px;margin-top:48px;}}
+.b2b-perks{display:grid;gap:14px;}
+.b2b-perk{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:18px;align-items:center;padding:22px 26px;background:rgba(255,253,249,.72);border:1px solid var(--line);border-radius:4px;position:relative;}
+.b2b-perk::before{content:"";position:absolute;inset:6px;border:1px solid rgba(180,138,78,.18);border-radius:2px;pointer-events:none;}
+.b2b-perk .big{font-family:var(--script);font-size:clamp(32px,3.2vw,42px);padding-right:6px;line-height:1;color:var(--gold);text-align:center;white-space:nowrap;}
+.b2b-perk h3{font-family:var(--serif);font-weight:500;font-size:21px;line-height:1.25;}
+.b2b-perk p{color:var(--ink-soft);font-size:17px;margin-top:4px;line-height:1.45;}
+.b2b-steps{list-style:none;margin:0;padding:0;counter-reset:paso;display:grid;gap:24px;}
+.b2b-steps li{display:grid;grid-template-columns:46px 1fr;gap:18px;align-items:start;}
+.b2b-steps li::before{counter-increment:paso;content:counter(paso);width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:21px;}
+.b2b-steps strong{display:block;font-weight:500;font-size:21px;color:var(--ink);}
+.b2b-steps span{display:block;color:var(--ink-soft);font-size:17px;line-height:1.5;margin-top:2px;}
+.b2b-cta{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;margin-top:36px;}
+.b2b-cta .pill{margin-top:0;}
+.b2b-link{font-size:15px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:4px;}
+.b2b-link:hover{color:var(--ink);}
+.b2b-who{margin-top:16px;font-style:italic;color:var(--ink-soft);font-size:17px;}
+.b2b-who[hidden]{display:none;}
+.b2b-bar{position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--ink);color:var(--ivory);transform:translateY(110%);transition:transform .6s var(--ease-out);box-shadow:0 -18px 40px -30px rgba(48,38,28,.8);}
+.b2b-bar.show{transform:none;}
+.b2b-bar .wrap{display:flex;align-items:center;gap:10px 22px;min-height:60px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;}
+.b2b-bar .caps{color:var(--gold-soft);font-size:11px;}
+.b2b-bar-co{font-style:italic;font-size:17px;}
+.b2b-meter{flex:1;min-width:200px;display:flex;align-items:center;gap:14px;font-size:15px;color:rgba(246,241,232,.85);}
+.b2b-meter .track{flex:1;min-width:60px;height:4px;border-radius:4px;background:rgba(246,241,232,.2);overflow:hidden;}
+.b2b-meter .fill{height:100%;width:0;background:var(--gold-soft);transition:width .6s var(--ease-out);}
+.b2b-bar-btns{display:flex;gap:18px;}
+.b2b-bar-btns button{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);}
+.b2b-bar-btns button:hover{color:var(--ivory);}
+body.b2b-on{padding-bottom:70px;}
+body.b2b-on .toast{bottom:96px;}
+@media (max-width:600px){
+  .b2b-perk{padding:18px 18px;gap:12px;}
+  .b2b-bar .wrap{gap:6px 14px;min-height:0;}
+  .b2b-bar .caps{display:none;}
+  .b2b-bar-co{flex:1;min-width:0;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .b2b-meter{order:3;flex-basis:100%;font-size:14px;}
+  body.b2b-on{padding-bottom:96px;}
+  body.b2b-on .toast{bottom:112px;}
+}
+.card-price .vat.b2b-tag{color:var(--gold);}
+.modal-card.narrow{width:min(640px,100%);grid-template-columns:1fr;}
+.b2b-intro{color:var(--ink-soft);margin-top:12px;font-size:18px;}
+.field{display:block;margin-top:18px;}
+.field > span{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);}
+.field > span i{font-style:normal;letter-spacing:0;text-transform:none;color:var(--ink-faint);}
+.field input{width:100%;margin-top:8px;padding:13px 16px;border:1px solid var(--line);border-radius:4px;background:var(--white);font-size:18px;}
+.field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(180,138,78,.14);}
+.field.bad input{border-color:#9b3b2e;}
+.field em{display:block;font-style:normal;color:#9b3b2e;font-size:14px;margin-top:6px;}
+.field em:empty{display:none;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+@media (max-width:560px){.field-row{grid-template-columns:1fr;}}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:22px;font-size:16px;color:var(--ink-soft);line-height:1.45;}
+.check input{margin-top:4px;width:18px;height:18px;accent-color:var(--ink);flex:none;}
+.check.bad{color:#9b3b2e;}
+.b2b-fine{margin-top:14px;font-size:14px;color:var(--ink-faint);font-style:italic;}
 
 .modal{
   position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;
@@ -550,7 +619,7 @@ section{position:relative;}
 
 .toast{
   position:fixed;left:50%;bottom:32px;z-index:90;transform:translate(-50%,30px);opacity:0;
-  background:var(--ink);color:var(--ivory);padding:14px 26px;border-radius:999px;font-size:17px;
+  background:var(--ink);color:var(--ivory);padding:14px 26px;border-radius:26px;font-size:17px;
   transition:opacity .4s var(--ease),transform .6s var(--ease-out);pointer-events:none;max-width:calc(100vw - 40px);text-align:center;
 }
 .toast.show{opacity:1;transform:translate(-50%,0);}
@@ -586,6 +655,7 @@ section{position:relative;}
       <a href="#inicio" class="active" data-spy="inicio">Inicio</a>
       <a href="#colecciones" data-spy="colecciones">Colecciones</a>
       <a href="#nosotros" data-spy="nosotros">Sobre nosotros</a>
+      <a href="#mayoristas" data-spy="mayoristas">Mayoristas</a>
       <a href="#contacto" data-spy="contacto">Contacto</a>
     </nav>
     <div class="hdr-icons">
@@ -621,7 +691,7 @@ section{position:relative;}
   <section class="shop sec" id="colecciones">
     <div class="wrap">
       <div class="sec-title">
-        <p class="caps reveal">La tienda</p>
+        <p class="caps reveal" id="shop-eyebrow">La tienda</p>
         <h2 class="reveal">Nuestras colecciones</h2>
         <p class="reveal">Piezas pintadas a mano, una a una, con el tiempo y el cuidado que merece lo auténtico.</p>
         <div class="ornament reveal" aria-hidden="true"><svg class="star"><use href="#i-star"/></svg></div>
@@ -652,6 +722,36 @@ section{position:relative;}
         <div class="value reveal"><svg><use href="#i-hand"/></svg><h3>Hecho a mano</h3><p>Creado y pintado en nuestro taller, pieza a pieza.</p></div>
         <div class="value reveal"><svg><use href="#i-flower"/></svg><h3>Piezas únicas</h3><p>Cada trazo es irrepetible: no hay dos iguales.</p></div>
         <div class="value reveal"><svg><use href="#i-shield"/></svg><h3>Compra segura</h3><p>Pago protegido con la plataforma segura de Wix.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="b2b sec" id="mayoristas">
+    <div class="wrap">
+      <div class="sec-title">
+        <p class="caps reveal">Para tiendas y empresas</p>
+        <h2 class="reveal">Venta a mayoristas</h2>
+        <p class="reveal">¿Tienes una tienda, una floristería o un negocio de regalos? Lleva nuestras piezas hechas a mano con condiciones especiales para profesionales.</p>
+        <div class="ornament reveal" aria-hidden="true"><svg class="star"><use href="#i-star"/></svg></div>
+      </div>
+      <div class="b2b-grid">
+        <div class="b2b-perks">
+          <div class="b2b-perk reveal"><span class="big">0 %</span><div><h3>Precios sin IVA</h3><p>Pagas el precio de cada pieza sin el 21 % de IVA.</p></div></div>
+          <div class="b2b-perk reveal"><span class="big">100 €</span><div><h3>Pedido mínimo de 100 €</h3><p>Combina las piezas, colores y aromas que quieras hasta llegar a 100 €.</p></div></div>
+          <div class="b2b-perk reveal"><span class="big">Gratis</span><div><h3>Envío gratis y pago seguro</h3><p>Pagas con la plataforma segura de Wix y te lo enviamos sin coste.</p></div></div>
+        </div>
+        <div class="reveal">
+          <ol class="b2b-steps">
+            <li><div><strong>Da de alta tu empresa</strong><span>Solo la primera vez: nombre de la empresa, NIF/CIF y datos de contacto.</span></div></li>
+            <li><div><strong>Elige tus piezas</strong><span>Los mismos productos, colores y personalización de la tienda, a precio de mayorista.</span></div></li>
+            <li><div><strong>Finaliza el pedido</strong><span>Al llegar a 100 € pagas de forma segura. El pedido nos llega con los datos de tu empresa para preparar la factura.</span></div></li>
+          </ol>
+          <div class="b2b-cta">
+            <button class="pill dark caps" id="b2b-enter" type="button">Entrar como mayorista <svg class="arrow"><use href="#i-arrow"/></svg></button>
+            <button class="b2b-link" id="b2b-edit" type="button" hidden>Cambiar datos de la empresa</button>
+          </div>
+          <p class="b2b-who" id="b2b-who" hidden></p>
+        </div>
       </div>
     </div>
   </section>
@@ -720,6 +820,7 @@ section{position:relative;}
         <a href="#nosotros">Sobre nosotros</a>
         <a href="#contacto">Contacto</a>
         <a href="#tarjeta-regalo">Tarjeta regalo</a>
+        <a href="#mayoristas">Mayoristas</a>
       </div>
       <div class="foot-col">
         <h4 class="caps">Tu compra</h4>
@@ -748,6 +849,7 @@ section{position:relative;}
     <a href="#nosotros">Sobre nosotros</a>
     <a href="#contacto">Contacto</a>
     <a href="#tarjeta-regalo">Tarjeta regalo</a>
+    <a href="#mayoristas">Mayoristas</a>
   </nav>
   <p class="menu-foot caps">Porcelana · Arte · Tradición</p>
 </div>
@@ -800,13 +902,49 @@ section{position:relative;}
   <div class="drawer-body" id="cart-body"></div>
   <div class="drawer-foot" id="cart-foot" hidden>
     <div class="subtotal"><span>Subtotal (sin IVA)</span><strong id="cart-subtotal"></strong></div>
-    <div class="subtotal"><span>IVA (21 %)</span><strong id="cart-vat"></strong></div>
+    <div class="subtotal"><span id="cart-vat-label">IVA (21 %)</span><strong id="cart-vat"></strong></div>
     <div class="subtotal"><span>Envío</span><strong>Gratis</strong></div>
     <div class="subtotal total"><span>Total</span><strong id="cart-total"></strong></div>
-    <small>Precios sin IVA. Al total se le suma el IVA del 21 %.</small>
+    <small id="cart-note">Precios sin IVA. Al total se le suma el IVA del 21 %.</small>
+    <div class="cart-min" id="cart-min" hidden></div>
     <button class="pill dark caps" id="checkout" type="button">Finalizar compra <svg class="arrow"><use href="#i-arrow"/></svg></button>
   </div>
 </aside>
+
+<div class="modal" id="b2b-form" role="dialog" aria-modal="true" aria-labelledby="b2b-title" aria-hidden="true">
+  <div class="modal-card narrow">
+    <form class="pd" id="b2b-f" novalidate>
+      <button class="icon-btn pd-close" type="button" data-close aria-label="Cerrar"><svg><use href="#i-close"/></svg></button>
+      <p class="caps">Alldesign Karl · Mayoristas</p>
+      <h3 id="b2b-title">Alta de mayorista</h3>
+      <p class="b2b-intro">Rellena los datos de tu empresa una sola vez. Los usaremos en tus pedidos y en las facturas.</p>
+      <label class="field"><span>Empresa</span><input name="empresa" autocomplete="organization" required><em></em></label>
+      <label class="field"><span>Nombre y apellidos</span><input name="nombre" autocomplete="name" required><em></em></label>
+      <div class="field-row">
+        <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" required><em></em></label>
+        <label class="field"><span>Teléfono</span><input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required><em></em></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>NIF / CIF de la empresa</span><input name="nif" autocomplete="off" spellcheck="false" required><em></em></label>
+        <label class="field"><span>DNI / NIE</span><input name="dni" autocomplete="off" spellcheck="false" required><em></em></label>
+      </div>
+      <label class="field"><span>NIF-IVA intracomunitario <i>(opcional, empresas de la UE)</i></span><input name="nifIva" autocomplete="off" spellcheck="false" placeholder="ESB12345674"><em></em></label>
+      <label class="check" id="b2b-priv"><input type="checkbox" name="privacidad"><span>Acepto que Alldesign Karl use estos datos para gestionar mis pedidos de mayorista y sus facturas.</span></label>
+      <div class="pd-actions"><button class="pill dark caps" type="submit">Entrar en la tienda de mayoristas <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
+      <p class="pd-note" id="b2b-note"></p>
+      <p class="b2b-fine">Tus datos se guardan en este navegador y se añaden a cada pedido de mayorista.</p>
+    </form>
+  </div>
+</div>
+
+<div class="b2b-bar" id="b2b-bar" aria-hidden="true">
+  <div class="wrap">
+    <span class="caps">Modo mayorista</span>
+    <span class="b2b-bar-co" id="b2b-bar-co"></span>
+    <div class="b2b-meter"><span id="b2b-meter-txt"></span><div class="track"><div class="fill" id="b2b-fill"></div></div></div>
+    <div class="b2b-bar-btns"><button type="button" data-open-cart>Ver cesta</button><button type="button" id="b2b-exit">Salir</button></div>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -941,7 +1079,27 @@ section{position:relative;}
     return "https://static.wixstatic.com/media/" + name + "/v1/fill/w_" + w + ",h_" + Math.round(w * 1.25) + ",al_c,q_85,enc_auto/" + name;
   }
   // Productos que solo se venden en packs (p. ej. "Pack de 5"): se compran de N en N.
-  var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5 };
+  var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5, "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": 5 };
+
+  /* ---------------- mayoristas: datos ---------------- */
+  // Copias de los productos para mayoristas. En Wix están en el grupo de impuestos "Mayoristas (sin IVA)" (0 %),
+  // así el pago de Wix no les suma IVA. id del producto de mayorista -> id del producto de la tienda.
+  var WHOLESALE = {
+    "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": "f4d56313-6834-4f16-93d0-f07d02b35f0a",
+    "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": "2435d64f-e41d-4995-b730-f3a8cc13ed5a",
+    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"
+  };
+  var B2B_MIN = 100;           // pedido mínimo de mayorista, en euros y sin IVA
+  var B2B_KEY = "adk.b2b.v1";  // datos de la empresa (en este navegador)
+  var B2B_MODE_KEY = "adk.b2b.mode";
+  function isWholesaleId(id) { return !!WHOLESALE[id]; }
+  function store(get, key, val) {
+    try { return get ? localStorage.getItem(key) : (val == null ? localStorage.removeItem(key) : localStorage.setItem(key, val)); } catch (e) { return null; }
+  }
+  var b2b = null;
+  try { b2b = JSON.parse(store(true, B2B_KEY) || "null"); } catch (e) { b2b = null; }
+  var b2bMode = !!b2b && store(true, B2B_MODE_KEY) === "1";
+  function displayName(p) { return String(p && p.name || "").replace(" · Mayorista", "").trim(); }
   // Los precios guardados en Wix son sin IVA; el 21 % se suma al pagar (igual que lo calcula Wix, línea a línea).
   // Las tarjetas regalo no llevan IVA.
   var VAT = 0.21;
@@ -968,7 +1126,8 @@ section{position:relative;}
     var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && net(p.compareAtPriceRange.minValue.amount * pk);
     var html = "";
     if (cmp && Number(cmp) > Number(min)) html += "<s>" + esc(money(cmp, cur)) + "</s>";
-    html += (max && Number(max) > Number(min) ? "Desde " : "") + esc(money(min, cur)) + '<span class="vat">+ IVA</span>';
+    html += (max && Number(max) > Number(min) ? "Desde " : "") + esc(money(min, cur)) +
+      (isWholesaleId(p.id) ? '<span class="vat b2b-tag">sin IVA</span>' : '<span class="vat">+ IVA</span>');
     return html;
   }
   function inStock(p) {
@@ -1005,9 +1164,13 @@ section{position:relative;}
     bar.hidden = false;
   }
 
+  // En modo mayorista se ven solo los productos de mayorista; si no, solo los de la tienda.
+  function shopProducts() {
+    return products.filter(function (p) { return b2bMode ? isWholesaleId(p.id) : !isWholesaleId(p.id); });
+  }
   function visibleProducts() {
-    if (activeFilter === "all") return products;
-    return products.filter(function (p) {
+    if (activeFilter === "all") return shopProducts();
+    return shopProducts().filter(function (p) {
       var cats = p.directCategoriesInfo && p.directCategoriesInfo.categories || [];
       return cats.some(function (c) { return c.id === activeFilter; });
     });
@@ -1023,7 +1186,7 @@ section{position:relative;}
     var sold = inStock(p) ? "" : '<span class="soldout caps">Agotado</span>';
     return '<button class="card reveal" type="button" data-id="' + esc(p.id) + '" style="--d:' + (i % 3) + '">' +
       '<div class="card-media">' + media + ribbon + sold + '<span class="card-quick caps">Ver pieza</span></div>' +
-      '<div class="card-info"><span class="card-name">' + esc(p.name) + '</span><span class="card-price">' + priceOf(p) + "</span></div>" +
+      '<div class="card-info"><span class="card-name">' + esc(displayName(p)) + '</span><span class="card-price">' + priceOf(p) + "</span></div>" +
       "</button>";
   }
 
@@ -1088,6 +1251,8 @@ section{position:relative;}
     "2435d64f-e41d-4995-b730-f3a8cc13ed5a": "0:6d53c1625e6642778f2aaf663005bc94,01:38dfeeb21c8948c3afae3292bbcfbe81,02:ae339e50d6f04ce48248048ca40b08fa,03:21e83ce2e7024e49b2875fbfb4068fc7,04:679e0b05a9c04e148ddefba35528abdf,05:f656959a4b824917ad2e8994eb57e4b3,06:2d34f7b10d0149088609591948585ea1,07:0cbad9ebdd51487091f0b56f41166bca,08:1e9709962c7c4c7890d2f62a7656a87a,09:7f07b16f26f148c29f465f92f644fb8e,1:2712d6936a69490e9c5fa7944257f8e6,10:3e07cdb3449c4dd0b69d4bfee959ffc8,12:c2a1e96a26694d0f942168ffe204efef,13:5f61b235100d4957a0afa2c065b09531,14:9b98d519b59c4023a1944072be918239,15:eb91574229054cf4be8460ddb319c3b3,16:11cd2d98bc854db5b57d84e9c822a020,17:86f25f1ea842475fbce7c3c5a22f37b8,18:0c10df16dfde40ccb509dc4c8c1b365b,19:6148a8ae6da34479bfd794b1a861bb78,2:10d73cc047c0414db9845f8309595a2c,20:2cb66a85ad6d4b48a44cdeff319d7bab,21:2c8f9d33c2cc4cb59c075fe5a3b5897d,23:324df6e920cb48ebb214430c18e75478,24:1c00ce695cbd4721bb58d9e63e9eca84,25:f47cddc608574daf8bbd686ad2b5a3e6,26:cc356bb45ad049549920d07ca247995c,27:92ed25ae7fa1495592702dcc5fdabff9,28:eeaf3bc9ed014255a11cd65feaec9c06,29:38f8c84ebe244dfea3ba9344aec55470,3:e9876b7dd8514aadb3b19f50a3e30521,30:d4210461def9465f8934ed27d8ed0f9e,31:96961050081b48aabdba3ef3a3a1f594,32:c60894e23a6e46eb90dcf7744dff2cc4,34:d8cd0ab5ecc94068afd49ab1bfeb1f79,35:46270f9b7c884a6eae28051e5f648d5f,36:8f0db4ad4b0e40b5a9f3589e2973589a,37:ad9b713722ce4c6ca60ab00246851f3e,38:542b27bb207643319b27c35c2310e6c5,39:797d0ffb6b8842caad029700e650ffb0,4:d030fc5005cd46328f6389777dd08b0c,40:87eaaa48c6e244d8b5c72000d6d8b11f,41:7b0ca23d140e43f78c175fad25b855bc,42:2794bac1eac54757b94405174aad2126,43:fe159f6d0f694ed2813317d2b04ab5d5,45:15b3b06c65cf4b92a4d204680f087896,46:98d575e4d87d4463ae971d9073ec738c,47:c35669d8db424280bbe6fa559b323690,48:f5f1f5a59f66403099ac4f173218498c,49:8edf17a652aa4f32b345a0c2e7a0b529,5:363261acd06d44b8bc11b192b9d65c43,50:0cca2652bb5e4bb3bd96ac6a87cc6f83,51:ecbc7e90baaa44ea90aaea06b3ce4fdd,52:9f4852e9b9fc400980bd5a97b1752f40,53:7ba3a6ad9ffe4a158b1751919884bea5,54:ab6ff2ea45a048eaa23f7b13f6928e0e,56:dce7af8d0bc24137ba48240499ce06bc,57:8a9b79f1463245fd93ab9af853082423,58:e3b2540520e64e9dac34ecd707597a4d,59:3e8033808d2b4cb0b79666d704cdd2c4,6:f952a07021314e3b9e4220ade25a5d4c,60:c928fc56de0a4f879c4e09295312ff1c,61:1eb42046ccfa404890c905be943b6f89,62:40059c2c859a47408242183877d9e040,63:604c248ec1584e8e9fb9f08ea9b7f287,64:f7d8fb1aa2df4dd6854572982312448f,65:b7b23088e1214250a7d5496bbf259aea,67:0d7e172caa834995aa9d92832fc1d235,68:9ca3f9646afb40ca89bfc3beff0d71ae,69:f386e2e965274930a60b715ea5664052,7:8ad384154c0d4439825ff31aa5560c72,70:69ee26cb18f84c18a602c59cfc83aa0f,71:f1e487d6359e4fc08c2c8fbb04388855,72:a2ea908598a644a7a6af4170512829b2,73:8a9cfae0c846458eabf6b5cf9d9804a9,74:fdf8c38a29b849d5ac4584d48e970383,75:b27b8e1092e5400d89332ffe8fcf7441,76:dc0889c80797455eb1cde0f9e9a629ad,78:8a066b5aeac74725a1cb5a51bdd1a39f,79:a91fc8f85e134d4ea8e8bcd2747de0f7,8:fccad0ffbef04b1b99fdf6ea8dc7f2cb,80:c843eaf52ec54283b1a99d25b9b2a881,81:68764e7294984f2880660362b6cae6fd,82:42f974f1aa134cd38e40ba9961072d14,83:033335b826a041fba4fae488f57838df,84:c74224d4aa194ac2a0349cfe7b79eaa2,85:0355c97ea39c4bcaab2df914f968670c,86:d7bc3f4aee1e440ab568b77fe29b8a2a,87:988cfe719c4e4a889f26d15855dfaa51,89:6ff13f3b969c469b9b409b1d6b42a639,9:afdcfa67a2984a87b9ee425cab44ebb1,90:85369bc49fbb416d9b592db5249c0629,91:48ad02f7c9ac42d8a73bbe8b082048ab,92:85e343ff06f24bdb951f69c582acf2e5,93:042a66c82a1949c084d2a315a859b0c5,94:56836f0c6a44429bac58c71a23f8bae6,95:09141bda3a3146e3a8fe5beebcda71ea,96:a1c2d0e3559f4fbc9dfb14d349e03a9c,97:3b16d664c90b4cfdb9a0e47aa795a945,98:61bf45d4e4424e04b3d927728adacc63",
     "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b": "0:6717f14f27844bebb7d582d5832558cc,1:7348cdcb27c14cdb839f4d37fde0d572,2:342f33c8b0d048a482a9d22dba252fcc,3:0cb8ae7826eb4c659bdeadb63e201fb0,4:5061a8ae3564461ea1455d346fd0695e,5:354b7fd8ef78413ca2d568bbc4c5dfee,6:2c03c69c18184aed9e16597019e1ee27,7:23b45542e25341c6bdc87616986f7d11,8:69ccd3ed132a480192f6d4a43320398e,9:81c630b8edd74ff2886e4801b63af180"
   };
+  PREVIEWS["e1cac3fe-bc04-4995-bb0d-545b7f1621e2"] = PREVIEWS["2435d64f-e41d-4995-b730-f3a8cc13ed5a"];
+  PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
   var previewMaps = {};
   function previewMap(id) {
     if (!PREVIEWS[id]) return null;
@@ -1246,7 +1411,9 @@ section{position:relative;}
     var total = Math.round(Number(unit) * qty * 100) / 100;
     var cmp = cmpUnit ? Math.round(Number(cmpUnit) * qty * 100) / 100 : 0;
     $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(net(cmp), cur)) + "</s>" : "") + esc(money(net(total), cur)) +
-      '<span class="pd-vat">IVA no incluido · ' + esc(money(gross(total), cur)) + " con IVA</span>";
+      (isWholesaleId(current.id)
+        ? '<span class="pd-vat">Precio de mayorista · sin IVA</span>'
+        : '<span class="pd-vat">IVA no incluido · ' + esc(money(gross(total), cur)) + " con IVA</span>");
   }
 
   function renderOptions() {
@@ -1335,7 +1502,7 @@ section{position:relative;}
     } else {
       pkInfo.hidden = true;
     }
-    $("pd-name").textContent = current.name || "";
+    $("pd-name").textContent = displayName(current);
     $("pd-desc").innerHTML = current.plainDescription ? descHtml(current.plainDescription) : "";
     var imgs = allImages(current);
     $("pd-img").alt = current.name || "";
@@ -1460,6 +1627,10 @@ section{position:relative;}
   $("pd-add").addEventListener("click", function () {
     var v = matchVariant();
     if (!current || !v) return;
+    if (cartClash(isWholesaleId(current.id))) {
+      showClash($("pd-note"), isWholesaleId(current.id));
+      return;
+    }
     var btn = $("pd-add");
     btn.disabled = true;
     $("pd-note").textContent = "Añadiendo…";
@@ -1527,6 +1698,7 @@ section{position:relative;}
     if (!items.length) {
       body.innerHTML = '<div class="cart-empty"><span class="script">Tu cesta está vacía</span><p>Descubre nuestras piezas hechas a mano.</p></div>';
       $("cart-foot").hidden = true;
+      renderB2BState();
       return;
     }
     body.innerHTML = items.map(function (li) {
@@ -1550,13 +1722,17 @@ section{position:relative;}
     var sub = Number(cart.subtotal && (cart.subtotal.amount || cart.subtotal.convertedAmount)) || 0;
     var vat = items.reduce(function (s, li) {
       var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
-      return s + (isProduct ? vatOf(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount || 0) : 0);
+      return s + (isProduct && !isWholesaleLine(li) ? vatOf(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount || 0) : 0);
     }, 0);
     vat = Math.round(vat * 100) / 100;
+    var isB2B = items.some(isWholesaleLine);
+    $("cart-vat-label").textContent = isB2B ? "IVA (mayorista)" : "IVA (21 %)";
+    $("cart-note").textContent = isB2B ? "Pedido de mayorista: precios sin IVA. Pedido mínimo de " + money(B2B_MIN) + "." : "Precios sin IVA. Al total se le suma el IVA del 21 %.";
     $("cart-subtotal").textContent = money(sub, cart.currency || "EUR");
     $("cart-vat").textContent = money(vat, cart.currency || "EUR");
     $("cart-total").textContent = money(Math.round((sub + vat) * 100) / 100, cart.currency || "EUR");
     $("cart-foot").hidden = false;
+    renderB2BState();
   }
 
   function loadCart() {
@@ -1588,8 +1764,17 @@ section{position:relative;}
   $("checkout").addEventListener("click", function () {
     if (!cart || !cart.id) return;
     var btn = $("checkout");
+    var isB2B = cartLines().some(isWholesaleLine);
+    if (isB2B && !b2b) { openB2BForm(); return; }
+    if (isB2B && b2bSubtotal() < B2B_MIN) { renderB2BState(); toast("El pedido mínimo de mayorista es de " + money(B2B_MIN) + " sin IVA."); return; }
     btn.disabled = true;
-    api("POST", "/ecom/v2/carts/" + encodeURIComponent(cart.id) + "/get-checkout-url", {}).then(function (d) {
+    // En los pedidos de mayorista se añaden los datos de la empresa como nota del pedido.
+    var pre = isB2B
+      ? api("PATCH", "/ecom/v2/carts/current", { cart: { note: b2bNote() } }).catch(function () {})
+      : Promise.resolve();
+    pre.then(function () {
+      return api("POST", "/ecom/v2/carts/" + encodeURIComponent(cart.id) + "/get-checkout-url", {});
+    }).then(function (d) {
       if (!d.checkoutUrl) throw new Error("sin url");
       window.location.href = d.checkoutUrl;
     }).catch(function () {
@@ -1663,6 +1848,7 @@ section{position:relative;}
   $("gc-add").addEventListener("click", function () {
     var v = giftVariant();
     if (!v) return;
+    if (cartClash(false)) { showClash($("gc-note"), false); return; }
     var btn = $("gc-add");
     btn.disabled = true;
     $("gc-note").textContent = "Añadiendo…";
@@ -1686,12 +1872,183 @@ section{position:relative;}
     }).then(function () { btn.disabled = !giftVariant(); });
   });
 
+  /* ---------------- mayoristas ---------------- */
+  function cartLines() { return cart && cart.lineItems || []; }
+  function isWholesaleLine(li) {
+    return !!(li && li.catalogReference && li.catalogReference.appId === STORES_APP_ID && isWholesaleId(li.catalogReference.catalogItemId));
+  }
+  function b2bSubtotal() {
+    var s = cartLines().reduce(function (t, li) {
+      return t + (isWholesaleLine(li) ? Number(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount) || 0 : 0);
+    }, 0);
+    return Math.round(s * 100) / 100;
+  }
+  // Los pedidos de mayorista (sin IVA) no se mezclan en la misma cesta con los de la tienda.
+  function cartClash(wantB2B) {
+    return cartLines().some(function (li) { return isWholesaleLine(li) !== wantB2B; });
+  }
+  function showClash(note, wantB2B) {
+    note.classList.add("error");
+    note.innerHTML = esc(wantB2B
+      ? "Tu cesta tiene piezas de la tienda normal. Los pedidos de mayorista se hacen aparte: termina esa compra o vacía la cesta."
+      : "Tu cesta tiene un pedido de mayorista. Termínalo, o vacía la cesta para comprar en la tienda normal.") +
+      ' <button type="button" class="b2b-link" data-empty-cart>Vaciar la cesta</button>';
+  }
+  function emptyCart() {
+    var ids = cartLines().map(function (li) { return li.id; });
+    if (!ids.length) return Promise.resolve();
+    return api("POST", "/ecom/v2/carts/current/remove-line-items", { lineItemIds: ids }).then(function (d) { setCart(d.cart); });
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-empty-cart]");
+    if (!b) return;
+    b.disabled = true;
+    emptyCart().then(function () {
+      toast("Cesta vacía. Ya puedes añadir la pieza.");
+      ["pd-note", "gc-note"].forEach(function (id) { var n = $(id); if (n.querySelector("[data-empty-cart]")) { n.textContent = ""; n.classList.remove("error"); } });
+    }).catch(function () { b.disabled = false; toast("No se ha podido vaciar la cesta."); });
+  });
+  function b2bNote() {
+    if (!b2b) return "";
+    var nl = String.fromCharCode(10);
+    return ["PEDIDO DE MAYORISTA (precios sin IVA)",
+      "Empresa: " + b2b.empresa,
+      "NIF/CIF: " + b2b.nif + (b2b.nifIva ? " · NIF-IVA: " + b2b.nifIva : ""),
+      "Contacto: " + b2b.nombre + " · DNI/NIE: " + b2b.dni,
+      "Email: " + b2b.email + " · Tel.: " + b2b.telefono].join(nl);
+  }
+  // Barra inferior, aviso del mínimo en la cesta y botón de la sección.
+  function renderB2BState() {
+    var sub = b2bSubtotal();
+    var hasB2B = cartLines().some(isWholesaleLine);
+    var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
+    var pct = Math.min(100, sub / B2B_MIN * 100);
+    var bar = $("b2b-bar");
+    bar.classList.toggle("show", b2bMode);
+    bar.setAttribute("aria-hidden", b2bMode ? "false" : "true");
+    document.body.classList.toggle("b2b-on", b2bMode);
+    $("b2b-bar-co").textContent = b2b ? b2b.empresa : "";
+    $("b2b-meter-txt").textContent = left > 0 ? "Llevas " + money(sub) + " de " + money(B2B_MIN) : "Pedido mínimo alcanzado · " + money(sub);
+    $("b2b-fill").style.width = pct + "%";
+    var box = $("cart-min");
+    box.hidden = !hasB2B;
+    box.classList.toggle("ok", left <= 0);
+    box.innerHTML = left > 0
+      ? "Pedido mínimo de mayorista: <strong>" + esc(money(B2B_MIN)) + "</strong>. Te faltan <strong>" + esc(money(left)) + "</strong>." + '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>'
+      : "<strong>Pedido mínimo alcanzado.</strong> Ya puedes finalizar tu pedido de mayorista." + '<div class="track"><div class="fill" style="width:100%"></div></div>';
+    $("checkout").disabled = hasB2B && left > 0;
+    $("shop-eyebrow").textContent = b2bMode ? "Tienda para mayoristas" : "La tienda";
+    $("b2b-enter").innerHTML = (b2bMode ? "Ver productos de mayorista" : "Entrar como mayorista") + ' <svg class="arrow"><use href="#i-arrow"/></svg>';
+    $("b2b-edit").hidden = !b2b;
+    var who = $("b2b-who");
+    who.hidden = !b2b;
+    who.textContent = b2b ? "Estás dado de alta como " + b2b.empresa + " (" + b2b.nif + ")." : "";
+  }
+  function setB2BMode(on) {
+    var was = b2bMode;
+    b2bMode = !!on && !!b2b;
+    store(false, B2B_MODE_KEY, b2bMode ? "1" : null);
+    activeFilter = "all";
+    if (products.length && was !== b2bMode) { renderToolbar(); renderGrid(); }
+    renderB2BState();
+  }
+  function goToShop() {
+    var el = $("colecciones");
+    if (el) window.scrollTo({ top: el.offsetTop - 40, behavior: reduceMotion ? "auto" : "smooth" });
+  }
+  function openB2BForm() {
+    var f = $("b2b-f");
+    ["empresa", "nombre", "email", "telefono", "nif", "dni", "nifIva"].forEach(function (k) { f.elements[k].value = b2b && b2b[k] || ""; });
+    f.elements.privacidad.checked = !!b2b;
+    Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) { x.classList.remove("bad"); x.querySelector("em").textContent = ""; });
+    $("b2b-priv").classList.remove("bad");
+    $("b2b-note").textContent = "";
+    openLayer("b2b-form");
+  }
+  // Validación de NIF/CIF, DNI/NIE y NIF-IVA (las mismas reglas que la web de mayoristas).
+  var DNI_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
+  function normId(v) { return String(v || "").toUpperCase().split(" ").join("").split(".").join("").split("-").join(""); }
+  function isDniNie(raw) {
+    var s = normId(raw);
+    var m = /^([XYZ]|[0-9])([0-9]{7})([A-Z])$/.exec(s);
+    if (!m) return false;
+    var lead = { X: "0", Y: "1", Z: "2" }[m[1]] || m[1];
+    return DNI_LETTERS.charAt(Number(lead + m[2]) % 23) === m[3];
+  }
+  function isCif(raw) {
+    var s = normId(raw);
+    var m = /^([ABCDEFGHJNPQRSUVW])([0-9]{7})([0-9A-J])$/.exec(s);
+    if (!m) return false;
+    var sum = 0;
+    m[2].split("").forEach(function (c, i) {
+      var n = Number(c);
+      if (i % 2 === 0) { var x = n * 2; sum += Math.floor(x / 10) + (x % 10); } else sum += n;
+    });
+    var ctrl = (10 - (sum % 10)) % 10;
+    var letter = "JABCDEFGHI".charAt(ctrl);
+    if ("PQRSNW".indexOf(m[1]) !== -1) return m[3] === letter;
+    if ("ABEH".indexOf(m[1]) !== -1) return m[3] === String(ctrl);
+    return m[3] === String(ctrl) || m[3] === letter;
+  }
+  function validB2B(r) {
+    var e = {};
+    if (r.empresa.length < 2) e.empresa = "Escribe el nombre de la empresa.";
+    if (r.nombre.split(" ").filter(Boolean).length < 2) e.nombre = "Escribe tu nombre y apellidos.";
+    if (!/^[^@ ]+@[^@ ]+[.][^@ ]{2,}$/.test(r.email)) e.email = "Revisa el correo electrónico.";
+    if (r.telefono.replace(/[^0-9]/g, "").length < 9) e.telefono = "Revisa el número de teléfono.";
+    if (!(isCif(r.nif) || isDniNie(r.nif))) e.nif = "El NIF/CIF no es válido. Revisa letras y números.";
+    if (!isDniNie(r.dni)) e.dni = "El DNI/NIE no es válido. Revisa la letra.";
+    if (r.nifIva && !/^[A-Z]{2}[A-Z0-9]{2,13}$/.test(normId(r.nifIva))) e.nifIva = "Debe empezar por el código del país (por ejemplo, ES).";
+    return e;
+  }
+  $("b2b-f").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var val = function (k) { return String(f.elements[k].value || "").trim(); };
+    var r = { empresa: val("empresa"), nombre: val("nombre"), email: val("email"), telefono: val("telefono"), nif: normId(val("nif")), dni: normId(val("dni")), nifIva: normId(val("nifIva")) };
+    var errs = validB2B(r);
+    Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) {
+      var k = x.querySelector("input").name;
+      x.classList.toggle("bad", !!errs[k]);
+      x.querySelector("em").textContent = errs[k] || "";
+    });
+    var priv = f.elements.privacidad.checked;
+    $("b2b-priv").classList.toggle("bad", !priv);
+    var note = $("b2b-note");
+    if (Object.keys(errs).length || !priv) {
+      note.classList.add("error");
+      note.textContent = !priv && !Object.keys(errs).length ? "Marca la casilla para continuar." : "Revisa los datos marcados.";
+      var bad = f.querySelector(".field.bad input");
+      if (bad) bad.focus();
+      return;
+    }
+    note.classList.remove("error");
+    note.textContent = "";
+    b2b = r;
+    store(false, B2B_KEY, JSON.stringify(r));
+    closeLayers(true);
+    setB2BMode(true);
+    toast("¡Bienvenido! Ya ves los precios de mayorista, sin IVA.");
+    setTimeout(goToShop, reduceMotion ? 0 : 450);
+  });
+  $("b2b-enter").addEventListener("click", function () {
+    if (!b2b) { openB2BForm(); return; }
+    setB2BMode(true);
+    goToShop();
+  });
+  $("b2b-edit").addEventListener("click", openB2BForm);
+  $("b2b-exit").addEventListener("click", function () {
+    setB2BMode(false);
+    toast("Has salido del modo mayorista. Ves la tienda con los precios normales.");
+  });
+  renderB2BState();
+
   /* ---------------- búsqueda ---------------- */
   $("search-input").addEventListener("input", function () {
     var term = this.value.trim().toLowerCase();
     var out = $("search-out");
     if (!term) { out.innerHTML = '<p class="search-hint">Escribe el nombre de una pieza.</p>'; return; }
-    var found = products.filter(function (p) { return (p.name || "").toLowerCase().indexOf(term) !== -1; });
+    var found = shopProducts().filter(function (p) { return displayName(p).toLowerCase().indexOf(term) !== -1; });
     if (!found.length) {
       out.innerHTML = '<p class="search-hint">' + (products.length ? "No hay piezas con ese nombre." : "La nueva colección llegará muy pronto.") + "</p>";
       return;
@@ -1699,7 +2056,7 @@ section{position:relative;}
     out.innerHTML = '<div class="search-results">' + found.map(function (p) {
       var img = mainImage(p);
       return '<button class="sr" type="button" data-id="' + esc(p.id) + '">' + (img ? '<img src="' + esc(sized(img, 360)) + '" alt="">' : "") +
-        "<span>" + esc(p.name) + "</span><small>" + priceOf(p) + "</small></button>";
+        "<span>" + esc(displayName(p)) + "</span><small>" + priceOf(p) + "</small></button>";
     }).join("") + "</div>";
   });
   $("search-out").addEventListener("click", function (e) {
@@ -1728,7 +2085,7 @@ section{position:relative;}
     }, 60);
   }
   function closeLayers(keepFocus) {
-    ["menu", "search", "product", "cart"].forEach(function (id) {
+    ["menu", "search", "product", "cart", "b2b-form"].forEach(function (id) {
       var el = $(id);
       el.classList.remove("open");
       el.setAttribute("aria-hidden", "true");
@@ -1816,7 +2173,7 @@ section{position:relative;}
     header.classList.toggle("solid", window.scrollY > 60);
     var pos = window.scrollY + window.innerHeight * .35;
     var currentId = "inicio";
-    ["colecciones", "nosotros", "contacto"].forEach(function (id) {
+    ["colecciones", "nosotros", "mayoristas", "contacto"].forEach(function (id) {
       var s = $(id);
       if (s && s.offsetTop <= pos) currentId = id;
     });
