@@ -721,7 +721,7 @@ body.b2b-on .toast{bottom:96px;}
       </div>
       <div class="b2b-shopbar" id="b2b-shopbar" hidden>
         <span class="big">100 €</span>
-        <div class="txt"><strong>Pedido mínimo de mayorista: 100 € sin IVA.</strong> Todos los precios de esta tienda son sin IVA. <span id="b2b-shop-left"></span><div class="track"><div class="fill" id="b2b-shop-fill"></div></div></div>
+        <div class="txt"><strong>Pedido mínimo de mayorista: 100 € sin IVA.</strong> Los precios son sin IVA: el 21 % y el envío se suman al pagar. <span id="b2b-shop-left"></span><div class="track"><div class="fill" id="b2b-shop-fill"></div></div></div>
       </div>
       <div class="toolbar" id="toolbar" hidden></div>
       <div class="grid" id="grid" aria-live="polite"></div>
@@ -763,15 +763,15 @@ body.b2b-on .toast{bottom:96px;}
       </div>
       <div class="b2b-grid">
         <div class="b2b-perks">
-          <div class="b2b-perk reveal"><span class="big">0 %</span><div><h3>Precios sin IVA</h3><p>Pagas el precio de cada pieza sin el 21 % de IVA.</p></div></div>
+          <div class="b2b-perk reveal"><span class="big">21 %</span><div><h3>Precios de mayorista, IVA aparte</h3><p>Ves cada pieza a precio de mayorista sin IVA. El 21 % se suma al pagar y va desglosado en tu factura.</p></div></div>
           <div class="b2b-perk reveal"><span class="big">100 €</span><div><h3>Pedido mínimo de 100 €</h3><p>Combina las piezas, colores y aromas que quieras hasta llegar a 100 €.</p></div></div>
-          <div class="b2b-perk reveal"><span class="big">Gratis</span><div><h3>Envío gratis y pago seguro</h3><p>Pagas con la plataforma segura de Wix y te lo enviamos sin coste.</p></div></div>
+          <div class="b2b-perk reveal"><span class="big">6,95 €</span><div><h3>Envío a toda Europa</h3><p>6,95 € a España y 14,95 € al resto de Europa, por pedido. Pagas con la plataforma segura de Wix.</p></div></div>
         </div>
         <div class="reveal">
           <ol class="b2b-steps">
             <li><div><strong>Da de alta tu empresa</strong><span>Solo la primera vez: nombre de la empresa, NIF/CIF y datos de contacto.</span></div></li>
             <li><div><strong>Elige tus piezas</strong><span>Los mismos productos, colores y personalización de la tienda, a precio de mayorista.</span></div></li>
-            <li><div><strong>Finaliza el pedido</strong><span>Al llegar a 100 € pagas de forma segura. El pedido nos llega con los datos de tu empresa para preparar la factura.</span></div></li>
+            <li><div><strong>Finaliza el pedido</strong><span>Al llegar a 100 € (sin IVA) pagas de forma segura, con el IVA y el envío desglosados. El pedido nos llega con los datos de tu empresa para preparar la factura.</span></div></li>
           </ol>
           <div class="b2b-cta">
             <button class="pill dark caps" id="b2b-enter" type="button">Entrar como mayorista <svg class="arrow"><use href="#i-arrow"/></svg></button>
@@ -929,11 +929,11 @@ body.b2b-on .toast{bottom:96px;}
   </div>
   <div class="drawer-body" id="cart-body"></div>
   <div class="drawer-foot" id="cart-foot" hidden>
-    <div class="subtotal"><span>Subtotal (sin IVA)</span><strong id="cart-subtotal"></strong></div>
-    <div class="subtotal"><span id="cart-vat-label">IVA (21 %)</span><strong id="cart-vat"></strong></div>
-    <div class="subtotal"><span>Envío</span><strong>Gratis</strong></div>
-    <div class="subtotal total"><span>Total</span><strong id="cart-total"></strong></div>
-    <small id="cart-note">Precios sin IVA. Al total se le suma el IVA del 21 %.</small>
+    <div class="subtotal"><span id="cart-sub-label">Subtotal</span><strong id="cart-subtotal"></strong></div>
+    <div class="subtotal"><span id="cart-vat-label">IVA incluido (21 %)</span><strong id="cart-vat"></strong></div>
+    <div class="subtotal"><span>Envío</span><strong id="cart-ship">Gratis</strong></div>
+    <div class="subtotal total"><span id="cart-total-label">Total</span><strong id="cart-total"></strong></div>
+    <small id="cart-note">Precios con IVA incluido. Envío gratis.</small>
     <div class="cart-min" id="cart-min" hidden></div>
     <button class="pill dark caps" id="checkout" type="button">Finalizar compra <svg class="arrow"><use href="#i-arrow"/></svg></button>
   </div>
@@ -948,8 +948,8 @@ body.b2b-on .toast{bottom:96px;}
       <p class="b2b-intro">Rellena los datos de tu empresa una sola vez. Los usaremos en tus pedidos y en las facturas.</p>
       <div class="b2b-terms" aria-label="Condiciones para mayoristas">
         <div class="min"><b>100 €</b><span>Pedido mínimo (sin IVA)</span></div>
-        <div><b>0 %</b><span>Precios sin IVA</span></div>
-        <div><b>Gratis</b><span>Envío y pago seguro</span></div>
+        <div><b>21 %</b><span>IVA aparte</span></div>
+        <div><b>6,95 €</b><span>Envío España · Europa 14,95 €</span></div>
       </div>
       <label class="field"><span>Empresa</span><input name="empresa" autocomplete="organization" required><em></em></label>
       <label class="field"><span>Nombre y apellidos</span><input name="nombre" autocomplete="name" required><em></em></label>
@@ -1116,8 +1116,8 @@ body.b2b-on .toast{bottom:96px;}
   var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5, "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": 5 };
 
   /* ---------------- mayoristas: datos ---------------- */
-  // Copias de los productos para mayoristas. En Wix están en el grupo de impuestos "Mayoristas (sin IVA)" (0 %),
-  // así el pago de Wix no les suma IVA. id del producto de mayorista -> id del producto de la tienda.
+  // Copias de los productos para mayoristas, con su propio precio y su perfil de envío "Mayoristas" (envío de pago).
+  // id del producto de mayorista -> id del producto de la tienda.
   var WHOLESALE = {
     "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": "f4d56313-6834-4f16-93d0-f07d02b35f0a",
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": "2435d64f-e41d-4995-b730-f3a8cc13ed5a",
@@ -1134,12 +1134,13 @@ body.b2b-on .toast{bottom:96px;}
   try { b2b = JSON.parse(store(true, B2B_KEY) || "null"); } catch (e) { b2b = null; }
   var b2bMode = !!b2b && store(true, B2B_MODE_KEY) === "1";
   function displayName(p) { return String(p && p.name || "").replace(" · Mayorista", "").trim(); }
-  // Los precios guardados en Wix son sin IVA; el 21 % se suma al pagar (igual que lo calcula Wix, línea a línea).
+  // Los precios guardados en Wix llevan el IVA (21 %) incluido. En la tienda se enseñan así;
+  // a los mayoristas se les enseña la base sin IVA (como la desglosa Wix, línea a línea) y el IVA aparte.
   // Las tarjetas regalo no llevan IVA.
   var VAT = 0.21;
-  function net(n) { return Math.round(Number(n) * 100) / 100; }
-  function vatOf(n) { return Math.round(Number(n) * VAT * 100) / 100; }
-  function gross(n) { return Math.round((net(n) + vatOf(n)) * 100) / 100; }
+  function round2(n) { return Math.round(Number(n) * 100) / 100; }
+  function net(n) { return round2(Number(n) / (1 + VAT)); }
+  function vatIn(n) { return round2(Number(n) - net(n)); }
   function packOf(p) {
     if (!p) return 1;
     if (PACKS[p.id]) return PACKS[p.id];
@@ -1154,14 +1155,15 @@ body.b2b-on .toast{bottom:96px;}
   function priceOf(p) {
     var r = p.actualPriceRange || {};
     var pk = packOf(p);
-    var min = r.minValue && net(r.minValue.amount * pk);
-    var max = r.maxValue && net(r.maxValue.amount * pk);
+    var show = isWholesaleId(p.id) ? net : round2;
+    var min = r.minValue && show(r.minValue.amount * pk);
+    var max = r.maxValue && show(r.maxValue.amount * pk);
     var cur = p.currency || "EUR";
-    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && net(p.compareAtPriceRange.minValue.amount * pk);
+    var cmp = p.compareAtPriceRange && p.compareAtPriceRange.minValue && show(p.compareAtPriceRange.minValue.amount * pk);
     var html = "";
     if (cmp && Number(cmp) > Number(min)) html += "<s>" + esc(money(cmp, cur)) + "</s>";
     html += (max && Number(max) > Number(min) ? "Desde " : "") + esc(money(min, cur)) +
-      (isWholesaleId(p.id) ? '<span class="vat b2b-tag">sin IVA</span>' : '<span class="vat">+ IVA</span>');
+      (isWholesaleId(p.id) ? '<span class="vat b2b-tag">+ IVA</span>' : '<span class="vat">IVA incl.</span>');
     return html;
   }
   function inStock(p) {
@@ -1433,7 +1435,7 @@ body.b2b-on .toast{bottom:96px;}
     }
   }
 
-  // Precio total según la cantidad elegida: sin IVA en grande y con IVA debajo.
+  // Precio total según la cantidad elegida: con IVA en la tienda; sin IVA en grande y con IVA debajo para mayoristas.
   function renderPrice(v) {
     var cur = current.currency || "EUR";
     var unit = v && v.price && v.price.actualPrice && v.price.actualPrice.amount;
@@ -1444,10 +1446,12 @@ body.b2b-on .toast{bottom:96px;}
     }
     var total = Math.round(Number(unit) * qty * 100) / 100;
     var cmp = cmpUnit ? Math.round(Number(cmpUnit) * qty * 100) / 100 : 0;
-    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(net(cmp), cur)) + "</s>" : "") + esc(money(net(total), cur)) +
-      (isWholesaleId(current.id)
-        ? '<span class="pd-vat">Precio de mayorista · sin IVA</span>'
-        : '<span class="pd-vat">IVA no incluido · ' + esc(money(gross(total), cur)) + " con IVA</span>");
+    var b2bItem = isWholesaleId(current.id);
+    var show = b2bItem ? net : round2;
+    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(show(cmp), cur)) + "</s>" : "") + esc(money(show(total), cur)) +
+      (b2bItem
+        ? '<span class="pd-vat">Precio de mayorista + IVA · ' + esc(money(total, cur)) + " con IVA</span>"
+        : '<span class="pd-vat">IVA incluido</span>');
     renderB2BProduct(Number(unit));
   }
   // Ficha de mayorista: PVP recomendado (el precio de la tienda), beneficio por pieza y pedido mínimo.
@@ -1460,8 +1464,8 @@ body.b2b-on .toast{bottom:96px;}
     var step = PACKS[current.id] || 1;
     var html = "";
     if (pvp > unit) {
-      html += '<div class="row"><span>PVP recomendado' + (step > 1 ? " (pack de " + step + ")" : "") + '</span><strong>' + esc(money(net(pvp * step))) + " + IVA</strong></div>" +
-        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + '</span><strong>' + esc(money(net((pvp - unit) * step))) + "</strong></div>";
+      html += '<div class="row"><span>PVP recomendado' + (step > 1 ? " (pack de " + step + ")" : "") + '</span><strong>' + esc(money(round2(pvp * step))) + " IVA incl.</strong></div>" +
+        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + ' (sin IVA)</span><strong>' + esc(money(round2((net(pvp) - net(unit)) * step))) + "</strong></div>";
     }
     var sub = b2bSubtotal();
     var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
@@ -1552,7 +1556,7 @@ body.b2b-on .toast{bottom:96px;}
     $("pd-qty").textContent = String(qty);
     var pkInfo = $("pd-pack");
     if (qty > 1) {
-      pkInfo.textContent = "Pack de " + qty + " unidades · pedido mínimo " + qty + ", de " + qty + " en " + qty + " · envío gratis";
+      pkInfo.textContent = "Pack de " + qty + " unidades · pedido mínimo " + qty + ", de " + qty + " en " + qty + (isWholesaleId(current.id) ? "" : " · envío gratis");
       pkInfo.hidden = false;
     } else {
       pkInfo.hidden = true;
@@ -1772,20 +1776,26 @@ body.b2b-on .toast{bottom:96px;}
         (dl ? '<div class="line-desc">' + esc(dl) + "</div>" : "") +
         '<div class="qty"><button type="button" data-line="' + esc(li.id) + '" data-q="' + less + '" aria-label="Quitar">−</button><span>' + q + '</span><button type="button" data-line="' + esc(li.id) + '" data-q="' + (q + step) + '" aria-label="Añadir">+</button></div>' +
         '<button type="button" class="remove" data-remove="' + esc(li.id) + '">Eliminar</button></div>' +
-        '<div class="line-price">' + esc(money(isProduct ? net(total) : total, cart.currency || "EUR")) + "</div></div>";
+        '<div class="line-price">' + esc(money(isWholesaleLine(li) ? net(total) : total, cart.currency || "EUR")) + "</div></div>";
     }).join("");
     var sub = Number(cart.subtotal && (cart.subtotal.amount || cart.subtotal.convertedAmount)) || 0;
-    var vat = items.reduce(function (s, li) {
+    // IVA de cada línea de producto (ya va incluido en el precio de Wix).
+    var vat = round2(items.reduce(function (s, li) {
       var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
-      return s + (isProduct && !isWholesaleLine(li) ? vatOf(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount || 0) : 0);
-    }, 0);
-    vat = Math.round(vat * 100) / 100;
+      return s + (isProduct ? vatIn(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount || 0) : 0);
+    }, 0));
+    var cur = cart.currency || "EUR";
     var isB2B = items.some(isWholesaleLine);
-    $("cart-vat-label").textContent = isB2B ? "IVA (mayorista)" : "IVA (21 %)";
-    $("cart-note").textContent = isB2B ? "Pedido de mayorista: precios sin IVA. Pedido mínimo de " + money(B2B_MIN) + "." : "Precios sin IVA. Al total se le suma el IVA del 21 %.";
-    $("cart-subtotal").textContent = money(sub, cart.currency || "EUR");
-    $("cart-vat").textContent = money(vat, cart.currency || "EUR");
-    $("cart-total").textContent = money(Math.round((sub + vat) * 100) / 100, cart.currency || "EUR");
+    $("cart-sub-label").textContent = isB2B ? "Subtotal (sin IVA)" : "Subtotal";
+    $("cart-subtotal").textContent = money(isB2B ? round2(sub - vat) : sub, cur);
+    $("cart-vat-label").textContent = isB2B ? "IVA (21 %)" : "IVA incluido (21 %)";
+    $("cart-vat").textContent = money(vat, cur);
+    $("cart-ship").textContent = isB2B ? "Se suma al pagar" : "Gratis";
+    $("cart-total-label").textContent = isB2B ? "Total (sin envío)" : "Total";
+    $("cart-total").textContent = money(sub, cur);
+    $("cart-note").textContent = isB2B
+      ? "Pedido de mayorista: IVA aparte. Envío: 6,95 € a España o 14,95 € al resto de Europa. Pedido mínimo de " + money(B2B_MIN) + " sin IVA."
+      : "Precios con IVA incluido. Envío gratis.";
     $("cart-foot").hidden = false;
     renderB2BState();
   }
@@ -1934,11 +1944,11 @@ body.b2b-on .toast{bottom:96px;}
   }
   function b2bSubtotal() {
     var s = cartLines().reduce(function (t, li) {
-      return t + (isWholesaleLine(li) ? Number(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount) || 0 : 0);
+      return t + (isWholesaleLine(li) ? net(Number(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount) || 0) : 0);
     }, 0);
     return Math.round(s * 100) / 100;
   }
-  // Los pedidos de mayorista (sin IVA) no se mezclan en la misma cesta con los de la tienda.
+  // Los pedidos de mayorista no se mezclan en la misma cesta con los de la tienda.
   function cartClash(wantB2B) {
     return cartLines().some(function (li) { return isWholesaleLine(li) !== wantB2B; });
   }
@@ -1966,7 +1976,7 @@ body.b2b-on .toast{bottom:96px;}
   function b2bNote() {
     if (!b2b) return "";
     var nl = String.fromCharCode(10);
-    return ["PEDIDO DE MAYORISTA (precios sin IVA)",
+    return ["PEDIDO DE MAYORISTA (IVA aparte)",
       "Empresa: " + b2b.empresa,
       "NIF/CIF: " + b2b.nif + (b2b.nifIva ? " · NIF-IVA: " + b2b.nifIva : ""),
       "Contacto: " + b2b.nombre + " · DNI/NIE: " + b2b.dni,
@@ -2090,7 +2100,7 @@ body.b2b-on .toast{bottom:96px;}
     store(false, B2B_KEY, JSON.stringify(r));
     closeLayers(true);
     setB2BMode(true);
-    toast("¡Bienvenido! Ya ves los precios de mayorista, sin IVA.");
+    toast("¡Bienvenido! Ya ves los precios de mayorista (IVA aparte).");
     setTimeout(goToShop, reduceMotion ? 0 : 450);
   });
   $("b2b-enter").addEventListener("click", function () {
