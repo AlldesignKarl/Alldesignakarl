@@ -562,6 +562,20 @@ body.b2b-on .toast{bottom:96px;}
 .pd h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,40px);line-height:1.15;margin-top:10px;}
 .pd-price{font-size:26px;margin-top:14px;color:var(--ink);}
 .pd-price s{color:var(--ink-faint);font-size:20px;margin-right:10px;}
+.pd-b2b{margin-top:16px;border:1px solid var(--gold-soft);border-radius:4px;background:rgba(180,138,78,.07);padding:14px 16px;font-size:16px;color:var(--ink-soft);line-height:1.45;}
+.pd-b2b[hidden]{display:none;}
+.pd-b2b .row{display:flex;justify-content:space-between;gap:12px;}
+.pd-b2b .row + .row{margin-top:4px;}
+.pd-b2b strong{color:var(--ink);font-weight:500;white-space:nowrap;}
+.pd-b2b .gain strong{color:var(--gold);}
+.pd-b2b .min{margin-top:10px;padding-top:10px;border-top:1px solid rgba(180,138,78,.25);font-size:15px;}
+.b2b-shopbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin:0 auto 40px;max-width:900px;padding:18px 24px;border:1px solid var(--gold-soft);border-radius:4px;background:rgba(255,253,249,.8);}
+.b2b-shopbar[hidden]{display:none;}
+.b2b-shopbar .big{font-family:var(--script);font-size:34px;line-height:1;color:var(--gold);}
+.b2b-shopbar .txt{flex:1;min-width:220px;font-size:16px;color:var(--ink-soft);line-height:1.45;}
+.b2b-shopbar .txt strong{color:var(--ink);font-weight:500;}
+.b2b-shopbar .track{height:4px;border-radius:4px;background:var(--sand);overflow:hidden;margin-top:8px;}
+.b2b-shopbar .fill{height:100%;width:0;background:var(--gold);transition:width .6s var(--ease-out);}
 .pd-vat{display:block;margin-top:4px;font-size:15px;font-style:italic;color:var(--ink-faint);letter-spacing:.02em;}
 .pd-desc{color:var(--ink-soft);margin-top:18px;padding-top:22px;border-top:1px solid var(--line);font-size:18px;}
 .pd-desc:empty{display:none;}
@@ -704,6 +718,10 @@ body.b2b-on .toast{bottom:96px;}
         <h2 class="reveal">Nuestras colecciones</h2>
         <p class="reveal">Piezas pintadas a mano, una a una, con el tiempo y el cuidado que merece lo auténtico.</p>
         <div class="ornament reveal" aria-hidden="true"><svg class="star"><use href="#i-star"/></svg></div>
+      </div>
+      <div class="b2b-shopbar" id="b2b-shopbar" hidden>
+        <span class="big">100 €</span>
+        <div class="txt"><strong>Pedido mínimo de mayorista: 100 € sin IVA.</strong> Todos los precios de esta tienda son sin IVA. <span id="b2b-shop-left"></span><div class="track"><div class="fill" id="b2b-shop-fill"></div></div></div>
       </div>
       <div class="toolbar" id="toolbar" hidden></div>
       <div class="grid" id="grid" aria-live="polite"></div>
@@ -887,6 +905,7 @@ body.b2b-on .toast{bottom:96px;}
       <h3 id="pd-name"></h3>
       <p class="pd-price" id="pd-price"></p>
       <p class="pd-pack" id="pd-pack" hidden></p>
+      <div class="pd-b2b" id="pd-b2b" hidden></div>
       <div id="pd-options"></div>
       <div id="pd-mods"></div>
       <div class="pd-actions">
@@ -1429,6 +1448,27 @@ body.b2b-on .toast{bottom:96px;}
       (isWholesaleId(current.id)
         ? '<span class="pd-vat">Precio de mayorista · sin IVA</span>'
         : '<span class="pd-vat">IVA no incluido · ' + esc(money(gross(total), cur)) + " con IVA</span>");
+    renderB2BProduct(Number(unit));
+  }
+  // Ficha de mayorista: PVP recomendado (el precio de la tienda), beneficio por pieza y pedido mínimo.
+  function renderB2BProduct(unit) {
+    var box = $("pd-b2b");
+    if (!current || !isWholesaleId(current.id)) { box.hidden = true; box.innerHTML = ""; return; }
+    var retail = products.filter(function (p) { return p.id === WHOLESALE[current.id]; })[0];
+    var r = retail && retail.actualPriceRange && retail.actualPriceRange.minValue;
+    var pvp = r ? Number(r.amount) : 0;
+    var step = PACKS[current.id] || 1;
+    var html = "";
+    if (pvp > unit) {
+      html += '<div class="row"><span>PVP recomendado' + (step > 1 ? " (pack de " + step + ")" : "") + '</span><strong>' + esc(money(net(pvp * step))) + " + IVA</strong></div>" +
+        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + '</span><strong>' + esc(money(net((pvp - unit) * step))) + "</strong></div>";
+    }
+    var sub = b2bSubtotal();
+    var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
+    html += '<div class="min"' + (html ? "" : ' style="margin-top:0;padding-top:0;border-top:0"') + ">Pedido mínimo de mayorista: <strong>" + esc(money(B2B_MIN)) + "</strong> sin IVA. " +
+      (left > 0 ? (sub > 0 ? "Llevas " + esc(money(sub)) + " en la cesta, te faltan " + esc(money(left)) + "." : "Combina las piezas que quieras hasta llegar al mínimo.") : "Ya lo has alcanzado.") + "</div>";
+    box.innerHTML = html;
+    box.hidden = false;
   }
 
   function renderOptions() {
@@ -1953,6 +1993,9 @@ body.b2b-on .toast{bottom:96px;}
       : "<strong>Pedido mínimo alcanzado.</strong> Ya puedes finalizar tu pedido de mayorista." + '<div class="track"><div class="fill" style="width:100%"></div></div>';
     $("checkout").disabled = hasB2B && left > 0;
     $("shop-eyebrow").textContent = b2bMode ? "Tienda para mayoristas" : "La tienda";
+    $("b2b-shopbar").hidden = !b2bMode;
+    $("b2b-shop-left").textContent = left > 0 ? (sub > 0 ? "Llevas " + money(sub) + ", te faltan " + money(left) + "." : "") : "¡Pedido mínimo alcanzado!";
+    $("b2b-shop-fill").style.width = pct + "%";
     $("b2b-enter").innerHTML = (b2bMode ? "Ver productos de mayorista" : "Entrar como mayorista") + ' <svg class="arrow"><use href="#i-arrow"/></svg>';
     $("b2b-edit").hidden = !b2b;
     var who = $("b2b-who");
