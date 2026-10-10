@@ -503,12 +503,21 @@ body.b2b-on .toast{bottom:96px;}
   body.b2b-on .toast{bottom:112px;}
 }
 .card-price .vat.b2b-tag{color:var(--gold);}
-.modal-card.narrow{width:min(640px,100%);grid-template-columns:1fr;}
+.modal-card.narrow{width:min(640px,100%);grid-template-columns:minmax(0,1fr);}
+.modal-card.narrow .pd{min-width:0;}
 .b2b-intro{color:var(--ink-soft);margin-top:12px;font-size:18px;}
+.b2b-terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:20px;}
+.b2b-terms div{border:1px solid var(--line);border-radius:4px;padding:12px 10px;text-align:center;background:rgba(255,253,249,.72);}
+.b2b-terms b{display:block;font-family:var(--script);font-weight:400;font-size:28px;line-height:1.1;color:var(--gold);}
+.b2b-terms span{display:block;font-size:13px;color:var(--ink-soft);line-height:1.3;margin-top:4px;}
+.b2b-terms .min{border-color:var(--gold-soft);background:rgba(180,138,78,.08);}
+.b2b-terms .min span{color:var(--ink);}
+.check + .check{margin-top:12px;}
+@media (max-width:560px){.b2b-terms{gap:6px;}.b2b-terms div{padding:10px 4px;}.b2b-terms b{font-size:24px;}.b2b-terms span{font-size:12px;}}
 .field{display:block;margin-top:18px;}
 .field > span{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);}
 .field > span i{font-style:normal;letter-spacing:0;text-transform:none;color:var(--ink-faint);}
-.field input{width:100%;margin-top:8px;padding:13px 16px;border:1px solid var(--line);border-radius:4px;background:var(--white);font-size:18px;}
+.field input{width:100%;min-width:0;margin-top:8px;padding:13px 16px;border:1px solid var(--line);border-radius:4px;background:var(--white);font-size:18px;}
 .field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(180,138,78,.14);}
 .field.bad input{border-color:#9b3b2e;}
 .field em{display:block;font-style:normal;color:#9b3b2e;font-size:14px;margin-top:6px;}
@@ -655,7 +664,7 @@ body.b2b-on .toast{bottom:96px;}
       <a href="#inicio" class="active" data-spy="inicio">Inicio</a>
       <a href="#colecciones" data-spy="colecciones">Colecciones</a>
       <a href="#nosotros" data-spy="nosotros">Sobre nosotros</a>
-      <a href="#mayoristas" data-spy="mayoristas">Mayoristas</a>
+      <a href="#mayoristas" data-spy="mayoristas" data-b2b-link>Mayoristas</a>
       <a href="#contacto" data-spy="contacto">Contacto</a>
     </nav>
     <div class="hdr-icons">
@@ -820,7 +829,7 @@ body.b2b-on .toast{bottom:96px;}
         <a href="#nosotros">Sobre nosotros</a>
         <a href="#contacto">Contacto</a>
         <a href="#tarjeta-regalo">Tarjeta regalo</a>
-        <a href="#mayoristas">Mayoristas</a>
+        <a href="#mayoristas" data-b2b-link>Mayoristas</a>
       </div>
       <div class="foot-col">
         <h4 class="caps">Tu compra</h4>
@@ -849,7 +858,7 @@ body.b2b-on .toast{bottom:96px;}
     <a href="#nosotros">Sobre nosotros</a>
     <a href="#contacto">Contacto</a>
     <a href="#tarjeta-regalo">Tarjeta regalo</a>
-    <a href="#mayoristas">Mayoristas</a>
+    <a href="#mayoristas" data-b2b-link>Mayoristas</a>
   </nav>
   <p class="menu-foot caps">Porcelana · Arte · Tradición</p>
 </div>
@@ -918,6 +927,11 @@ body.b2b-on .toast{bottom:96px;}
       <p class="caps">Alldesign Karl · Mayoristas</p>
       <h3 id="b2b-title">Alta de mayorista</h3>
       <p class="b2b-intro">Rellena los datos de tu empresa una sola vez. Los usaremos en tus pedidos y en las facturas.</p>
+      <div class="b2b-terms" aria-label="Condiciones para mayoristas">
+        <div class="min"><b>100 €</b><span>Pedido mínimo (sin IVA)</span></div>
+        <div><b>0 %</b><span>Precios sin IVA</span></div>
+        <div><b>Gratis</b><span>Envío y pago seguro</span></div>
+      </div>
       <label class="field"><span>Empresa</span><input name="empresa" autocomplete="organization" required><em></em></label>
       <label class="field"><span>Nombre y apellidos</span><input name="nombre" autocomplete="name" required><em></em></label>
       <div class="field-row">
@@ -929,6 +943,7 @@ body.b2b-on .toast{bottom:96px;}
         <label class="field"><span>DNI / NIE</span><input name="dni" autocomplete="off" spellcheck="false" required><em></em></label>
       </div>
       <label class="field"><span>NIF-IVA intracomunitario <i>(opcional, empresas de la UE)</i></span><input name="nifIva" autocomplete="off" spellcheck="false" placeholder="ESB12345674"><em></em></label>
+      <label class="check" id="b2b-min"><input type="checkbox" name="minimo"><span>Entiendo que el <strong>pedido mínimo de mayorista es de 100 €</strong> (sin IVA) por pedido.</span></label>
       <label class="check" id="b2b-priv"><input type="checkbox" name="privacidad"><span>Acepto que Alldesign Karl use estos datos para gestionar mis pedidos de mayorista y sus facturas.</span></label>
       <div class="pd-actions"><button class="pill dark caps" type="submit">Entrar en la tienda de mayoristas <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
       <p class="pd-note" id="b2b-note"></p>
@@ -1960,6 +1975,8 @@ body.b2b-on .toast{bottom:96px;}
     var f = $("b2b-f");
     ["empresa", "nombre", "email", "telefono", "nif", "dni", "nifIva"].forEach(function (k) { f.elements[k].value = b2b && b2b[k] || ""; });
     f.elements.privacidad.checked = !!b2b;
+    f.elements.minimo.checked = !!b2b;
+    $("b2b-min").classList.remove("bad");
     Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) { x.classList.remove("bad"); x.querySelector("em").textContent = ""; });
     $("b2b-priv").classList.remove("bad");
     $("b2b-note").textContent = "";
@@ -2013,11 +2030,13 @@ body.b2b-on .toast{bottom:96px;}
       x.querySelector("em").textContent = errs[k] || "";
     });
     var priv = f.elements.privacidad.checked;
+    var min = f.elements.minimo.checked;
     $("b2b-priv").classList.toggle("bad", !priv);
+    $("b2b-min").classList.toggle("bad", !min);
     var note = $("b2b-note");
-    if (Object.keys(errs).length || !priv) {
+    if (Object.keys(errs).length || !priv || !min) {
       note.classList.add("error");
-      note.textContent = !priv && !Object.keys(errs).length ? "Marca la casilla para continuar." : "Revisa los datos marcados.";
+      note.textContent = Object.keys(errs).length ? "Revisa los datos marcados." : (!min ? "Acepta el pedido mínimo de 100 € para continuar." : "Marca la casilla para continuar.");
       var bad = f.querySelector(".field.bad input");
       if (bad) bad.focus();
       return;
@@ -2037,6 +2056,15 @@ body.b2b-on .toast{bottom:96px;}
     goToShop();
   });
   $("b2b-edit").addEventListener("click", openB2BForm);
+  // Los enlaces "Mayoristas" del menú: si aún no se ha dado de alta, llevan a la sección y abren el formulario.
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-b2b-link]");
+    if (!a || b2b) return;
+    e.preventDefault();
+    var sec = $("mayoristas");
+    if (sec) window.scrollTo({ top: sec.offsetTop - 40, behavior: reduceMotion ? "auto" : "smooth" });
+    setTimeout(openB2BForm, reduceMotion ? 0 : 120);
+  });
   $("b2b-exit").addEventListener("click", function () {
     setB2BMode(false);
     toast("Has salido del modo mayorista. Ves la tienda con los precios normales.");
