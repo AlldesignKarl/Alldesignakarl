@@ -1946,7 +1946,8 @@ body.b2b-on .toast{bottom:96px;}
     if (!cart || !cart.id) return;
     var btn = $("checkout");
     var isB2B = cartLines().some(isWholesaleLine);
-    if (isB2B && !b2b) { openB2BForm(); return; }
+    if (isB2B && !b2b) { openB2BForm("login"); return; }
+    if (isB2B && !profileComplete(b2b)) { openB2BForm("edit"); b2bMsg("Completa los datos de tu empresa para tus facturas.", true); return; }
     if (isB2B && b2bSubtotal() < B2B_MIN) { renderB2BState(); toast("El pedido mínimo de mayorista es de " + money(B2B_MIN) + " sin IVA."); return; }
     btn.disabled = true;
     // En los pedidos de mayorista se añaden los datos de la empresa como nota del pedido.
@@ -2314,13 +2315,71 @@ body.b2b-on .toast{bottom:96px;}
       nifIva: fieldValue(cf, F_IVA)
     };
   }
+  // Datos fiscales en la colección "Mayoristas" de Wix: cada mayorista solo puede leer y cambiar su propia ficha.
+  var FISCAL = "Mayoristas";
+  var FISCAL_KEYS = ["empresa", "nombre", "telefono", "nif", "dni", "nifIva"];
+  function loadFiscal(memberId) {
+    return api("POST", "/wix-data/v2/items/query", { dataCollectionId: FISCAL, query: { filter: { memberId: memberId }, sort: [{ fieldName: "_updatedDate", order: "DESC" }], paging: { limit: 1 } } })
+      .then(function (d) {
+        var it = d && d.dataItems && d.dataItems[0];
+        return it ? { id: it.id || (it.data && it.data._id), data: it.data || {} } : null;
+      });
+  }
+  function saveFiscal(p) {
+    var data = { memberId: p.memberId, email: p.email };
+    FISCAL_KEYS.forEach(function (k) { data[k] = p[k] || ""; });
+    var write = function (id) {
+      if (id) return api("PUT", "/wix-data/v2/items/" + encodeURIComponent(id), { dataCollectionId: FISCAL, dataItem: { id: id, data: data } });
+      return api("POST", "/wix-data/v2/items", { dataCollectionId: FISCAL, dataItem: { data: data } });
+    };
+    var find = p.fiscalId ? Promise.resolve(p.fiscalId) : loadFiscal(p.memberId).then(function (f) { return f && f.id; });
+    return find.then(write).then(function (d) {
+      var id = d && d.dataItem && (d.dataItem.id || (d.dataItem.data && d.dataItem.data._id));
+      if (id && b2b && b2b.memberId === p.memberId) b2b.fiscalId = id;
+      return id;
+    });
+  }
+  // Copia en este navegador de los datos de cada cuenta, para no volver a pedirlos aunque falle la conexión.
+  var CACHE_KEY = "adk.b2b.cache";
+  function cacheGet(email) {
+    try { var c = JSON.parse(store(true, CACHE_KEY) || "{}"); return c[email] || null; } catch (e) { return null; }
+  }
+  function cachePut(p) {
+    if (!p || !p.email) return;
+    var c = {};
+    try { c = JSON.parse(store(true, CACHE_KEY) || "{}") || {}; } catch (e) { c = {}; }
+    var keep = {};
+    FISCAL_KEYS.forEach(function (k) { if (p[k]) keep[k] = p[k]; });
+    c[p.email] = keep;
+    store(false, CACHE_KEY, JSON.stringify(c));
+  }
+  // Une los datos de la ficha de Wix, la colección "Mayoristas" y la copia local (gana el primero que tenga valor).
+  function mergeProfile(base, extra) {
+    if (!extra) return base;
+    FISCAL_KEYS.forEach(function (k) { if (!base[k] && extra[k]) base[k] = extra[k]; });
+    return base;
+  }
   function loadMember() {
     return api("GET", "/members/v1/members/my?fieldsets=FULL").then(function (d) {
       if (!d || !d.member) throw new Error("no member");
-      b2b = profileFromMember(d.member);
-      store(false, B2B_KEY, JSON.stringify(b2b));
-      renderB2BState();
-      return b2b;
+      var p = profileFromMember(d.member);
+      var prevLocal = b2b && b2b.memberId === p.memberId ? b2b : null;
+      return loadFiscal(p.memberId).catch(function () { return null; }).then(function (f) {
+        var fromWix = f ? f.data : null;
+        if (f) p.fiscalId = f.id;
+        // La colección manda en los datos fiscales; la ficha de contacto, en nombre, empresa y teléfono.
+        if (fromWix) ["nif", "dni", "nifIva"].forEach(function (k) { if (fromWix[k]) p[k] = fromWix[k]; });
+        mergeProfile(p, fromWix);
+        mergeProfile(p, prevLocal);
+        mergeProfile(p, cacheGet(p.email));
+        b2b = p;
+        store(false, B2B_KEY, JSON.stringify(b2b));
+        cachePut(b2b);
+        renderB2BState();
+        // Si la colección no tenía los datos completos pero aquí sí están, se guardan para la próxima vez.
+        if (profileComplete(b2b) && !(fromWix && fromWix.nif && fromWix.dni)) saveFiscal(b2b).catch(function () {});
+        return b2b;
+      });
     });
   }
   function splitName(n) {
@@ -2338,19 +2397,30 @@ body.b2b-on .toast{bottom:96px;}
   }
   function profileComplete(p) { return !!(p && p.empresa && p.nif && p.dni && p.telefono); }
   var pendingProfile = null;   // datos del alta, por si hay que guardarlos después de entrar
+  // Guarda los datos de la empresa en Wix (colección y ficha de contacto) y en este navegador.
+  function persistProfile(r) {
+    FISCAL_KEYS.forEach(function (k) { b2b[k] = r[k]; });
+    store(false, B2B_KEY, JSON.stringify(b2b));
+    cachePut(b2b);
+    var a = saveFiscal(b2b).then(function () { return true; }, function () { return false; });
+    var c = saveMemberProfile(b2b).then(function () { return true; }, function () { return false; });
+    return Promise.all([a, c]).then(function (res) {
+      store(false, B2B_KEY, JSON.stringify(b2b));
+      renderB2BState();
+      return res[0] || res[1];
+    });
+  }
   function afterLogin() {
     return loadMember().then(function () {
-      if (pendingProfile && !profileComplete(b2b)) {
+      if (pendingProfile) {
         var pp = pendingProfile;
-        return saveMemberProfile(pp).then(loadMember).catch(function () {
-          // Si no se pudieran guardar en Wix, al menos se usan en este navegador.
-          Object.keys(pp).forEach(function (k) { if (!b2b[k]) b2b[k] = pp[k]; });
-          store(false, B2B_KEY, JSON.stringify(b2b));
-        });
+        FISCAL_KEYS.forEach(function (k) { if (pp[k]) b2b[k] = b2b[k] || pp[k]; });
+        return persistProfile(b2b);
       }
     }).then(function () {
       pendingProfile = null;
       cred = null;
+      store(false, "adk.b2b.lastEmail", b2b.email);
       loadCart();
       if (!profileComplete(b2b)) {
         openB2BForm("edit");
@@ -2364,6 +2434,7 @@ body.b2b-on .toast{bottom:96px;}
     });
   }
   function logout(silent) {
+    if (b2b) cachePut(b2b);
     tokens = null;
     store(false, TOKEN_KEY, null);
     b2b = null;
@@ -2421,6 +2492,7 @@ body.b2b-on .toast{bottom:96px;}
     if (v === "edit" && b2b) {
       ["empresa", "nombre", "telefono", "nif", "dni", "nifIva"].forEach(function (k) { f.elements[k].value = b2b[k] || ""; });
     }
+    if (v === "login" && !f.elements.email.value) f.elements.email.value = store(true, "adk.b2b.lastEmail") || "";
     f.elements.password.value = "";
     f.elements.password2.value = "";
     f.elements.code.value = "";
@@ -2538,11 +2610,7 @@ body.b2b-on .toast{bottom:96px;}
       markErrors(errs);
       if (Object.keys(errs).length) { b2bMsg("Revisa los datos marcados.", true); return; }
       job = function () {
-        return saveMemberProfile(r2).then(loadMember).catch(function () {
-          Object.keys(r2).forEach(function (k) { b2b[k] = r2[k]; });
-          store(false, B2B_KEY, JSON.stringify(b2b));
-          renderB2BState();
-        }).then(function () {
+        return persistProfile(r2).then(function () {
           closeLayers(true);
           if (!b2bMode) { setB2BMode(true); setTimeout(goToShop, reduceMotion ? 0 : 450); }
           toast("Datos de la empresa guardados.");
@@ -2577,6 +2645,11 @@ body.b2b-on .toast{bottom:96px;}
   $("b2b-signup-btn").addEventListener("click", function () { openB2BForm("signup"); });
   $("b2b-enter").addEventListener("click", function () {
     if (!b2b) { openB2BForm("login"); return; }
+    if (!profileComplete(b2b)) {
+      openB2BForm("edit");
+      b2bMsg("Completa los datos de tu empresa una sola vez para comprar como mayorista.", true);
+      return;
+    }
     setB2BMode(true);
     goToShop();
   });
