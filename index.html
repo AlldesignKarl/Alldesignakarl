@@ -1296,6 +1296,11 @@ body.b2b-on .toast{bottom:96px;}
       "Negro": "2e263f95dda1482ea12a1b9fde61cbf3"
     }
   };
+  // Parte trasera (con las flores) en el color elegido. Clave: posición del color en COLOR_ORDER.
+  var BACK_PREVIEWS = {
+    "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b": "0:c60116096d894c47990803c873687257,9:6146dcc7bb814663a566fa3323ef0916,7:fa2237378d4649228fe9ac7209e7e81e,6:31dbfde6fb7644198856ef50c5bfe6e4"
+  };
+  BACK_PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = BACK_PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
   // Letra de resina: muestras cuadradas.
   var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1 };
   var previewMaps = {};
@@ -1332,6 +1337,36 @@ body.b2b-on .toast{bottom:96px;}
     if (a < 0) return "";
     return m[b >= 0 ? String(a) + b : String(a)] || m[String(a)] || "";
   }
+  function backPreview() {
+    var o = colorOpt();
+    var raw = current && BACK_PREVIEWS[current.id];
+    if (!raw || !o || !picked[o.id]) return "";
+    var a = String(COLOR_ORDER.indexOf(choiceName(o, picked[o.id])));
+    var hit = raw.split(",").filter(function (p) { return p.split(":")[0] === a; })[0];
+    return hit ? "https://static.wixstatic.com/media/43eaa1_" + hit.split(":")[1] + "~mv2.jpg" : "";
+  }
+  // Fotos de la ficha. Con un color elegido: la vista previa delante y, si la hay, la parte de atrás del mismo color.
+  var gallery = [];
+  var galleryIdx = 0;
+  function galleryList() {
+    var imgs = allImages(current);
+    var u = currentPreview();
+    if (!u) return imgs.map(function (x) { return { u: x, preview: false }; });
+    var b = backPreview();
+    if (b) return [{ u: u, preview: true }, { u: b, preview: true }];
+    return imgs.map(function (x, i) { return i === 0 ? { u: u, preview: true } : { u: x, preview: false }; });
+  }
+  function renderGallery() {
+    gallery = galleryList();
+    if (galleryIdx >= gallery.length) galleryIdx = 0;
+    $("pd-thumbs").innerHTML = gallery.length > 1 ? gallery.map(function (g, i) {
+      return '<button type="button" data-img="' + i + '" aria-label="Imagen ' + (i + 1) + '"><img src="' + esc(sized(g.u, 160)) + '" alt=""></button>';
+    }).join("") : "";
+    var g = gallery[galleryIdx];
+    $("pd-tag").hidden = !(g && g.preview);
+    $("pd-tag").textContent = pairOpt() ? "Vista previa con tus colores" : "Vista previa con tu color";
+    if (g) setMainImage(g.u, galleryIdx);
+  }
   function currentPreview() {
     var o = colorOpt();
     return o ? previewFor(picked[o.id], pairOpt() ? second : null) : "";
@@ -1339,11 +1374,7 @@ body.b2b-on .toast{bottom:96px;}
   // Muestra la vista previa (o la foto original si aún no hay color elegido).
   function updatePreview() {
     if (!current || !previewMap(current.id)) return;
-    var u = currentPreview();
-    $("pd-tag").hidden = !u;
-    $("pd-tag").textContent = pairOpt() ? "Vista previa con tus colores" : "Vista previa con tu color";
-    var imgs = allImages(current);
-    if (u) setMainImage(u, 0); else if (imgs[0]) setMainImage(imgs[0], 0);
+    renderGallery();
   }
   // Al pasar por un color, se descarga ya su foto para que el cambio sea instantáneo.
   function preloadFor(choiceId) {
@@ -1580,14 +1611,10 @@ body.b2b-on .toast{bottom:96px;}
     }
     $("pd-name").textContent = displayName(current);
     $("pd-desc").innerHTML = current.plainDescription ? descHtml(current.plainDescription) : "";
-    var imgs = allImages(current);
     $("pd-img").alt = current.name || "";
-    $("pd-thumbs").innerHTML = imgs.length > 1 ? imgs.map(function (u, i) {
-      return '<button type="button" data-img="' + i + '" aria-label="Imagen ' + (i + 1) + '"><img src="' + esc(sized(u, 160)) + '" alt=""></button>';
-    }).join("") : "";
-    $("pd-tag").hidden = true;
     $("pd-img").removeAttribute("src");
-    if (imgs[0]) setMainImage(imgs[0], 0);
+    galleryIdx = 0;
+    renderGallery();
     (current.options || []).forEach(function (o) {
       var choices = (o.choicesSettings && o.choicesSettings.choices || []).filter(function (c) { return c.visible !== false; });
       if (choices.length === 1) picked[o.id] = choices[0].choiceId;
@@ -1641,10 +1668,11 @@ body.b2b-on .toast{bottom:96px;}
   $("pd-thumbs").addEventListener("click", function (e) {
     var b = e.target.closest("[data-img]");
     if (!b) return;
-    var i = Number(b.getAttribute("data-img"));
-    var u = i === 0 ? currentPreview() : "";
-    $("pd-tag").hidden = !u;
-    setMainImage(u || allImages(current)[i], i);
+    galleryIdx = Number(b.getAttribute("data-img"));
+    var g = gallery[galleryIdx];
+    if (!g) return;
+    $("pd-tag").hidden = !g.preview;
+    setMainImage(g.u, galleryIdx);
   });
   $("pd-options").addEventListener("click", function (e) {
     var b = e.target.closest("[data-choice]");
