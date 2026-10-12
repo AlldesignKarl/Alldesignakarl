@@ -1289,15 +1289,31 @@ body.b2b-on .toast{bottom:96px;}
   };
   PREVIEWS["e1cac3fe-bc04-4995-bb0d-545b7f1621e2"] = PREVIEWS["2435d64f-e41d-4995-b730-f3a8cc13ed5a"];
   PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
+  // Productos con sus propios colores: foto por nombre del color.
+  var NAMED_PREVIEWS = {
+    "383654de-5b5b-471b-828b-e7cae370fb42": {
+      "Blanco": "3c9d42e272824655ad38994edfbd8df2",
+      "Morado oscuro": "666417eea6ec4c46b0c302ada10efe37",
+      "Negro": "a7dbffaaefc943c9a79f1f375a4a89bb"
+    }
+  };
+  // Letra de resina: muestras cuadradas.
+  var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1 };
   var previewMaps = {};
   function previewMap(id) {
-    if (!PREVIEWS[id]) return null;
+    if (!PREVIEWS[id] && !NAMED_PREVIEWS[id]) return null;
     if (!previewMaps[id]) {
       var m = {};
-      PREVIEWS[id].split(",").forEach(function (p) {
-        var kv = p.split(":");
-        m[kv[0]] = "https://static.wixstatic.com/media/43eaa1_" + kv[1] + "~mv2.jpg";
-      });
+      if (NAMED_PREVIEWS[id]) {
+        Object.keys(NAMED_PREVIEWS[id]).forEach(function (n) {
+          m["n:" + n] = "https://static.wixstatic.com/media/43eaa1_" + NAMED_PREVIEWS[id][n] + "~mv2.jpg";
+        });
+      } else {
+        PREVIEWS[id].split(",").forEach(function (p) {
+          var kv = p.split(":");
+          m[kv[0]] = "https://static.wixstatic.com/media/43eaa1_" + kv[1] + "~mv2.jpg";
+        });
+      }
       previewMaps[id] = m;
     }
     return previewMaps[id];
@@ -1311,6 +1327,7 @@ body.b2b-on .toast{bottom:96px;}
     var m = current && previewMap(current.id);
     var o = colorOpt();
     if (!m || !o || !firstId) return "";
+    if (NAMED_PREVIEWS[current.id]) return m["n:" + choiceName(o, firstId)] || "";
     var a = COLOR_ORDER.indexOf(choiceName(o, firstId));
     var b = secondId ? COLOR_ORDER.indexOf(choiceName(o, secondId)) : -1;
     if (a < 0) return "";
@@ -1325,6 +1342,7 @@ body.b2b-on .toast{bottom:96px;}
     if (!current || !previewMap(current.id)) return;
     var u = currentPreview();
     $("pd-tag").hidden = !u;
+    $("pd-tag").textContent = pairOpt() ? "Vista previa con tus colores" : "Vista previa con tu color";
     var imgs = allImages(current);
     if (u) setMainImage(u, 0); else if (imgs[0]) setMainImage(imgs[0], 0);
   }
@@ -1496,7 +1514,7 @@ body.b2b-on .toast{bottom:96px;}
         var common = ' data-opt="' + esc(o.id) + '" data-choice="' + esc(c.choiceId) + '" aria-pressed="' + on + '"' + (avail ? "" : " disabled");
         if (isSwatch && c.colorCode) {
           var n = !isPair ? "" : picked[o.id] === c.choiceId ? "1" : second === c.choiceId ? "2" : "";
-          return '<button type="button" class="swatch' + (isPair ? " sq" : "") + '"' + common + ' style="--sw:' + esc(c.colorCode) + '" title="' + esc(c.name) + '" aria-label="' + esc(c.name) + '">' + (n ? '<span class="sw-n">' + n + "</span>" : "") + "</button>";
+          return '<button type="button" class="swatch' + (isPair || SQUARE_SWATCHES[current.id] ? " sq" : "") + '"' + common + ' style="--sw:' + esc(c.colorCode) + '" title="' + esc(c.name) + '" aria-label="' + esc(c.name) + '">' + (n ? '<span class="sw-n">' + n + "</span>" : "") + "</button>";
         }
         return '<button type="button" class="choice"' + common + ">" + esc(c.name) + "</button>";
       }).join("");
