@@ -528,6 +528,18 @@ body.b2b-on .toast{bottom:96px;}
 .check input{margin-top:4px;width:18px;height:18px;accent-color:var(--ink);flex:none;}
 .check.bad{color:#9b3b2e;}
 .b2b-fine{margin-top:14px;font-size:14px;color:var(--ink-faint);font-style:italic;}
+.b2b-tabs{display:flex;gap:4px;margin-top:18px;border-bottom:1px solid var(--line);}
+.b2b-tabs[hidden]{display:none;}
+.b2b-tabs button{padding:10px 14px 12px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.b2b-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--gold);}
+.b2b-sub{margin-top:24px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+.b2b-sub[hidden],[data-show][hidden]{display:none !important;}
+.b2b-alt{margin-top:14px;font-size:15px;color:var(--ink-soft);}
+.b2b-alt button{color:var(--ink);text-decoration:underline;text-underline-offset:3px;}
+.b2b-cta .pill:not(.dark){margin-top:0;}
+.pd-b2b .sep{margin-top:10px;padding-top:10px;border-top:1px solid rgba(180,138,78,.25);}
+.pd-b2b .tot strong{font-size:17px;}
+.pd-b2b small{display:block;margin-top:2px;font-size:13px;color:var(--ink-faint);font-style:italic;}
 
 .modal{
   position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;
@@ -769,13 +781,18 @@ body.b2b-on .toast{bottom:96px;}
         </div>
         <div class="reveal">
           <ol class="b2b-steps">
-            <li><div><strong>Da de alta tu empresa</strong><span>Solo la primera vez: nombre de la empresa, NIF/CIF y datos de contacto.</span></div></li>
+            <li><div><strong>Crea tu cuenta de mayorista</strong><span>Solo la primera vez: datos de la empresa, NIF/CIF, contacto, correo y contraseña. Después entras con tu correo y tu contraseña, y todo queda guardado.</span></div></li>
             <li><div><strong>Elige tus piezas</strong><span>Los mismos productos, colores y personalización de la tienda, a precio de mayorista.</span></div></li>
             <li><div><strong>Finaliza el pedido</strong><span>Al llegar a 100 € (sin IVA) pagas de forma segura, con el IVA y el envío desglosados. El pedido nos llega con los datos de tu empresa para preparar la factura.</span></div></li>
           </ol>
-          <div class="b2b-cta">
-            <button class="pill dark caps" id="b2b-enter" type="button">Entrar como mayorista <svg class="arrow"><use href="#i-arrow"/></svg></button>
-            <button class="b2b-link" id="b2b-edit" type="button" hidden>Cambiar datos de la empresa</button>
+          <div class="b2b-cta" id="b2b-cta-out">
+            <button class="pill dark caps" id="b2b-login-btn" type="button">Iniciar sesión <svg class="arrow"><use href="#i-arrow"/></svg></button>
+            <button class="pill caps" id="b2b-signup-btn" type="button">Crear cuenta de mayorista</button>
+          </div>
+          <div class="b2b-cta" id="b2b-cta-in" hidden>
+            <button class="pill dark caps" id="b2b-enter" type="button">Entrar en la tienda de mayoristas <svg class="arrow"><use href="#i-arrow"/></svg></button>
+            <button class="b2b-link" id="b2b-edit" type="button">Datos de la empresa</button>
+            <button class="b2b-link" id="b2b-logout" type="button">Cerrar sesión</button>
           </div>
           <p class="b2b-who" id="b2b-who" hidden></p>
         </div>
@@ -941,32 +958,52 @@ body.b2b-on .toast{bottom:96px;}
 
 <div class="modal" id="b2b-form" role="dialog" aria-modal="true" aria-labelledby="b2b-title" aria-hidden="true">
   <div class="modal-card narrow">
-    <form class="pd" id="b2b-f" novalidate>
+    <form class="pd" id="b2b-f" novalidate data-view="login">
       <button class="icon-btn pd-close" type="button" data-close aria-label="Cerrar"><svg><use href="#i-close"/></svg></button>
       <p class="caps">Alldesign Karl · Mayoristas</p>
-      <h3 id="b2b-title">Alta de mayorista</h3>
-      <p class="b2b-intro">Rellena los datos de tu empresa una sola vez. Los usaremos en tus pedidos y en las facturas.</p>
-      <div class="b2b-terms" aria-label="Condiciones para mayoristas">
+      <h3 id="b2b-title">Iniciar sesión</h3>
+      <div class="b2b-tabs" id="b2b-tabs" role="tablist">
+        <button type="button" role="tab" data-b2b-view="login" aria-selected="true">Iniciar sesión</button>
+        <button type="button" role="tab" data-b2b-view="signup" aria-selected="false">Crear cuenta</button>
+      </div>
+      <p class="b2b-intro" id="b2b-intro"></p>
+      <div class="b2b-terms" aria-label="Condiciones para mayoristas" data-show="signup">
         <div class="min"><b>100 €</b><span>Pedido mínimo (sin IVA)</span></div>
         <div><b>21 %</b><span>IVA aparte</span></div>
         <div><b>6,95 €</b><span>Envío España · Europa 14,95 €</span></div>
       </div>
-      <label class="field"><span>Empresa</span><input name="empresa" autocomplete="organization" required><em></em></label>
-      <label class="field"><span>Nombre y apellidos</span><input name="nombre" autocomplete="name" required><em></em></label>
-      <div class="field-row">
-        <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" required><em></em></label>
-        <label class="field"><span>Teléfono</span><input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required><em></em></label>
+      <div data-show="signup edit">
+        <p class="b2b-sub" data-show="signup">Datos de la empresa</p>
+        <label class="field"><span>Empresa</span><input name="empresa" autocomplete="organization"><em></em></label>
+        <label class="field"><span>Nombre y apellidos</span><input name="nombre" autocomplete="name"><em></em></label>
+        <div class="field-row">
+          <label class="field"><span>Teléfono</span><input name="telefono" type="tel" autocomplete="tel" inputmode="tel"><em></em></label>
+          <label class="field"><span>NIF / CIF de la empresa</span><input name="nif" autocomplete="off" spellcheck="false"><em></em></label>
+        </div>
+        <div class="field-row">
+          <label class="field"><span>DNI / NIE</span><input name="dni" autocomplete="off" spellcheck="false"><em></em></label>
+          <label class="field"><span>NIF-IVA <i>(opcional, UE)</i></span><input name="nifIva" autocomplete="off" spellcheck="false" placeholder="ESB12345674"><em></em></label>
+        </div>
       </div>
-      <div class="field-row">
-        <label class="field"><span>NIF / CIF de la empresa</span><input name="nif" autocomplete="off" spellcheck="false" required><em></em></label>
-        <label class="field"><span>DNI / NIE</span><input name="dni" autocomplete="off" spellcheck="false" required><em></em></label>
+      <div data-show="login signup">
+        <p class="b2b-sub" data-show="signup">Datos de acceso</p>
+        <label class="field"><span>Correo electrónico</span><input name="email" type="email" autocomplete="email" inputmode="email"><em></em></label>
+        <div class="field-row">
+          <label class="field"><span>Contraseña</span><input name="password" type="password" autocomplete="current-password"><em></em></label>
+          <label class="field" data-show="signup"><span>Repite la contraseña</span><input name="password2" type="password" autocomplete="new-password"><em></em></label>
+        </div>
       </div>
-      <label class="field"><span>NIF-IVA intracomunitario <i>(opcional, empresas de la UE)</i></span><input name="nifIva" autocomplete="off" spellcheck="false" placeholder="ESB12345674"><em></em></label>
-      <label class="check" id="b2b-min"><input type="checkbox" name="minimo"><span>Entiendo que el <strong>pedido mínimo de mayorista es de 100 €</strong> (sin IVA) por pedido.</span></label>
-      <label class="check" id="b2b-priv"><input type="checkbox" name="privacidad"><span>Acepto que Alldesign Karl use estos datos para gestionar mis pedidos de mayorista y sus facturas.</span></label>
-      <div class="pd-actions"><button class="pill dark caps" type="submit">Entrar en la tienda de mayoristas <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
+      <div data-show="verify">
+        <label class="field"><span>Código de verificación</span><input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="8"><em></em></label>
+      </div>
+      <div data-show="signup">
+        <label class="check" id="b2b-min"><input type="checkbox" name="minimo"><span>Entiendo que el <strong>pedido mínimo de mayorista es de 100 €</strong> (sin IVA) por pedido.</span></label>
+        <label class="check" id="b2b-priv"><input type="checkbox" name="privacidad"><span>Acepto que Alldesign Karl use estos datos para gestionar mis pedidos de mayorista y sus facturas.</span></label>
+      </div>
+      <div class="pd-actions"><button class="pill dark caps" type="submit" id="b2b-submit">Entrar <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
+      <p class="b2b-alt" data-show="login"><button type="button" id="b2b-forgot">¿Has olvidado tu contraseña?</button></p>
       <p class="pd-note" id="b2b-note"></p>
-      <p class="b2b-fine">Tus datos se guardan en este navegador y se añaden a cada pedido de mayorista.</p>
+      <p class="b2b-fine" id="b2b-fine">Tus datos quedan guardados en tu cuenta de Alldesign Karl y se añaden a cada pedido de mayorista.</p>
     </form>
   </div>
 </div>
@@ -976,7 +1013,7 @@ body.b2b-on .toast{bottom:96px;}
     <span class="caps">Modo mayorista</span>
     <span class="b2b-bar-co" id="b2b-bar-co"></span>
     <div class="b2b-meter"><span id="b2b-meter-txt"></span><div class="track"><div class="fill" id="b2b-fill"></div></div></div>
-    <div class="b2b-bar-btns"><button type="button" data-open-cart>Ver cesta</button><button type="button" id="b2b-exit">Salir</button></div>
+    <div class="b2b-bar-btns"><button type="button" data-open-cart>Ver cesta</button><button type="button" id="b2b-exit">Tienda normal</button></div>
   </div>
 </div>
 
@@ -1030,15 +1067,17 @@ body.b2b-on .toast{bottom:96px;}
   var tokens = null;
   try { tokens = JSON.parse(localStorage.getItem(TOKEN_KEY) || "null"); } catch (e) { tokens = null; }
 
-  function saveTokens(data) {
+  // member: true cuando son los tokens de un mayorista que ha iniciado sesión.
+  function saveTokens(data, member) {
     tokens = {
       access: data.access_token,
       refresh: data.refresh_token,
-      exp: Date.now() + (Number(data.expires_in || 14400) - 120) * 1000
+      exp: Date.now() + (Number(data.expires_in || 14400) - 120) * 1000,
+      member: !!member
     };
     try { localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens)); } catch (e) {}
   }
-  function requestToken(body) {
+  function requestToken(body, member) {
     return fetch(API + "/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1046,7 +1085,7 @@ body.b2b-on .toast{bottom:96px;}
     }).then(function (r) {
       if (!r.ok) throw new Error("token " + r.status);
       return r.json();
-    }).then(saveTokens);
+    }).then(function (d) { saveTokens(d, member); });
   }
   var tokenPromise = null;
   function ensureToken() {
@@ -1055,8 +1094,13 @@ body.b2b-on .toast{bottom:96px;}
     var p;
     if (tokens && tokens.refresh) {
       // Renovar conserva la misma cesta; solo si falla se crea un visitante nuevo.
-      p = requestToken({ clientId: CLIENT_ID, grantType: "refresh_token", refreshToken: tokens.refresh })
-        .catch(function () { return requestToken({ clientId: CLIENT_ID, grantType: "anonymous" }); });
+      var wasMember = !!tokens.member;
+      p = requestToken({ clientId: CLIENT_ID, grantType: "refresh_token", refreshToken: tokens.refresh }, wasMember)
+        .catch(function () {
+          return requestToken({ clientId: CLIENT_ID, grantType: "anonymous" }).then(function () {
+            if (wasMember && window.adkSessionLost) window.adkSessionLost();
+          });
+        });
     } else {
       p = requestToken({ clientId: CLIENT_ID, grantType: "anonymous" });
     }
@@ -1121,17 +1165,31 @@ body.b2b-on .toast{bottom:96px;}
   var WHOLESALE = {
     "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": "f4d56313-6834-4f16-93d0-f07d02b35f0a",
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": "2435d64f-e41d-4995-b730-f3a8cc13ed5a",
-    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"
+    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b",
+    "b3bf073b-3e6d-448a-84e5-53926269346d": "383654de-5b5b-471b-828b-e7cae370fb42"
+  };
+  // PVP recomendado (IVA incluido) que aconsejamos a las tiendas para revender cada pieza.
+  var WHOLESALE_PVP = {
+    "b3bf073b-3e6d-448a-84e5-53926269346d": 64.95,
+    "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 54.90,
+    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": 45.90
   };
   var B2B_MIN = 100;           // pedido mínimo de mayorista, en euros y sin IVA
-  var B2B_KEY = "adk.b2b.v1";  // datos de la empresa (en este navegador)
+  var B2B_KEY = "adk.b2b.v2";  // copia local de los datos de la cuenta (la buena está en Wix)
   var B2B_MODE_KEY = "adk.b2b.mode";
+  // Campos de contacto de Wix donde se guardan los datos fiscales del mayorista.
+  var F_NIF = "custom.nif-cif-tjtkxnjzckhxigoqlcvcnmbcjgd";
+  var F_DNI = "custom.dni-nie-bvwumwlquzskhvnlcmzfzlxkmhq";
+  var F_IVA = "custom.nif-iva-intracomunitario-tggpfwxlxm";
   function isWholesaleId(id) { return !!WHOLESALE[id]; }
   function store(get, key, val) {
     try { return get ? localStorage.getItem(key) : (val == null ? localStorage.removeItem(key) : localStorage.setItem(key, val)); } catch (e) { return null; }
   }
+  store(false, "adk.b2b.v1", null);   // datos del formulario antiguo (sin cuenta)
   var b2b = null;
-  try { b2b = JSON.parse(store(true, B2B_KEY) || "null"); } catch (e) { b2b = null; }
+  if (tokens && tokens.member) {
+    try { b2b = JSON.parse(store(true, B2B_KEY) || "null"); } catch (e) { b2b = null; }
+  }
   var b2bMode = !!b2b && store(true, B2B_MODE_KEY) === "1";
   function displayName(p) { return String(p && p.name || "").replace(" · Mayorista", "").trim(); }
   // Los precios guardados en Wix llevan el IVA (21 %) incluido. En la tienda se enseñan así;
@@ -1301,6 +1359,7 @@ body.b2b-on .toast{bottom:96px;}
     "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b": "0:c60116096d894c47990803c873687257,9:6146dcc7bb814663a566fa3323ef0916,7:fa2237378d4649228fe9ac7209e7e81e,6:31dbfde6fb7644198856ef50c5bfe6e4"
   };
   BACK_PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = BACK_PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
+  NAMED_PREVIEWS["b3bf073b-3e6d-448a-84e5-53926269346d"] = NAMED_PREVIEWS["383654de-5b5b-471b-828b-e7cae370fb42"];
   // Letra de resina: muestras cuadradas.
   var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1 };
   var previewMaps = {};
@@ -1498,7 +1557,7 @@ body.b2b-on .toast{bottom:96px;}
     var show = b2bItem ? net : round2;
     $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(show(cmp), cur)) + "</s>" : "") + esc(money(show(total), cur)) +
       (b2bItem
-        ? '<span class="pd-vat">Precio de mayorista + IVA · ' + esc(money(total, cur)) + " con IVA</span>"
+        ? '<span class="pd-vat">Precio de mayorista sin IVA · + 21 % de IVA = ' + esc(money(total, cur)) + "</span>"
         : '<span class="pd-vat">IVA incluido</span>');
     renderB2BProduct(Number(unit));
   }
@@ -1506,18 +1565,30 @@ body.b2b-on .toast{bottom:96px;}
   function renderB2BProduct(unit) {
     var box = $("pd-b2b");
     if (!current || !isWholesaleId(current.id)) { box.hidden = true; box.innerHTML = ""; return; }
-    var retail = products.filter(function (p) { return p.id === WHOLESALE[current.id]; })[0];
-    var r = retail && retail.actualPriceRange && retail.actualPriceRange.minValue;
-    var pvp = r ? Number(r.amount) : 0;
     var step = PACKS[current.id] || 1;
-    var html = "";
-    if (pvp > unit) {
-      html += '<div class="row"><span>PVP recomendado' + (step > 1 ? " (pack de " + step + ")" : "") + '</span><strong>' + esc(money(round2(pvp * step))) + " IVA incl.</strong></div>" +
-        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + ' (sin IVA)</span><strong>' + esc(money(round2((net(pvp) - net(unit)) * step))) + "</strong></div>";
+    var per = step > 1 ? " (pack de " + step + ")" : "";
+    var gross = round2(unit * step);           // precio con IVA, como lo cobra Wix
+    var base = net(gross);                      // base sin IVA
+    var iva = round2(gross - base);
+    var html = '<div class="row"><span>Precio sin IVA' + per + '</span><strong>' + esc(money(base)) + "</strong></div>" +
+      '<div class="row"><span>IVA (21 %)</span><strong>' + esc(money(iva)) + "</strong></div>" +
+      '<div class="row tot"><span>Total con IVA</span><strong>' + esc(money(gross)) + "</strong></div>";
+    var pvp = WHOLESALE_PVP[current.id];
+    if (!pvp) {
+      var retail = products.filter(function (p) { return p.id === WHOLESALE[current.id]; })[0];
+      var r = retail && retail.actualPriceRange && retail.actualPriceRange.minValue;
+      pvp = r && Number(r.amount) > unit ? Number(r.amount) : 0;
+    }
+    if (pvp) {
+      var pvpBase = net(pvp);
+      var gain = round2((pvpBase - net(unit)) * step);
+      var margin = Math.round(gain / (pvpBase * step) * 100);
+      html += '<div class="row sep"><span>PVP recomendado' + per + '</span><strong>' + esc(money(round2(pvp * step))) + " IVA incl.</strong></div>" +
+        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + '<small>Sin IVA: ' + esc(money(round2(pvpBase * step))) + " − " + esc(money(base)) + '</small></span><strong>' + esc(money(gain)) + " · " + margin + " %</strong></div>";
     }
     var sub = b2bSubtotal();
     var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
-    html += '<div class="min"' + (html ? "" : ' style="margin-top:0;padding-top:0;border-top:0"') + ">Pedido mínimo de mayorista: <strong>" + esc(money(B2B_MIN)) + "</strong> sin IVA. " +
+    html += '<div class="min">Pedido mínimo de mayorista: <strong>' + esc(money(B2B_MIN)) + "</strong> sin IVA. " +
       (left > 0 ? (sub > 0 ? "Llevas " + esc(money(sub)) + " en la cesta, te faltan " + esc(money(left)) + "." : "Combina las piezas que quieras hasta llegar al mínimo.") : "Ya lo has alcanzado.") + "</div>";
     box.innerHTML = html;
     box.hidden = false;
@@ -2051,11 +2122,12 @@ body.b2b-on .toast{bottom:96px;}
     $("b2b-shopbar").hidden = !b2bMode;
     $("b2b-shop-left").textContent = left > 0 ? (sub > 0 ? "Llevas " + money(sub) + ", te faltan " + money(left) + "." : "") : "¡Pedido mínimo alcanzado!";
     $("b2b-shop-fill").style.width = pct + "%";
-    $("b2b-enter").innerHTML = (b2bMode ? "Ver productos de mayorista" : "Entrar como mayorista") + ' <svg class="arrow"><use href="#i-arrow"/></svg>';
-    $("b2b-edit").hidden = !b2b;
+    $("b2b-cta-out").hidden = !!b2b;
+    $("b2b-cta-in").hidden = !b2b;
+    $("b2b-enter").innerHTML = (b2bMode ? "Ver productos de mayorista" : "Entrar en la tienda de mayoristas") + ' <svg class="arrow"><use href="#i-arrow"/></svg>';
     var who = $("b2b-who");
     who.hidden = !b2b;
-    who.textContent = b2b ? "Estás dado de alta como " + b2b.empresa + " (" + b2b.nif + ")." : "";
+    who.textContent = b2b ? "Has iniciado sesión como " + (b2b.empresa || b2b.email) + (b2b.nif ? " (" + b2b.nif + ")" : "") + " · " + b2b.email : "";
   }
   function setB2BMode(on) {
     var was = b2bMode;
@@ -2068,17 +2140,6 @@ body.b2b-on .toast{bottom:96px;}
   function goToShop() {
     var el = $("colecciones");
     if (el) window.scrollTo({ top: el.offsetTop - 40, behavior: reduceMotion ? "auto" : "smooth" });
-  }
-  function openB2BForm() {
-    var f = $("b2b-f");
-    ["empresa", "nombre", "email", "telefono", "nif", "dni", "nifIva"].forEach(function (k) { f.elements[k].value = b2b && b2b[k] || ""; });
-    f.elements.privacidad.checked = !!b2b;
-    f.elements.minimo.checked = !!b2b;
-    $("b2b-min").classList.remove("bad");
-    Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) { x.classList.remove("bad"); x.querySelector("em").textContent = ""; });
-    $("b2b-priv").classList.remove("bad");
-    $("b2b-note").textContent = "";
-    openLayer("b2b-form");
   }
   // Validación de NIF/CIF, DNI/NIE y NIF-IVA (las mismas reglas que la web de mayoristas).
   var DNI_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKE";
@@ -2109,65 +2170,439 @@ body.b2b-on .toast{bottom:96px;}
     var e = {};
     if (r.empresa.length < 2) e.empresa = "Escribe el nombre de la empresa.";
     if (r.nombre.split(" ").filter(Boolean).length < 2) e.nombre = "Escribe tu nombre y apellidos.";
-    if (!/^[^@ ]+@[^@ ]+[.][^@ ]{2,}$/.test(r.email)) e.email = "Revisa el correo electrónico.";
     if (r.telefono.replace(/[^0-9]/g, "").length < 9) e.telefono = "Revisa el número de teléfono.";
     if (!(isCif(r.nif) || isDniNie(r.nif))) e.nif = "El NIF/CIF no es válido. Revisa letras y números.";
     if (!isDniNie(r.dni)) e.dni = "El DNI/NIE no es válido. Revisa la letra.";
     if (r.nifIva && !/^[A-Z]{2}[A-Z0-9]{2,13}$/.test(normId(r.nifIva))) e.nifIva = "Debe empezar por el código del país (por ejemplo, ES).";
     return e;
   }
-  $("b2b-f").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var f = e.target;
-    var val = function (k) { return String(f.elements[k].value || "").trim(); };
-    var r = { empresa: val("empresa"), nombre: val("nombre"), email: val("email"), telefono: val("telefono"), nif: normId(val("nif")), dni: normId(val("dni")), nifIva: normId(val("nifIva")) };
-    var errs = validB2B(r);
+  function validEmail(v) { return /^[^@ ]+@[^@ ]+[.][^@ ]{2,}$/.test(v); }
+
+  /* ---------------- mayoristas: cuenta (Wix Members) ---------------- */
+  // Alta e inicio de sesión con correo y contraseña. Los datos de la empresa se guardan en la ficha
+  // del cliente en Wix (contactos), así que el mayorista solo los escribe una vez.
+  function b64url(bytes) {
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin).split("+").join("-").split("/").join("_").replace(/=+$/, "");
+  }
+  function randomStr(n) { var a = new Uint8Array(n); crypto.getRandomValues(a); return b64url(a); }
+  function pkce() {
+    var v = randomStr(32);
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(v)).then(function (h) {
+      return { verifier: v, challenge: b64url(new Uint8Array(h)), state: randomStr(16) };
+    });
+  }
+  function redirectSession(pk, mode, sessionToken, redirectUri) {
+    var req = {
+      clientId: CLIENT_ID,
+      codeChallenge: pk.challenge,
+      codeChallengeMethod: "S256",
+      responseMode: mode,
+      responseType: "code",
+      scope: "offline_access",
+      state: pk.state,
+      sessionToken: sessionToken
+    };
+    if (redirectUri) req.redirectUri = redirectUri;
+    return api("POST", "/_api/redirects-api/v1/redirect-session", { auth: { authRequest: req } }).then(function (d) {
+      var u = d && d.redirectSession && d.redirectSession.fullUrl;
+      if (!u) throw new Error("no redirect url");
+      return u;
+    });
+  }
+  function exchangeCode(code, verifier, redirectUri) {
+    var body = { clientId: CLIENT_ID, grantType: "authorization_code", code: code, codeVerifier: verifier };
+    if (redirectUri) body.redirectUri = redirectUri;
+    return requestToken(body, true);
+  }
+  // Autorización en un iframe invisible: Wix devuelve el código por postMessage.
+  function iframeCode(url, state) {
+    return new Promise(function (resolve, reject) {
+      var fr = document.createElement("iframe");
+      fr.style.display = "none";
+      fr.setAttribute("aria-hidden", "true");
+      var done = false;
+      function finish(err, code) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        window.removeEventListener("message", onMsg);
+        if (fr.parentNode) fr.parentNode.removeChild(fr);
+        if (err) reject(err); else resolve(code);
+      }
+      function onMsg(e) {
+        var d = e.data;
+        if (typeof d === "string") { try { d = JSON.parse(d); } catch (x) { return; } }
+        if (!d || typeof d !== "object") return;
+        var r = d.response && typeof d.response === "object" ? d.response : d;
+        if (r.state !== state) return;
+        if (r.code) finish(null, r.code);
+        else finish(new Error(r.error || "auth"));
+      }
+      var timer = setTimeout(function () { finish(new Error("timeout")); }, 15000);
+      window.addEventListener("message", onMsg);
+      fr.src = url;
+      document.body.appendChild(fr);
+    });
+  }
+  var PKCE_KEY = "adk.pkce";
+  // Plan B: autorización con redirección de página completa (vuelve a la portada con el código).
+  function redirectLogin(sessionToken) {
+    var back = location.origin + "/";
+    return pkce().then(function (pk) {
+      return redirectSession(pk, "fragment", sessionToken, back).then(function (url) {
+        try { sessionStorage.setItem(PKCE_KEY, JSON.stringify({ verifier: pk.verifier, state: pk.state, redirectUri: back })); } catch (e) {}
+        location.assign(url);
+        return new Promise(function () {});
+      });
+    });
+  }
+  function handleRedirectReturn() {
+    var raw = location.hash.length > 1 ? location.hash.slice(1) : location.search.slice(1);
+    if (raw.indexOf("code=") === -1) return false;
+    var saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem(PKCE_KEY) || "null"); } catch (e) { saved = null; }
+    var q = {};
+    raw.split("&").forEach(function (kv) { var i = kv.indexOf("="); if (i > 0) q[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1)); });
+    if (!saved || q.state !== saved.state) return false;
+    try { sessionStorage.removeItem(PKCE_KEY); } catch (e) {}
+    history.replaceState(null, "", location.pathname);
+    exchangeCode(q.code, saved.verifier, saved.redirectUri).then(afterLogin).catch(function () {
+      toast("No se ha podido iniciar sesión. Inténtalo de nuevo.");
+    });
+    return true;
+  }
+  var cred = null;   // correo y contraseña mientras dura el inicio de sesión (para el plan B)
+  function authorize(sessionToken) {
+    return pkce().then(function (pk) {
+      return redirectSession(pk, "web_message", sessionToken).then(function (url) {
+        return iframeCode(url, pk.state);
+      }).then(function (code) {
+        return exchangeCode(code, pk.verifier);
+      });
+    }).catch(function (err) {
+      // Si el iframe no responde, se repite el acceso con redirección completa.
+      if (!cred) throw err;
+      return api("POST", "/_api/iam/authentication/v2/login", { loginId: { email: cred.email }, password: cred.password })
+        .then(function (d) {
+          if (d.state !== "SUCCESS" || !d.sessionToken) throw err;
+          return redirectLogin(d.sessionToken);
+        });
+    });
+  }
+  function fieldValue(cf, key) {
+    var v = cf && cf[key];
+    if (v && typeof v === "object") v = v.value;
+    if (v && typeof v === "object") v = v.strValue != null ? v.strValue : v.value;
+    return v == null ? "" : String(v);
+  }
+  function profileFromMember(m) {
+    var c = m.contact || {};
+    var cf = c.customFields || {};
+    var phones = c.phones || [];
+    var ph = phones[0];
+    if (ph && typeof ph === "object") ph = ph.phone || ph.e164Phone || "";
+    return {
+      memberId: m.id,
+      email: m.loginEmail || "",
+      empresa: c.company || "",
+      nombre: [c.firstName, c.lastName].filter(Boolean).join(" "),
+      telefono: ph || "",
+      nif: fieldValue(cf, F_NIF),
+      dni: fieldValue(cf, F_DNI),
+      nifIva: fieldValue(cf, F_IVA)
+    };
+  }
+  function loadMember() {
+    return api("GET", "/members/v1/members/my?fieldsets=FULL").then(function (d) {
+      if (!d || !d.member) throw new Error("no member");
+      b2b = profileFromMember(d.member);
+      store(false, B2B_KEY, JSON.stringify(b2b));
+      renderB2BState();
+      return b2b;
+    });
+  }
+  function splitName(n) {
+    var parts = n.trim().split(/\s+/);
+    return { first: parts.shift() || "", last: parts.join(" ") };
+  }
+  function saveMemberProfile(r) {
+    var nm = splitName(r.nombre);
+    var cf = {};
+    cf[F_NIF] = { value: r.nif };
+    cf[F_DNI] = { value: r.dni };
+    cf[F_IVA] = { value: r.nifIva || "" };
+    var body = { member: { contact: { firstName: nm.first, lastName: nm.last, company: r.empresa, phones: [r.telefono], customFields: cf } } };
+    return api("PATCH", "/members/v1/members/" + encodeURIComponent(b2b.memberId), body);
+  }
+  function profileComplete(p) { return !!(p && p.empresa && p.nif && p.dni && p.telefono); }
+  var pendingProfile = null;   // datos del alta, por si hay que guardarlos después de entrar
+  function afterLogin() {
+    return loadMember().then(function () {
+      if (pendingProfile && !profileComplete(b2b)) {
+        var pp = pendingProfile;
+        return saveMemberProfile(pp).then(loadMember).catch(function () {
+          // Si no se pudieran guardar en Wix, al menos se usan en este navegador.
+          Object.keys(pp).forEach(function (k) { if (!b2b[k]) b2b[k] = pp[k]; });
+          store(false, B2B_KEY, JSON.stringify(b2b));
+        });
+      }
+    }).then(function () {
+      pendingProfile = null;
+      cred = null;
+      loadCart();
+      if (!profileComplete(b2b)) {
+        openB2BForm("edit");
+        b2bMsg("Completa los datos de tu empresa para comprar como mayorista.", true);
+        return;
+      }
+      closeLayers(true);
+      setB2BMode(true);
+      toast("¡Hola, " + (b2b.empresa || "bienvenido") + "! Ya ves los precios de mayorista (IVA aparte).");
+      setTimeout(goToShop, reduceMotion ? 0 : 450);
+    });
+  }
+  function logout(silent) {
+    tokens = null;
+    store(false, TOKEN_KEY, null);
+    b2b = null;
+    store(false, B2B_KEY, null);
+    setB2BMode(false);
+    renderB2BState();
+    loadCart();
+    if (!silent) toast("Has cerrado sesión. Sigues en la tienda normal.");
+  }
+  window.adkSessionLost = function () {
+    if (!b2b) return;
+    logout(true);
+    toast("Tu sesión de mayorista ha caducado. Vuelve a iniciar sesión.");
+  };
+
+  /* ---------------- mayoristas: formulario ---------------- */
+  var b2bView = "login";
+  var verifyToken = null;
+  var VIEW_TEXT = {
+    login: ["Iniciar sesión", "Entra con el correo y la contraseña de tu cuenta de mayorista.", "Entrar"],
+    signup: ["Crear cuenta de mayorista", "Rellena los datos de tu empresa una sola vez. Después solo tendrás que entrar con tu correo y tu contraseña.", "Crear cuenta y entrar"],
+    verify: ["Verifica tu correo", "", "Verificar y entrar"],
+    edit: ["Datos de la empresa", "Estos datos se añaden a tus pedidos y facturas de mayorista.", "Guardar datos"]
+  };
+  function b2bMsg(t, isErr) {
+    var n = $("b2b-note");
+    n.textContent = t || "";
+    n.classList.toggle("error", !!isErr);
+  }
+  function setB2BView(v) {
+    b2bView = v;
+    var f = $("b2b-f");
+    f.setAttribute("data-view", v);
+    Array.prototype.forEach.call(f.querySelectorAll("[data-show]"), function (el) {
+      el.hidden = el.getAttribute("data-show").split(" ").indexOf(v) === -1;
+    });
+    $("b2b-tabs").hidden = !(v === "login" || v === "signup");
+    Array.prototype.forEach.call(f.querySelectorAll("[data-b2b-view]"), function (b) {
+      b.setAttribute("aria-selected", b.getAttribute("data-b2b-view") === v ? "true" : "false");
+    });
+    var t = VIEW_TEXT[v];
+    $("b2b-title").textContent = t[0];
+    if (v !== "verify") $("b2b-intro").textContent = t[1];
+    $("b2b-submit").innerHTML = esc(t[2]) + ' <svg class="arrow"><use href="#i-arrow"/></svg>';
+    f.elements.password.setAttribute("autocomplete", v === "signup" ? "new-password" : "current-password");
+    $("b2b-fine").hidden = v === "login" || v === "verify";
+    Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) { x.classList.remove("bad"); x.querySelector("em").textContent = ""; });
+    $("b2b-min").classList.remove("bad");
+    $("b2b-priv").classList.remove("bad");
+    b2bMsg("");
+  }
+  function openB2BForm(view) {
+    var f = $("b2b-f");
+    var v = view || (b2b ? "edit" : "login");
+    if (v === "edit" && b2b) {
+      ["empresa", "nombre", "telefono", "nif", "dni", "nifIva"].forEach(function (k) { f.elements[k].value = b2b[k] || ""; });
+    }
+    f.elements.password.value = "";
+    f.elements.password2.value = "";
+    f.elements.code.value = "";
+    setB2BView(v);
+    openLayer("b2b-form");
+  }
+  function markErrors(errs) {
+    var f = $("b2b-f");
     Array.prototype.forEach.call(f.querySelectorAll(".field"), function (x) {
+      if (x.closest("[hidden]")) return;
       var k = x.querySelector("input").name;
       x.classList.toggle("bad", !!errs[k]);
       x.querySelector("em").textContent = errs[k] || "";
     });
-    var priv = f.elements.privacidad.checked;
-    var min = f.elements.minimo.checked;
-    $("b2b-priv").classList.toggle("bad", !priv);
-    $("b2b-min").classList.toggle("bad", !min);
-    var note = $("b2b-note");
-    if (Object.keys(errs).length || !priv || !min) {
-      note.classList.add("error");
-      note.textContent = Object.keys(errs).length ? "Revisa los datos marcados." : (!min ? "Acepta el pedido mínimo de 100 € para continuar." : "Marca la casilla para continuar.");
-      var bad = f.querySelector(".field.bad input");
-      if (bad) bad.focus();
+    var bad = f.querySelector(".field.bad input");
+    if (bad) bad.focus();
+  }
+  function authErrorText(err, kind) {
+    var t = JSON.stringify(err && err.data || {}).toLowerCase() + " " + String(err && err.message || "").toLowerCase();
+    if (t.indexOf("captcha") !== -1) return "No hemos podido verificar el acceso. Escríbenos por WhatsApp al 614 65 37 36.";
+    if (kind === "signup" && (t.indexOf("exist") !== -1 || t.indexOf("19995") !== -1 || t.indexOf("already") !== -1)) return "Ya hay una cuenta con este correo. Inicia sesión con tu contraseña.";
+    if (kind === "login" && err && err.status >= 400 && err.status < 500) return "Correo o contraseña incorrectos.";
+    if (kind === "verify") return "El código no es correcto o ha caducado.";
+    if (t.indexOf("password") !== -1) return "La contraseña no es válida. Usa al menos 8 caracteres.";
+    return "No se ha podido completar. Inténtalo de nuevo en unos segundos.";
+  }
+  // Respuesta de alta, inicio de sesión o verificación.
+  function handleAuthState(d) {
+    var st = d && d.state;
+    if (st === "SUCCESS" && d.sessionToken) {
+      b2bMsg("Entrando…");
+      return authorize(d.sessionToken).then(afterLogin);
+    }
+    if (st === "REQUIRE_EMAIL_VERIFICATION") {
+      verifyToken = d.stateToken;
+      setB2BView("verify");
+      $("b2b-intro").textContent = "Te hemos enviado un código a " + (cred ? cred.email : "tu correo") + ". Escríbelo aquí para entrar.";
       return;
     }
-    note.classList.remove("error");
-    note.textContent = "";
-    b2b = r;
-    store(false, B2B_KEY, JSON.stringify(r));
-    closeLayers(true);
-    setB2BMode(true);
-    toast("¡Bienvenido! Ya ves los precios de mayorista (IVA aparte).");
-    setTimeout(goToShop, reduceMotion ? 0 : 450);
+    if (st === "REQUIRE_OWNER_APPROVAL") {
+      b2bMsg("Tu cuenta está creada y pendiente de aprobación. Te avisaremos por correo en cuanto esté activa.");
+      return;
+    }
+    throw new Error("state " + st);
+  }
+  function readCompany(f) {
+    var val = function (k) { return String(f.elements[k].value || "").trim(); };
+    return { empresa: val("empresa"), nombre: val("nombre"), telefono: val("telefono"), nif: normId(val("nif")), dni: normId(val("dni")), nifIva: normId(val("nifIva")) };
+  }
+  var b2bBusy = false;
+  $("b2b-f").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (b2bBusy) return;
+    var f = e.target;
+    var email = String(f.elements.email.value || "").trim().toLowerCase();
+    var pass = String(f.elements.password.value || "");
+    var errs = {};
+    var job;
+    if (b2bView === "login") {
+      if (!validEmail(email)) errs.email = "Revisa el correo electrónico.";
+      if (!pass) errs.password = "Escribe tu contraseña.";
+      markErrors(errs);
+      if (Object.keys(errs).length) { b2bMsg("Revisa los datos marcados.", true); return; }
+      cred = { email: email, password: pass };
+      pendingProfile = null;
+      job = function () {
+        return api("POST", "/_api/iam/authentication/v2/login", { loginId: { email: email }, password: pass })
+          .then(handleAuthState, function (err) { throw { text: authErrorText(err, "login") }; });
+      };
+    } else if (b2bView === "signup") {
+      var r = readCompany(f);
+      errs = validB2B(r);
+      if (!validEmail(email)) errs.email = "Revisa el correo electrónico.";
+      if (pass.length < 8) errs.password = "Usa al menos 8 caracteres.";
+      else if (pass !== f.elements.password2.value) errs.password2 = "Las contraseñas no coinciden.";
+      markErrors(errs);
+      var min = f.elements.minimo.checked, priv = f.elements.privacidad.checked;
+      $("b2b-min").classList.toggle("bad", !min);
+      $("b2b-priv").classList.toggle("bad", !priv);
+      if (Object.keys(errs).length || !min || !priv) {
+        b2bMsg(Object.keys(errs).length ? "Revisa los datos marcados." : (!min ? "Acepta el pedido mínimo de 100 € para continuar." : "Marca la casilla para continuar."), true);
+        return;
+      }
+      cred = { email: email, password: pass };
+      pendingProfile = r;
+      var nm = splitName(r.nombre);
+      var cf = [
+        { name: F_NIF.slice(7), value: { strValue: r.nif } },
+        { name: F_DNI.slice(7), value: { strValue: r.dni } }
+      ];
+      if (r.nifIva) cf.push({ name: F_IVA.slice(7), value: { strValue: r.nifIva } });
+      var full = { firstName: nm.first, lastName: nm.last, company: r.empresa, phonesV2: [{ phone: r.telefono.replace(/[^0-9+]/g, ""), tag: "WORK" }], customFields: cf };
+      var basic = { firstName: nm.first, lastName: nm.last, company: r.empresa };
+      job = function () {
+        var reg = function (profile) {
+          return api("POST", "/_api/iam/authentication/v2/register", { loginId: { email: email }, password: pass, profile: profile });
+        };
+        return reg(full).catch(function (err) {
+          // Si Wix rechaza algún dato del perfil, se crea la cuenta solo con lo básico y el resto se guarda al entrar.
+          var t = authErrorText(err, "signup");
+          if (err && err.status === 400 && t.indexOf("Ya hay") === -1) return reg(basic);
+          throw err;
+        }).then(handleAuthState, function (err) { throw { text: authErrorText(err, "signup") }; });
+      };
+    } else if (b2bView === "verify") {
+      var code = String(f.elements.code.value || "").replace(/\s/g, "");
+      if (!code) { markErrors({ code: "Escribe el código que te hemos enviado." }); return; }
+      job = function () {
+        return api("POST", "/_api/iam/verification/v1/auth/verify", { code: code, stateToken: verifyToken })
+          .then(handleAuthState, function (err) { throw { text: authErrorText(err, "verify") }; });
+      };
+    } else {
+      var r2 = readCompany(f);
+      errs = validB2B(r2);
+      markErrors(errs);
+      if (Object.keys(errs).length) { b2bMsg("Revisa los datos marcados.", true); return; }
+      job = function () {
+        return saveMemberProfile(r2).then(loadMember).catch(function () {
+          Object.keys(r2).forEach(function (k) { b2b[k] = r2[k]; });
+          store(false, B2B_KEY, JSON.stringify(b2b));
+          renderB2BState();
+        }).then(function () {
+          closeLayers(true);
+          if (!b2bMode) { setB2BMode(true); setTimeout(goToShop, reduceMotion ? 0 : 450); }
+          toast("Datos de la empresa guardados.");
+        });
+      };
+    }
+    b2bBusy = true;
+    var btn = $("b2b-submit");
+    btn.disabled = true;
+    b2bMsg("Un momento…");
+    job().catch(function (err) {
+      b2bMsg(err && err.text || authErrorText(err, b2bView), true);
+    }).then(function () {
+      b2bBusy = false;
+      btn.disabled = false;
+    });
   });
+  $("b2b-tabs").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-b2b-view]");
+    if (b) setB2BView(b.getAttribute("data-b2b-view"));
+  });
+  $("b2b-forgot").addEventListener("click", function () {
+    var f = $("b2b-f");
+    var email = String(f.elements.email.value || "").trim().toLowerCase();
+    if (!validEmail(email)) { markErrors({ email: "Escribe tu correo y vuelve a pulsar." }); return; }
+    b2bMsg("Enviando…");
+    api("POST", "/_api/iam/recovery/v1/send-email", { email: email, redirect: { url: location.origin + "/", clientId: CLIENT_ID } })
+      .then(function () { b2bMsg("Te hemos enviado un correo para crear una contraseña nueva."); })
+      .catch(function () { b2bMsg("No se ha podido enviar el correo. Escríbenos por WhatsApp al 614 65 37 36.", true); });
+  });
+  $("b2b-login-btn").addEventListener("click", function () { openB2BForm("login"); });
+  $("b2b-signup-btn").addEventListener("click", function () { openB2BForm("signup"); });
   $("b2b-enter").addEventListener("click", function () {
-    if (!b2b) { openB2BForm(); return; }
+    if (!b2b) { openB2BForm("login"); return; }
     setB2BMode(true);
     goToShop();
   });
-  $("b2b-edit").addEventListener("click", openB2BForm);
-  // Los enlaces "Mayoristas" del menú: si aún no se ha dado de alta, llevan a la sección y abren el formulario.
+  $("b2b-edit").addEventListener("click", function () { openB2BForm("edit"); });
+  $("b2b-logout").addEventListener("click", function () { logout(false); });
+  // Los enlaces "Mayoristas" del menú: si no ha iniciado sesión, llevan a la sección y abren el acceso.
   document.addEventListener("click", function (e) {
     var a = e.target.closest("[data-b2b-link]");
     if (!a || b2b) return;
     e.preventDefault();
     var sec = $("mayoristas");
     if (sec) window.scrollTo({ top: sec.offsetTop - 40, behavior: reduceMotion ? "auto" : "smooth" });
-    setTimeout(openB2BForm, reduceMotion ? 0 : 120);
+    setTimeout(function () { openB2BForm("login"); }, reduceMotion ? 0 : 120);
   });
   $("b2b-exit").addEventListener("click", function () {
     setB2BMode(false);
-    toast("Has salido del modo mayorista. Ves la tienda con los precios normales.");
+    toast("Estás en la tienda normal. Puedes volver a la de mayoristas cuando quieras desde «Mayoristas».");
+    goToShop();
   });
   renderB2BState();
+  // Vuelta del inicio de sesión (plan B) o comprobación de la sesión guardada.
+  if (!handleRedirectReturn() && tokens && tokens.member) {
+    loadMember().catch(function (err) {
+      if (err && (err.status === 401 || err.status === 403 || err.status === 404)) logout(true);
+    });
+  }
 
   /* ---------------- búsqueda ---------------- */
   $("search-input").addEventListener("input", function () {
