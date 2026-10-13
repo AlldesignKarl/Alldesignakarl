@@ -777,7 +777,7 @@ body.b2b-on .toast{bottom:96px;}
         <div class="b2b-perks">
           <div class="b2b-perk reveal"><span class="big">21 %</span><div><h3>Precios de mayorista, IVA aparte</h3><p>Ves cada pieza a precio de mayorista sin IVA. El 21 % se suma al pagar y va desglosado en tu factura.</p></div></div>
           <div class="b2b-perk reveal"><span class="big">100 €</span><div><h3>Pedido mínimo de 100 €</h3><p>Combina las piezas, colores y aromas que quieras hasta llegar a 100 €.</p></div></div>
-          <div class="b2b-perk reveal"><span class="big">6,95 €</span><div><h3>Envío a toda Europa</h3><p>6,95 € a España y 14,95 € al resto de Europa, por pedido. Pagas con la plataforma segura de Wix.</p></div></div>
+          <div class="b2b-perk reveal"><span class="big">6,95 €</span><div><h3>Envío a toda Europa</h3><p>Enviamos con Correos: 6,95 € a España y 14,95 € al resto de Europa, por pedido. Pagas con la plataforma segura de Wix.</p></div></div>
         </div>
         <div class="reveal">
           <ol class="b2b-steps">
@@ -950,7 +950,7 @@ body.b2b-on .toast{bottom:96px;}
     <div class="subtotal"><span id="cart-vat-label">IVA incluido (21 %)</span><strong id="cart-vat"></strong></div>
     <div class="subtotal"><span>Envío</span><strong id="cart-ship">Gratis</strong></div>
     <div class="subtotal total"><span id="cart-total-label">Total</span><strong id="cart-total"></strong></div>
-    <small id="cart-note">Precios con IVA incluido. Envío gratis.</small>
+    <small id="cart-note">Precios con IVA incluido. Envío gratis con Correos.</small>
     <div class="cart-min" id="cart-min" hidden></div>
     <button class="pill dark caps" id="checkout" type="button">Finalizar compra <svg class="arrow"><use href="#i-arrow"/></svg></button>
   </div>
@@ -970,7 +970,7 @@ body.b2b-on .toast{bottom:96px;}
       <div class="b2b-terms" aria-label="Condiciones para mayoristas" data-show="signup">
         <div class="min"><b>100 €</b><span>Pedido mínimo (sin IVA)</span></div>
         <div><b>21 %</b><span>IVA aparte</span></div>
-        <div><b>6,95 €</b><span>Envío España · Europa 14,95 €</span></div>
+        <div><b>6,95 €</b><span>Envío Correos España · Europa 14,95 €</span></div>
       </div>
       <div data-show="signup edit">
         <p class="b2b-sub" data-show="signup">Datos de la empresa</p>
@@ -1996,8 +1996,8 @@ body.b2b-on .toast{bottom:96px;}
     $("cart-total-label").textContent = isB2B ? "Total (sin envío)" : "Total";
     $("cart-total").textContent = money(sub, cur);
     $("cart-note").textContent = isB2B
-      ? "Pedido de mayorista: IVA aparte. Envío: 6,95 € a España o 14,95 € al resto de Europa. Pedido mínimo de " + money(B2B_MIN) + " sin IVA."
-      : "Precios con IVA incluido. Envío gratis.";
+      ? "Pedido de mayorista: IVA aparte. Envío con Correos: 6,95 € a España o 14,95 € al resto de Europa. Pedido mínimo de " + money(B2B_MIN) + " sin IVA."
+      : "Precios con IVA incluido. Envío gratis con Correos.";
     $("cart-foot").hidden = false;
     renderB2BState();
   }
