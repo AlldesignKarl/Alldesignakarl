@@ -1166,13 +1166,16 @@ body.b2b-on .toast{bottom:96px;}
     "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": "f4d56313-6834-4f16-93d0-f07d02b35f0a",
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": "2435d64f-e41d-4995-b730-f3a8cc13ed5a",
     "932d6810-3dbc-43b6-8f02-a9b67b908d4a": "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b",
-    "b3bf073b-3e6d-448a-84e5-53926269346d": "383654de-5b5b-471b-828b-e7cae370fb42"
+    "b3bf073b-3e6d-448a-84e5-53926269346d": "383654de-5b5b-471b-828b-e7cae370fb42",
+    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": "d6ddf2f5-750a-4da1-b881-1041ab843eba"
   };
   // PVP recomendado (IVA incluido) que aconsejamos a las tiendas para revender cada pieza.
+  // Si depende de una opción, va por nombre de la opción elegida.
   var WHOLESALE_PVP = {
     "b3bf073b-3e6d-448a-84e5-53926269346d": 64.95,
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 54.90,
-    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": 45.90
+    "932d6810-3dbc-43b6-8f02-a9b67b908d4a": 45.90,
+    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": { "Con luz": 54.90, "Sin luz": 49.90 }
   };
   var B2B_MIN = 100;           // pedido mínimo de mayorista, en euros y sin IVA
   var B2B_KEY = "adk.b2b.v2";  // copia local de los datos de la cuenta (la buena está en Wix)
@@ -1364,8 +1367,9 @@ body.b2b-on .toast{bottom:96px;}
   };
   BACK_PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = BACK_PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
   NAMED_PREVIEWS["b3bf073b-3e6d-448a-84e5-53926269346d"] = NAMED_PREVIEWS["383654de-5b5b-471b-828b-e7cae370fb42"];
+  NAMED_PREVIEWS["9dabfb67-dad4-4bcf-b30c-a2408218c5d0"] = NAMED_PREVIEWS["d6ddf2f5-750a-4da1-b881-1041ab843eba"];
   // Letra de resina y calavera con flores: muestras cuadradas.
-  var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1, "d6ddf2f5-750a-4da1-b881-1041ab843eba": 1 };
+  var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1, "d6ddf2f5-750a-4da1-b881-1041ab843eba": 1, "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": 1 };
   // Calavera con flores: foto con la luz y el color de las rosas elegidos. Clave: "luz|color".
   var COMBO_PREVIEWS = {
     "d6ddf2f5-750a-4da1-b881-1041ab843eba": {
@@ -1406,6 +1410,7 @@ body.b2b-on .toast{bottom:96px;}
     });
     return list.length ? list : null;
   }
+  COMBO_PREVIEWS["9dabfb67-dad4-4bcf-b30c-a2408218c5d0"] = COMBO_PREVIEWS["d6ddf2f5-750a-4da1-b881-1041ab843eba"];
   var previewMaps = {};
   function previewMap(id) {
     if (!PREVIEWS[id] && !NAMED_PREVIEWS[id]) return null;
@@ -1647,6 +1652,14 @@ body.b2b-on .toast{bottom:96px;}
       '<div class="row"><span>IVA (21 %)</span><strong>' + esc(money(iva)) + "</strong></div>" +
       '<div class="row tot"><span>Total con IVA</span><strong>' + esc(money(gross)) + "</strong></div>";
     var pvp = WHOLESALE_PVP[current.id];
+    if (pvp && typeof pvp === "object") {
+      var byName = pvp, hit = 0;
+      (current.options || []).forEach(function (o) {
+        var n = picked[o.id] && choiceName(o, picked[o.id]);
+        if (n && byName[n]) hit = byName[n];
+      });
+      pvp = hit || Math.min.apply(null, Object.keys(byName).map(function (k) { return byName[k]; }));
+    }
     if (!pvp) {
       var retail = products.filter(function (p) { return p.id === WHOLESALE[current.id]; })[0];
       var r = retail && retail.actualPriceRange && retail.actualPriceRange.minValue;
