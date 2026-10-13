@@ -1353,9 +1353,9 @@ body.b2b-on .toast{bottom:96px;}
       "Blanco": "083397a9bf9e469b92bdc13ea7d0577c",
       "Negro": "2e263f95dda1482ea12a1b9fde61cbf3"
     },
-    "__CALAVERA_ROSAS__": {
-      "Con luz": "__CON_LUZ__",
-      "Sin luz": "__SIN_LUZ__"
+    "d6ddf2f5-750a-4da1-b881-1041ab843eba": {
+      "Con luz": "40d94afca0c9455d8f7580ab5abfe405",
+      "Sin luz": "175cb70371a741358dd36b8d2d2f65cb"
     }
   };
   // Parte trasera (con las flores) en el color elegido. Clave: posición del color en COLOR_ORDER.
@@ -1564,15 +1564,17 @@ body.b2b-on .toast{bottom:96px;}
     var cur = current.currency || "EUR";
     var unit = v && v.price && v.price.actualPrice && v.price.actualPrice.amount;
     var cmpUnit = v && v.price && v.price.compareAtPrice && v.price.compareAtPrice.amount;
+    var from = "";
     if (!unit) {
       var r = current.actualPriceRange || {};
       unit = r.minValue && r.minValue.amount;
+      if (r.maxValue && Number(r.maxValue.amount) > Number(unit)) from = "Desde ";
     }
     var total = Math.round(Number(unit) * qty * 100) / 100;
     var cmp = cmpUnit ? Math.round(Number(cmpUnit) * qty * 100) / 100 : 0;
     var b2bItem = isWholesaleId(current.id);
     var show = b2bItem ? net : round2;
-    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(show(cmp), cur)) + "</s>" : "") + esc(money(show(total), cur)) +
+    $("pd-price").innerHTML = (cmp > total ? "<s>" + esc(money(show(cmp), cur)) + "</s>" : "") + from + esc(money(show(total), cur)) +
       (b2bItem
         ? '<span class="pd-vat">Precio de mayorista sin IVA · + 21 % de IVA = ' + esc(money(total, cur)) + "</span>"
         : '<span class="pd-vat">IVA incluido</span>');
