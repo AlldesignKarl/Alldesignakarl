@@ -1364,8 +1364,8 @@ body.b2b-on .toast{bottom:96px;}
   };
   BACK_PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = BACK_PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
   NAMED_PREVIEWS["b3bf073b-3e6d-448a-84e5-53926269346d"] = NAMED_PREVIEWS["383654de-5b5b-471b-828b-e7cae370fb42"];
-  // Letra de resina: muestras cuadradas.
-  var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1 };
+  // Letra de resina y calavera con flores: muestras cuadradas.
+  var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1, "d6ddf2f5-750a-4da1-b881-1041ab843eba": 1 };
   var previewMaps = {};
   function previewMap(id) {
     if (!PREVIEWS[id] && !NAMED_PREVIEWS[id]) return null;
@@ -1566,9 +1566,19 @@ body.b2b-on .toast{bottom:96px;}
     var cmpUnit = v && v.price && v.price.compareAtPrice && v.price.compareAtPrice.amount;
     var from = "";
     if (!unit) {
+      // Sin elegirlo todo: el precio de las variantes que encajan con lo elegido hasta ahora.
+      var fit = variants.filter(function (x) {
+        return (current.options || []).every(function (o) {
+          return !picked[o.id] || (x.optionChoices || []).some(function (oc) {
+            return oc.optionChoiceIds && oc.optionChoiceIds.optionId === o.id && oc.optionChoiceIds.choiceId === picked[o.id];
+          });
+        });
+      }).map(function (x) { return Number(x.price && x.price.actualPrice && x.price.actualPrice.amount); }).filter(function (n) { return n > 0; });
       var r = current.actualPriceRange || {};
-      unit = r.minValue && r.minValue.amount;
-      if (r.maxValue && Number(r.maxValue.amount) > Number(unit)) from = "Desde ";
+      var lo = fit.length ? Math.min.apply(null, fit) : Number(r.minValue && r.minValue.amount);
+      var hi = fit.length ? Math.max.apply(null, fit) : Number(r.maxValue && r.maxValue.amount);
+      unit = lo;
+      if (hi > lo) from = "Desde ";
     }
     var total = Math.round(Number(unit) * qty * 100) / 100;
     var cmp = cmpUnit ? Math.round(Number(cmpUnit) * qty * 100) / 100 : 0;
