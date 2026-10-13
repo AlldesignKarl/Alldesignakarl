@@ -1347,11 +1347,15 @@ body.b2b-on .toast{bottom:96px;}
   };
   PREVIEWS["e1cac3fe-bc04-4995-bb0d-545b7f1621e2"] = PREVIEWS["2435d64f-e41d-4995-b730-f3a8cc13ed5a"];
   PREVIEWS["932d6810-3dbc-43b6-8f02-a9b67b908d4a"] = PREVIEWS["1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b"];
-  // Productos con sus propios colores: foto por nombre del color.
+  // Productos con sus propias opciones (color, luz…): foto por nombre de la opción elegida.
   var NAMED_PREVIEWS = {
     "383654de-5b5b-471b-828b-e7cae370fb42": {
       "Blanco": "083397a9bf9e469b92bdc13ea7d0577c",
       "Negro": "2e263f95dda1482ea12a1b9fde61cbf3"
+    },
+    "__CALAVERA_ROSAS__": {
+      "Con luz": "__CON_LUZ__",
+      "Sin luz": "__SIN_LUZ__"
     }
   };
   // Parte trasera (con las flores) en el color elegido. Clave: posición del color en COLOR_ORDER.
@@ -1383,7 +1387,12 @@ body.b2b-on .toast{bottom:96px;}
   }
   function colorOpt() {
     var os = current && current.options || [];
-    for (var i = 0; i < os.length; i++) if (os[i].optionRenderType === "SWATCH_CHOICES") return os[i];
+    var named = current && NAMED_PREVIEWS[current.id];
+    for (var i = 0; i < os.length; i++) {
+      if (!named) { if (os[i].optionRenderType === "SWATCH_CHOICES") return os[i]; continue; }
+      var cs = os[i].choicesSettings && os[i].choicesSettings.choices || [];
+      for (var j = 0; j < cs.length; j++) if (named[cs[j].name]) return os[i];
+    }
     return null;
   }
   function previewFor(firstId, secondId) {
@@ -1411,6 +1420,14 @@ body.b2b-on .toast{bottom:96px;}
     var imgs = allImages(current);
     var u = currentPreview();
     if (!u) return imgs.map(function (x) { return { u: x, preview: false }; });
+    // Si la foto de la opción ya es una foto del producto, se salta a ella sin duplicarla.
+    var mid = u.split("/media/")[1].split("~")[0];
+    for (var k = 0; k < imgs.length; k++) {
+      if (imgs[k].indexOf(mid) !== -1) {
+        galleryIdx = k;
+        return imgs.map(function (x) { return { u: x, preview: false }; });
+      }
+    }
     var b = backPreview();
     if (b) return [{ u: u, preview: true }, { u: b, preview: true }];
     return imgs.map(function (x, i) { return i === 0 ? { u: u, preview: true } : { u: x, preview: false }; });
@@ -1765,7 +1782,7 @@ body.b2b-on .toast{bottom:96px;}
     updatePreview();
   });
   $("pd-options").addEventListener("pointerover", function (e) {
-    var b = e.target.closest(".swatch[data-choice]");
+    var b = e.target.closest("[data-choice]");
     if (b) preloadFor(b.getAttribute("data-choice"));
   });
   $("pd-mods").addEventListener("input", function (e) {
