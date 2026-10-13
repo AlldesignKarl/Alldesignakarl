@@ -1157,7 +1157,7 @@ body.b2b-on .toast{bottom:96px;}
     return "https://static.wixstatic.com/media/" + name + "/v1/fill/w_" + w + ",h_" + Math.round(w * 1.25) + ",al_c,q_85,enc_auto/" + name;
   }
   // Productos que solo se venden en packs (p. ej. "Pack de 5"): se compran de N en N.
-  var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5, "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": 5 };
+  var PACKS = { "f4d56313-6834-4f16-93d0-f07d02b35f0a": 5, "71a06541-3cbc-4c43-ba3e-e9c90244f0f1": 5, "026f6858-33f8-47a3-8606-36bc4c84183e": 5 };
 
   /* ---------------- mayoristas: datos ---------------- */
   // Copias de los productos para mayoristas, con su propio precio y su perfil de envío "Mayoristas" (envío de pago).
@@ -1167,7 +1167,8 @@ body.b2b-on .toast{bottom:96px;}
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": "2435d64f-e41d-4995-b730-f3a8cc13ed5a",
     "932d6810-3dbc-43b6-8f02-a9b67b908d4a": "1ae0ea11-9aec-46e5-b2a1-33d8ce70b33b",
     "b3bf073b-3e6d-448a-84e5-53926269346d": "383654de-5b5b-471b-828b-e7cae370fb42",
-    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": "d6ddf2f5-750a-4da1-b881-1041ab843eba"
+    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": "d6ddf2f5-750a-4da1-b881-1041ab843eba",
+    "026f6858-33f8-47a3-8606-36bc4c84183e": "89327969-06ec-4059-b72a-a173e7e215c4"
   };
   // PVP recomendado (IVA incluido) que aconsejamos a las tiendas para revender cada pieza.
   // Si depende de una opción, va por nombre de la opción elegida.
@@ -1175,9 +1176,12 @@ body.b2b-on .toast{bottom:96px;}
     "b3bf073b-3e6d-448a-84e5-53926269346d": 64.95,
     "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 54.90,
     "932d6810-3dbc-43b6-8f02-a9b67b908d4a": 45.90,
-    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": { "Con luz": 54.90, "Sin luz": 49.90 }
+    "9dabfb67-dad4-4bcf-b30c-a2408218c5d0": { "Con luz": 54.90, "Sin luz": 49.90 },
+    "026f6858-33f8-47a3-8606-36bc4c84183e": 14.90
   };
   var B2B_MIN = 100;           // pedido mínimo de mayorista, en euros y sin IVA
+  // Piezas de mayorista que no necesitan llegar al mínimo de 100 € (se venden en packs).
+  var B2B_NO_MIN = { "026f6858-33f8-47a3-8606-36bc4c84183e": 1 };
   var B2B_KEY = "adk.b2b.v2";  // copia local de los datos de la cuenta (la buena está en Wix)
   var B2B_MODE_KEY = "adk.b2b.mode";
   // Campos de contacto de Wix donde se guardan los datos fiscales del mayorista.
@@ -1674,7 +1678,9 @@ body.b2b-on .toast{bottom:96px;}
     }
     var sub = b2bSubtotal();
     var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
-    html += '<div class="min">Pedido mínimo de mayorista: <strong>' + esc(money(B2B_MIN)) + "</strong> sin IVA. " +
+    if (B2B_NO_MIN[current.id]) {
+      html += '<div class="min">Pedido mínimo: <strong>' + step + " unidades</strong>, en packs de " + step + ". Esta pieza no necesita llegar al pedido mínimo de " + esc(money(B2B_MIN)) + ".</div>";
+    } else html += '<div class="min">Pedido mínimo de mayorista: <strong>' + esc(money(B2B_MIN)) + "</strong> sin IVA. " +
       (left > 0 ? (sub > 0 ? "Llevas " + esc(money(sub)) + " en la cesta, te faltan " + esc(money(left)) + "." : "Combina las piezas que quieras hasta llegar al mínimo.") : "Ya lo has alcanzado.") + "</div>";
     box.innerHTML = html;
     box.hidden = false;
@@ -1996,7 +2002,8 @@ body.b2b-on .toast{bottom:96px;}
     $("cart-total-label").textContent = isB2B ? "Total (sin envío)" : "Total";
     $("cart-total").textContent = money(sub, cur);
     $("cart-note").textContent = isB2B
-      ? "Pedido de mayorista: IVA aparte. Envío con Correos: 6,95 € a España o 14,95 € al resto de Europa. Pedido mínimo de " + money(B2B_MIN) + " sin IVA."
+      ? "Pedido de mayorista: IVA aparte. Envío con Correos: 6,95 € a España o 14,95 € al resto de Europa. " +
+        (b2bNeedsMin() ? "Pedido mínimo de " + money(B2B_MIN) + " sin IVA." : "Sin pedido mínimo de " + money(B2B_MIN) + " para estas piezas.")
       : "Precios con IVA incluido. Envío gratis con Correos.";
     $("cart-foot").hidden = false;
     renderB2BState();
@@ -2034,7 +2041,7 @@ body.b2b-on .toast{bottom:96px;}
     var isB2B = cartLines().some(isWholesaleLine);
     if (isB2B && !b2b) { openB2BForm("login"); return; }
     if (isB2B && !profileComplete(b2b)) { openB2BForm("edit"); b2bMsg("Completa los datos de tu empresa para tus facturas.", true); return; }
-    if (isB2B && b2bSubtotal() < B2B_MIN) { renderB2BState(); toast("El pedido mínimo de mayorista es de " + money(B2B_MIN) + " sin IVA."); return; }
+    if (isB2B && b2bLeft() > 0) { renderB2BState(); toast("El pedido mínimo de mayorista es de " + money(B2B_MIN) + " sin IVA."); return; }
     btn.disabled = true;
     // En los pedidos de mayorista se añaden los datos de la empresa como nota del pedido.
     var pre = isB2B
@@ -2145,6 +2152,13 @@ body.b2b-on .toast{bottom:96px;}
   function isWholesaleLine(li) {
     return !!(li && li.catalogReference && li.catalogReference.appId === STORES_APP_ID && isWholesaleId(li.catalogReference.catalogItemId));
   }
+  // El mínimo de 100 € solo se pide si en la cesta hay alguna pieza que lo necesite.
+  function b2bNeedsMin() {
+    return cartLines().some(function (li) { return isWholesaleLine(li) && !B2B_NO_MIN[li.catalogReference.catalogItemId]; });
+  }
+  function b2bLeft() {
+    return b2bNeedsMin() ? Math.max(0, Math.round((B2B_MIN - b2bSubtotal()) * 100) / 100) : 0;
+  }
   function b2bSubtotal() {
     var s = cartLines().reduce(function (t, li) {
       return t + (isWholesaleLine(li) ? net(Number(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount) || 0) : 0);
@@ -2189,25 +2203,28 @@ body.b2b-on .toast{bottom:96px;}
   function renderB2BState() {
     var sub = b2bSubtotal();
     var hasB2B = cartLines().some(isWholesaleLine);
-    var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
-    var pct = Math.min(100, sub / B2B_MIN * 100);
+    var noMin = hasB2B && !b2bNeedsMin();
+    var left = b2bLeft();
+    var pct = noMin ? 100 : Math.min(100, sub / B2B_MIN * 100);
     var bar = $("b2b-bar");
     bar.classList.toggle("show", b2bMode);
     bar.setAttribute("aria-hidden", b2bMode ? "false" : "true");
     document.body.classList.toggle("b2b-on", b2bMode);
     $("b2b-bar-co").textContent = b2b ? b2b.empresa : "";
-    $("b2b-meter-txt").textContent = left > 0 ? "Llevas " + money(sub) + " de " + money(B2B_MIN) : "Pedido mínimo alcanzado · " + money(sub);
+    $("b2b-meter-txt").textContent = noMin ? "Sin mínimo de " + money(B2B_MIN) + " · " + money(sub) : left > 0 ? "Llevas " + money(sub) + " de " + money(B2B_MIN) : "Pedido mínimo alcanzado · " + money(sub);
     $("b2b-fill").style.width = pct + "%";
     var box = $("cart-min");
     box.hidden = !hasB2B;
     box.classList.toggle("ok", left <= 0);
-    box.innerHTML = left > 0
+    box.innerHTML = noMin
+      ? "<strong>Estas piezas no necesitan llegar al pedido mínimo de " + esc(money(B2B_MIN)) + ".</strong> Ya puedes finalizar tu pedido de mayorista." + '<div class="track"><div class="fill" style="width:100%"></div></div>'
+      : left > 0
       ? "Pedido mínimo de mayorista: <strong>" + esc(money(B2B_MIN)) + "</strong>. Te faltan <strong>" + esc(money(left)) + "</strong>." + '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>'
       : "<strong>Pedido mínimo alcanzado.</strong> Ya puedes finalizar tu pedido de mayorista." + '<div class="track"><div class="fill" style="width:100%"></div></div>';
     $("checkout").disabled = hasB2B && left > 0;
     $("shop-eyebrow").textContent = b2bMode ? "Tienda para mayoristas" : "La tienda";
     $("b2b-shopbar").hidden = !b2bMode;
-    $("b2b-shop-left").textContent = left > 0 ? (sub > 0 ? "Llevas " + money(sub) + ", te faltan " + money(left) + "." : "") : "¡Pedido mínimo alcanzado!";
+    $("b2b-shop-left").textContent = noMin ? "Las piezas de tu cesta no tienen pedido mínimo de " + money(B2B_MIN) + "." : left > 0 ? (sub > 0 ? "Llevas " + money(sub) + ", te faltan " + money(left) + "." : "") : "¡Pedido mínimo alcanzado!";
     $("b2b-shop-fill").style.width = pct + "%";
     $("b2b-cta-out").hidden = !!b2b;
     $("b2b-cta-in").hidden = !b2b;
