@@ -1670,11 +1670,16 @@ body.b2b-on .toast{bottom:96px;}
       pvp = r && Number(r.amount) > unit ? Number(r.amount) : 0;
     }
     if (pvp) {
+      // El PVP recomendado y el beneficio van siempre por unidad (en los packs, además, el total del pack).
       var pvpBase = net(pvp);
-      var gain = round2((pvpBase - net(unit)) * step);
-      var margin = Math.round(gain / (pvpBase * step) * 100);
-      html += '<div class="row sep"><span>PVP recomendado' + per + '</span><strong>' + esc(money(round2(pvp * step))) + " IVA incl.</strong></div>" +
-        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por pack" : " por pieza") + '<small>Sin IVA: ' + esc(money(round2(pvpBase * step))) + " − " + esc(money(base)) + '</small></span><strong>' + esc(money(gain)) + " · " + margin + " %</strong></div>";
+      var unitBase = net(unit);
+      var gain = round2(pvpBase - unitBase);
+      var margin = Math.round(gain / pvpBase * 100);
+      var unitTag = step > 1 ? " por unidad" : "";
+      if (step > 1) html += '<div class="row"><span>Precio sin IVA por unidad</span><strong>' + esc(money(unitBase)) + "</strong></div>";
+      html += '<div class="row sep"><span>PVP recomendado' + unitTag + '</span><strong>' + esc(money(pvp)) + " IVA incl.</strong></div>" +
+        '<div class="row gain"><span>Tu beneficio' + (step > 1 ? " por unidad" : " por pieza") + '<small>Sin IVA: ' + esc(money(pvpBase)) + " − " + esc(money(unitBase)) +
+        (step > 1 ? " · por pack de " + step + ": " + esc(money(round2(gain * step))) : "") + '</small></span><strong>' + esc(money(gain)) + " · " + margin + " %</strong></div>";
     }
     var sub = b2bSubtotal();
     var left = Math.max(0, Math.round((B2B_MIN - sub) * 100) / 100);
