@@ -1366,6 +1366,46 @@ body.b2b-on .toast{bottom:96px;}
   NAMED_PREVIEWS["b3bf073b-3e6d-448a-84e5-53926269346d"] = NAMED_PREVIEWS["383654de-5b5b-471b-828b-e7cae370fb42"];
   // Letra de resina y calavera con flores: muestras cuadradas.
   var SQUARE_SWATCHES = { "2435d64f-e41d-4995-b730-f3a8cc13ed5a": 1, "e1cac3fe-bc04-4995-bb0d-545b7f1621e2": 1, "d6ddf2f5-750a-4da1-b881-1041ab843eba": 1 };
+  // Calavera con flores: foto con la luz y el color de las rosas elegidos. Clave: "luz|color".
+  var COMBO_PREVIEWS = {
+    "d6ddf2f5-750a-4da1-b881-1041ab843eba": {
+      light: "Luz",
+      color: "Color de las rosas",
+      imgs: {
+        "Con luz|Negro": "59f92c7541ac41ed986455e673913ea4",
+        "Con luz|Burdeos": "07a53d0360894fe69ca3a8ca996579cd",
+        "Con luz|Azul oscuro": "3c418cc85fc14994b470a48bcf0dc1b0",
+        "Con luz|Morado oscuro": "c9ecd1aa6b61497bbb7028bb2c44a554",
+        "Con luz|Rosa oscuro": "7ce8e428df1b4124ac0b20b4bafc172f",
+        "Sin luz|Negro": "2dd16666313c465db15c5e87c653dc8c",
+        "Sin luz|Burdeos": "b28f9e1128d4496fbf4c6e11e46ee78a",
+        "Sin luz|Azul oscuro": "c071a26a4d394e3aa96a7e1381a9638f",
+        "Sin luz|Morado oscuro": "8f631265fe9d493194e763b47842531f",
+        "Sin luz|Rosa oscuro": "19aa7010a89e40e7ad7ce390272e6809"
+      }
+    }
+  };
+  function optNamed(name) {
+    var os = current && current.options || [];
+    for (var i = 0; i < os.length; i++) if (os[i].name === name) return os[i];
+    return null;
+  }
+  // Con un color elegido: primero la luz elegida (o "Con luz") y después la otra, las dos con ese color.
+  function comboList(colorChoice) {
+    var cfg = current && COMBO_PREVIEWS[current.id];
+    if (!cfg) return null;
+    var lo = optNamed(cfg.light), co = optNamed(cfg.color);
+    var cid = colorChoice || co && picked[co.id];
+    if (!lo || !co || !cid) return null;
+    var c = choiceName(co, cid);
+    var lights = (lo.choicesSettings && lo.choicesSettings.choices || []).map(function (x) { return x.name; });
+    var first = picked[lo.id] ? choiceName(lo, picked[lo.id]) : lights[0];
+    var order = [first].concat(lights.filter(function (n) { return n !== first; }));
+    var list = order.map(function (l) { return cfg.imgs[l + "|" + c]; }).filter(Boolean).map(function (h) {
+      return { u: "https://static.wixstatic.com/media/43eaa1_" + h + "~mv2.jpg", preview: true };
+    });
+    return list.length ? list : null;
+  }
   var previewMaps = {};
   function previewMap(id) {
     if (!PREVIEWS[id] && !NAMED_PREVIEWS[id]) return null;
@@ -1417,6 +1457,8 @@ body.b2b-on .toast{bottom:96px;}
   var gallery = [];
   var galleryIdx = 0;
   function galleryList() {
+    var combo = comboList();
+    if (combo) { galleryIdx = 0; return combo; }
     var imgs = allImages(current);
     var u = currentPreview();
     if (!u) return imgs.map(function (x) { return { u: x, preview: false }; });
@@ -1454,6 +1496,8 @@ body.b2b-on .toast{bottom:96px;}
   }
   // Al pasar por un color, se descarga ya su foto para que el cambio sea instantáneo.
   function preloadFor(choiceId) {
+    var combo = comboList(choiceId);
+    if (combo) { var ci = new Image(); ci.src = sized(combo[0].u, 900); return; }
     var o = colorOpt();
     if (!o) return;
     var u = "";
