@@ -1973,6 +1973,10 @@ body.b2b-on .toast{bottom:96px;}
   /* ---------------- cesta ---------------- */
   var cart = null;
 
+  // En la cesta de Wix (v2) el producto de cada línea va en source.catalogReference.
+  function lineRef(li) {
+    return li && (li.catalogReference || li.source && li.source.catalogReference) || null;
+  }
   function lineQty(li) {
     return li.quantityInfo && (li.quantityInfo.requestedQuantity || li.quantityInfo.confirmedQuantity) || 1;
   }
@@ -2010,8 +2014,9 @@ body.b2b-on .toast{bottom:96px;}
       var img = imgUrl(li.attributes && li.attributes.image && li.attributes.image.url);
       var total = li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount;
       var q = lineQty(li);
-      var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
-      var step = packOfItem(li.catalogReference && li.catalogReference.catalogItemId);
+      var ref = lineRef(li);
+      var isProduct = !!ref && ref.appId === STORES_APP_ID;
+      var step = packOfItem(ref && ref.catalogItemId);
       var less = q - step < step ? 0 : q - step;
       var packNote = step > 1 ? "Pack de " + step + " · " + q + " unidades" : "";
       var dl = [descLines(li), packNote].filter(Boolean).join(String.fromCharCode(10));
@@ -2026,7 +2031,8 @@ body.b2b-on .toast{bottom:96px;}
     var sub = Number(cart.subtotal && (cart.subtotal.amount || cart.subtotal.convertedAmount)) || 0;
     // IVA de cada línea de producto (ya va incluido en el precio de Wix).
     var vat = round2(items.reduce(function (s, li) {
-      var isProduct = li.catalogReference && li.catalogReference.appId === STORES_APP_ID;
+      var ref = lineRef(li);
+      var isProduct = !!ref && ref.appId === STORES_APP_ID;
       return s + (isProduct ? vatIn(li.pricing && li.pricing.totalPrice && li.pricing.totalPrice.amount || 0) : 0);
     }, 0));
     var cur = cart.currency || "EUR";
@@ -2216,11 +2222,12 @@ body.b2b-on .toast{bottom:96px;}
   /* ---------------- mayoristas ---------------- */
   function cartLines() { return cart && cart.lineItems || []; }
   function isWholesaleLine(li) {
-    return !!(li && li.catalogReference && li.catalogReference.appId === STORES_APP_ID && isWholesaleId(li.catalogReference.catalogItemId));
+    var ref = lineRef(li);
+    return !!(ref && ref.appId === STORES_APP_ID && isWholesaleId(ref.catalogItemId));
   }
   // El mínimo de 100 € solo se pide si en la cesta hay alguna pieza que lo necesite.
   function b2bNeedsMin() {
-    return cartLines().some(function (li) { return isWholesaleLine(li) && !B2B_NO_MIN[li.catalogReference.catalogItemId]; });
+    return cartLines().some(function (li) { return isWholesaleLine(li) && !B2B_NO_MIN[lineRef(li).catalogItemId]; });
   }
   function b2bLeft() {
     return b2bNeedsMin() ? Math.max(0, Math.round((B2B_MIN - b2bSubtotal()) * 100) / 100) : 0;
