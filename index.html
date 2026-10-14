@@ -513,6 +513,11 @@ body.b2b-on .toast{bottom:96px;}
 .b2b-terms .min{border-color:var(--gold-soft);background:rgba(180,138,78,.08);}
 .b2b-terms .min span{color:var(--ink);}
 .check + .check{margin-top:12px;}
+.conds{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:10px;}
+.conds li{border:1px solid var(--line);border-radius:4px;padding:14px 16px;background:rgba(255,253,249,.72);font-size:16px;line-height:1.5;color:var(--ink-soft);}
+.conds li strong{display:block;color:var(--ink);font-weight:500;margin-bottom:2px;}
+.conds li.key{border-color:var(--gold-soft);background:rgba(180,138,78,.08);}
+#conds-ok:disabled{opacity:.45;cursor:not-allowed;}
 @media (max-width:560px){.b2b-terms{gap:6px;}.b2b-terms div{padding:10px 4px;}.b2b-terms b{font-size:24px;}.b2b-terms span{font-size:12px;}}
 .field{display:block;margin-top:18px;}
 .field > span{display:block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);}
@@ -1005,6 +1010,27 @@ body.b2b-on .toast{bottom:96px;}
       <p class="pd-note" id="b2b-note"></p>
       <p class="b2b-fine" id="b2b-fine">Tus datos quedan guardados en tu cuenta de Alldesign Karl y se añaden a cada pedido de mayorista.</p>
     </form>
+  </div>
+</div>
+
+<div class="modal" id="b2b-conds" role="dialog" aria-modal="true" aria-labelledby="conds-title" aria-hidden="true">
+  <div class="modal-card narrow">
+    <div class="pd">
+      <button class="icon-btn pd-close" type="button" data-close aria-label="Cerrar"><svg><use href="#i-close"/></svg></button>
+      <p class="caps">Alldesign Karl · Mayoristas</p>
+      <h3 id="conds-title">Condiciones para mayoristas</h3>
+      <p class="b2b-intro">Antes de pagar, lee y acepta nuestras condiciones de venta a tiendas y profesionales.</p>
+      <ul class="conds">
+        <li class="key"><strong>Respetamos el PVP recomendado</strong>Como proveedores, en nuestra tienda online vendemos cada pieza al PVP recomendado que te indicamos en su ficha. No vendemos por debajo de ese precio para no competir con tu tienda.</li>
+        <li class="key"><strong>Ofertas solo en rebajas o con cupones</strong>Solo haremos ofertas o descuentos en épocas de rebajas (por ejemplo, rebajas de invierno y de verano o Black Friday) o con cupones de descuento puntuales. Así no habrá confusiones con los precios de las tiendas.</li>
+        <li><strong>Tu precio de venta lo decides tú</strong>El PVP es una recomendación para que tengas un buen margen: cada tienda es libre de fijar su propio precio de venta.</li>
+        <li><strong>Precios, envío y pedido mínimo</strong>Los precios de mayorista son sin IVA: el 21 % se suma al pagar. Envío con Correos: 6,95 € a España y 14,95 € al resto de Europa. Pedido mínimo de 100 € sin IVA, salvo las piezas que se venden en packs.</li>
+        <li><strong>Factura</strong>Los datos de tu empresa se añaden al pedido para hacer la factura.</li>
+      </ul>
+      <label class="check" id="conds-check"><input type="checkbox" id="conds-accept"><span>He leído y <strong>acepto las condiciones para mayoristas</strong> de Alldesign Karl.</span></label>
+      <div class="pd-actions"><button class="pill dark caps" type="button" id="conds-ok" disabled>Aceptar y pagar <svg class="arrow"><use href="#i-arrow"/></svg></button></div>
+      <p class="b2b-alt"><button type="button" id="conds-back">Volver a la cesta</button></p>
+    </div>
   </div>
 </div>
 
@@ -2047,8 +2073,14 @@ body.b2b-on .toast{bottom:96px;}
     if (isB2B && !b2b) { openB2BForm("login"); return; }
     if (isB2B && !profileComplete(b2b)) { openB2BForm("edit"); b2bMsg("Completa los datos de tu empresa para tus facturas.", true); return; }
     if (isB2B && b2bLeft() > 0) { renderB2BState(); toast("El pedido mínimo de mayorista es de " + money(B2B_MIN) + " sin IVA."); return; }
+    // Antes de cada pago de mayorista hay que aceptar las condiciones.
+    if (isB2B && !condsAccepted) { openConds(); return; }
+    goCheckout(isB2B);
+  });
+  function goCheckout(isB2B) {
+    var btn = $("checkout");
     btn.disabled = true;
-    // En los pedidos de mayorista se añaden los datos de la empresa como nota del pedido.
+    // En los pedidos de mayorista se añaden los datos de la empresa (y las condiciones aceptadas) como nota del pedido.
     var pre = isB2B
       ? api("PATCH", "/ecom/v2/carts/current", { cart: { note: b2bNote() } }).catch(function () {})
       : Promise.resolve();
@@ -2059,9 +2091,32 @@ body.b2b-on .toast{bottom:96px;}
       window.location.href = d.checkoutUrl;
     }).catch(function () {
       btn.disabled = false;
+      condsAccepted = null;
       toast("No se ha podido abrir el pago. Escríbenos por WhatsApp al 614 65 37 36 o a alldesignkarl@gmail.com");
     });
+  }
+  /* ---------------- condiciones para mayoristas ---------------- */
+  var CONDS_VERSION = "1";
+  var condsAccepted = null;   // fecha y hora en que se aceptaron, solo para el pago en curso
+  function openConds() {
+    $("conds-accept").checked = false;
+    $("conds-ok").disabled = true;
+    $("conds-check").classList.remove("bad");
+    openLayer("b2b-conds");
+  }
+  $("conds-accept").addEventListener("change", function () {
+    $("conds-ok").disabled = !this.checked;
+    $("conds-check").classList.remove("bad");
   });
+  $("conds-ok").addEventListener("click", function () {
+    if (!$("conds-accept").checked) { $("conds-check").classList.add("bad"); return; }
+    var d = new Date();
+    var two = function (n) { return (n < 10 ? "0" : "") + n; };
+    condsAccepted = two(d.getDate()) + "/" + two(d.getMonth() + 1) + "/" + d.getFullYear() + " " + two(d.getHours()) + ":" + two(d.getMinutes());
+    closeLayers(true);
+    goCheckout(true);
+  });
+  $("conds-back").addEventListener("click", function () { openLayer("cart"); });
 
   /* ---------------- tarjeta regalo ---------------- */
   var GIFT_APP_ID = "d80111c5-a0f4-47a8-b63a-65b54d774a27";
@@ -2202,7 +2257,8 @@ body.b2b-on .toast{bottom:96px;}
       "Empresa: " + b2b.empresa,
       "NIF/CIF: " + b2b.nif + (b2b.nifIva ? " · NIF-IVA: " + b2b.nifIva : ""),
       "Contacto: " + b2b.nombre + " · DNI/NIE: " + b2b.dni,
-      "Email: " + b2b.email + " · Tel.: " + b2b.telefono].join(nl);
+      "Email: " + b2b.email + " · Tel.: " + b2b.telefono,
+      condsAccepted ? "Condiciones de mayorista aceptadas (v" + CONDS_VERSION + ") el " + condsAccepted + ": PVP recomendado respetado en la tienda online; ofertas solo en rebajas o con cupones." : ""].filter(Boolean).join(nl);
   }
   // Barra inferior, aviso del mínimo en la cesta y botón de la sección.
   function renderB2BState() {
@@ -2827,7 +2883,7 @@ body.b2b-on .toast{bottom:96px;}
     }, 60);
   }
   function closeLayers(keepFocus) {
-    ["menu", "search", "product", "cart", "b2b-form"].forEach(function (id) {
+    ["menu", "search", "product", "cart", "b2b-form", "b2b-conds"].forEach(function (id) {
       var el = $(id);
       el.classList.remove("open");
       el.setAttribute("aria-hidden", "true");
