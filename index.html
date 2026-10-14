@@ -3025,5 +3025,85 @@ body.b2b-on .toast{bottom:96px;}
   loadCart();
 })();
 </script>
+<!-- ============ HALLOWEEN 2026: INICIO (para quitarlo, borra desde aquí hasta "HALLOWEEN 2026: FIN") ============ -->
+<style id="hw-style">
+.hw-bats{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;}
+.hw-bat{position:absolute;left:-80px;width:46px;color:#2f241b;opacity:.5;animation:hw-fly linear infinite;}
+.hw-bat svg{width:100%;height:auto;display:block;animation:hw-flap .32s ease-in-out infinite alternate;transform-origin:50% 40%;}
+.hw-bat:nth-child(1){top:16%;animation-duration:24s;animation-delay:-3s;}
+.hw-bat:nth-child(2){top:30%;width:32px;animation-duration:31s;animation-delay:-17s;opacity:.38;}
+.hw-bat:nth-child(3){top:9%;width:26px;animation-duration:27s;animation-delay:-9s;opacity:.32;}
+.hw-bat:nth-child(4){top:42%;width:38px;animation-duration:36s;animation-delay:-25s;opacity:.42;}
+@keyframes hw-fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-26px)}50%{transform:translate(56vw,18px)}75%{transform:translate(84vw,-12px)}100%{transform:translate(calc(100vw + 160px),10px)}}
+@keyframes hw-flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.hw-ad{position:fixed;left:24px;bottom:24px;z-index:50;width:min(360px,calc(100vw - 24px));background:#2b2119;color:#f6f1e8;border:1px solid rgba(232,129,46,.55);border-radius:6px;padding:20px 22px 18px;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.8,.2,1);}
+.hw-ad.show{opacity:1;transform:none;}
+.hw-ad[hidden]{display:none;}
+body.locked .hw-ad,body.b2b-on .hw-ad{opacity:0;pointer-events:none;}
+.hw-x{position:absolute;top:8px;right:10px;background:none;border:0;color:#f6f1e8;font-size:24px;line-height:1;cursor:pointer;opacity:.7;padding:4px 6px;}
+.hw-x:hover{opacity:1;}
+.hw-head{display:flex;align-items:center;gap:12px;}
+.hw-pk{width:38px;flex:none;}
+.hw-k{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#e8812e;margin:0;}
+.hw-t{margin:4px 0 0;font-size:19px;line-height:1.3;}
+.hw-t strong{font-weight:600;color:#ffb066;}
+.hw-code{margin-top:14px;width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;background:transparent;color:#f6f1e8;border:1px dashed rgba(246,241,232,.6);border-radius:4px;padding:10px 14px;font:600 17px/1 var(--serif);letter-spacing:.18em;cursor:pointer;}
+.hw-code span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#e8812e;}
+.hw-code:hover{border-color:#e8812e;}
+.hw-ship{margin:14px 0 0;font-size:15px;line-height:1.45;color:rgba(246,241,232,.85);}
+.hw-ship strong{color:#f6f1e8;font-weight:600;}
+@media (max-width:560px){.hw-ad{left:12px;right:12px;bottom:12px;width:auto;padding:18px 18px 16px;}.hw-bat{width:30px;}}
+@media (prefers-reduced-motion:reduce){.hw-bat{display:none;}.hw-ad{transition:none;}}
+</style>
+<aside class="hw-ad" id="hw-ad" aria-label="Especial Halloween" hidden>
+  <button class="hw-x" type="button" id="hw-x" aria-label="Cerrar">×</button>
+  <div class="hw-head">
+    <svg class="hw-pk" viewBox="0 0 48 44" aria-hidden="true"><path d="M24 9c-2-5 1-8 4-8-2 2-2 5-1 8" fill="none" stroke="#6b8f3a" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="15" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="33" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="24" cy="27" rx="11" ry="15" fill="#e8812e"/><path d="M17 23l4 3-4 2zM31 23l-4 3 4 2zM16 33c4 4 12 4 16 0l-3 1-2-2-3 2-3-2-2 2z" fill="#2b2119"/></svg>
+    <div><p class="hw-k">Especial Halloween</p><p class="hw-t"><strong>15 % de descuento</strong> con el cupón</p></div>
+  </div>
+  <button class="hw-code" type="button" id="hw-code" aria-label="Copiar el cupón BIENVENIDO">BIENVENIDO <span id="hw-copy">Copiar</span></button>
+  <p class="hw-ship" id="hw-ship"></p>
+</aside>
+<script id="hw-script">
+(function () {
+  var END = new Date(2026, 10, 3);          // se quita solo a partir del 3 de noviembre de 2026
+  var now = new Date();
+  var ad = document.getElementById("hw-ad");
+  if (now >= END) { ["hw-style", "hw-ad", "hw-script"].forEach(function (id) { var el = document.getElementById(id); if (el) el.remove(); }); return; }
+  // Murciélagos en la portada
+  var hero = document.querySelector(".hero");
+  if (hero) {
+    var bat = '<svg viewBox="0 0 64 30" aria-hidden="true"><path fill="currentColor" d="M32 9c-1-3-3-5-3-5s1 3 0 5c-4-4-11-6-18-4 4 2 7 6 7 10-4-3-10-3-15 0 7 2 12 7 13 13 3-3 8-4 12-3 2 1 3 2 4 4 1-2 2-3 4-4 4-1 9 0 12 3 1-6 6-11 13-13-5-3-11-3-15 0 0-4 3-8 7-10-7-2-14 0-18 4-1-2 0-5 0-5s-2 2-3 5z"/></svg>';
+    var wrap = document.createElement("div");
+    wrap.className = "hw-bats";
+    wrap.innerHTML = '<span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span>';
+    hero.appendChild(wrap);
+  }
+  // Aviso de envío: lo pedido desde el 27 de octubre llega el 1 o 2 de noviembre
+  var cut = new Date(2026, 9, 27);
+  document.getElementById("hw-ship").innerHTML = now < cut
+    ? "¿Lo quieres para Halloween? <strong>Haz tu pedido antes del 27 de octubre.</strong> Los pedidos desde el 27 llegan el 1 o 2 de noviembre."
+    : "Los pedidos de hoy llegan <strong>el 1 o 2 de noviembre</strong>: ya no llegan para Halloween (31 de octubre).";
+  var KEY = "adk.hw26.closed";
+  var closed = false;
+  try { closed = sessionStorage.getItem(KEY) === "1"; } catch (e) {}
+  if (!closed) {
+    ad.hidden = false;
+    setTimeout(function () { ad.classList.add("show"); }, 1400);
+  }
+  document.getElementById("hw-x").addEventListener("click", function () {
+    ad.classList.remove("show");
+    try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+    setTimeout(function () { ad.hidden = true; }, 500);
+  });
+  document.getElementById("hw-code").addEventListener("click", function () {
+    var done = function () { document.getElementById("hw-copy").textContent = "¡Copiado!"; };
+    try {
+      if (navigator.clipboard) navigator.clipboard.writeText("BIENVENIDO").then(done, done); else done();
+    } catch (e) { done(); }
+  });
+})();
+</script>
+<!-- ============ HALLOWEEN 2026: FIN ============ -->
 </body>
 </html>
