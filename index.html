@@ -3027,15 +3027,38 @@ body.b2b-on .toast{bottom:96px;}
 </script>
 <!-- ============ HALLOWEEN 2026: INICIO (para quitarlo, borra desde aquí hasta "HALLOWEEN 2026: FIN") ============ -->
 <style id="hw-style">
-.hw-bats{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden;}
-.hw-bat{position:absolute;left:-80px;width:46px;color:#2f241b;opacity:.5;animation:hw-fly linear infinite;}
-.hw-bat svg{width:100%;height:auto;display:block;animation:hw-flap .32s ease-in-out infinite alternate;transform-origin:50% 40%;}
-.hw-bat:nth-child(1){top:16%;animation-duration:24s;animation-delay:-3s;}
-.hw-bat:nth-child(2){top:30%;width:32px;animation-duration:31s;animation-delay:-17s;opacity:.38;}
-.hw-bat:nth-child(3){top:9%;width:26px;animation-duration:27s;animation-delay:-9s;opacity:.32;}
-.hw-bat:nth-child(4){top:42%;width:38px;animation-duration:36s;animation-delay:-25s;opacity:.42;}
-@keyframes hw-fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-26px)}50%{transform:translate(56vw,18px)}75%{transform:translate(84vw,-12px)}100%{transform:translate(calc(100vw + 160px),10px)}}
-@keyframes hw-flap{from{transform:scaleY(1)}to{transform:scaleY(.45)}}
+.hw-deco{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.hw-deco svg{display:block;width:100%;height:auto;}
+.hw-web{position:absolute;top:0;color:#4a3c2f;opacity:.28;}
+.hw-web.tl{left:0;width:160px;}
+.hw-web.tr{right:0;width:200px;transform:scaleX(-1);}
+.hw-spider{position:absolute;top:0;width:46px;animation:hw-drop 5.5s ease-in-out infinite alternate;transform-origin:50% 0;}
+.hw-spider::before{content:"";position:absolute;left:50%;bottom:calc(100% - 14px);width:1.5px;height:600px;background:rgba(74,60,47,.45);transform:translateX(-50%);}
+.hw-spider.s1{right:96px;--d:170px;}
+.hw-spider.s2{left:70px;width:34px;--d:130px;animation-duration:4.4s;animation-delay:-2s;}
+.hw-spider.s3{right:110px;--d:120px;animation-duration:6s;}
+@keyframes hw-drop{from{transform:translateY(calc(var(--d) - 40px))}to{transform:translateY(var(--d))}}
+.hw-bat{position:absolute;left:-90px;width:60px;animation:hw-fly linear infinite;}
+.hw-bat svg{animation:hw-flap .3s ease-in-out infinite alternate;transform-origin:50% 40%;}
+.hw-bat.b1{top:20%;animation-duration:22s;animation-delay:-4s;}
+.hw-bat.b2{top:34%;width:44px;animation-duration:29s;animation-delay:-16s;}
+.hw-bat.b3{top:12%;width:36px;animation-duration:26s;animation-delay:-10s;}
+@keyframes hw-fly{0%{transform:translate(0,0)}25%{transform:translate(28vw,-26px)}50%{transform:translate(56vw,18px)}75%{transform:translate(84vw,-12px)}100%{transform:translate(calc(100vw + 180px),10px)}}
+@keyframes hw-flap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
+.hw-pk{position:absolute;}
+.hw-pk.p1{left:3.5%;bottom:150px;width:120px;transform:rotate(-6deg);}
+.hw-pk.p2{left:calc(3.5% + 104px);bottom:146px;width:78px;transform:rotate(5deg);}
+.hw-pk.p3{right:4.5%;bottom:170px;width:104px;transform:rotate(4deg);}
+#colecciones{position:relative;}
+#colecciones .hw-deco{z-index:0;}
+#colecciones .hw-web.tr{width:220px;opacity:.32;}
+@media (max-width:820px){
+  .hw-web.tl{width:84px;}.hw-web.tr{width:104px;}
+  .hw-spider{width:32px;}.hw-spider.s1{right:4px;--d:150px;}.hw-spider.s2{display:none;}.hw-spider.s3{right:52px;--d:96px;}
+  .hw-bat{width:42px;}
+  .hw-pk.p1{left:-10px;bottom:120px;width:76px;}.hw-pk.p2{display:none;}.hw-pk.p3{right:-6px;bottom:128px;width:66px;}
+  #colecciones .hw-web.tr{width:130px;}
+}
 .hw-ad{position:fixed;left:24px;bottom:24px;z-index:50;width:min(360px,calc(100vw - 24px));background:#2b2119;color:#f6f1e8;border:1px solid rgba(232,129,46,.55);border-radius:6px;padding:20px 22px 18px;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.8,.2,1);}
 .hw-ad.show{opacity:1;transform:none;}
 .hw-ad[hidden]{display:none;}
@@ -3043,7 +3066,7 @@ body.locked .hw-ad,body.b2b-on .hw-ad{opacity:0;pointer-events:none;}
 .hw-x{position:absolute;top:8px;right:10px;background:none;border:0;color:#f6f1e8;font-size:24px;line-height:1;cursor:pointer;opacity:.7;padding:4px 6px;}
 .hw-x:hover{opacity:1;}
 .hw-head{display:flex;align-items:center;gap:12px;}
-.hw-pk{width:38px;flex:none;}
+.hw-ico{width:38px;flex:none;}
 .hw-k{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#e8812e;margin:0;}
 .hw-t{margin:4px 0 0;font-size:19px;line-height:1.3;}
 .hw-t strong{font-weight:600;color:#ffb066;}
@@ -3052,13 +3075,13 @@ body.locked .hw-ad,body.b2b-on .hw-ad{opacity:0;pointer-events:none;}
 .hw-code:hover{border-color:#e8812e;}
 .hw-ship{margin:14px 0 0;font-size:15px;line-height:1.45;color:rgba(246,241,232,.85);}
 .hw-ship strong{color:#f6f1e8;font-weight:600;}
-@media (max-width:560px){.hw-ad{left:12px;right:12px;bottom:12px;width:auto;padding:18px 18px 16px;}.hw-bat{width:30px;}}
-@media (prefers-reduced-motion:reduce){.hw-bat{display:none;}.hw-ad{transition:none;}}
+@media (max-width:560px){.hw-ad{left:12px;right:12px;bottom:12px;width:auto;padding:18px 18px 16px;}}
+@media (prefers-reduced-motion:reduce){.hw-bat{display:none;}.hw-spider{animation:none;transform:translateY(var(--d));}.hw-ad{transition:none;}}
 </style>
 <aside class="hw-ad" id="hw-ad" aria-label="Especial Halloween" hidden>
   <button class="hw-x" type="button" id="hw-x" aria-label="Cerrar">×</button>
   <div class="hw-head">
-    <svg class="hw-pk" viewBox="0 0 48 44" aria-hidden="true"><path d="M24 9c-2-5 1-8 4-8-2 2-2 5-1 8" fill="none" stroke="#6b8f3a" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="15" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="33" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="24" cy="27" rx="11" ry="15" fill="#e8812e"/><path d="M17 23l4 3-4 2zM31 23l-4 3 4 2zM16 33c4 4 12 4 16 0l-3 1-2-2-3 2-3-2-2 2z" fill="#2b2119"/></svg>
+    <svg class="hw-ico" viewBox="0 0 48 44" aria-hidden="true"><path d="M24 9c-2-5 1-8 4-8-2 2-2 5-1 8" fill="none" stroke="#6b8f3a" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="15" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="33" cy="27" rx="12" ry="14" fill="#d9692a"/><ellipse cx="24" cy="27" rx="11" ry="15" fill="#e8812e"/><path d="M17 23l4 3-4 2zM31 23l-4 3 4 2zM16 33c4 4 12 4 16 0l-3 1-2-2-3 2-3-2-2 2z" fill="#2b2119"/></svg>
     <div><p class="hw-k">Especial Halloween</p><p class="hw-t"><strong>15 % de descuento</strong> con el cupón</p></div>
   </div>
   <button class="hw-code" type="button" id="hw-code" aria-label="Copiar el cupón BIENVENIDO">BIENVENIDO <span id="hw-copy">Copiar</span></button>
@@ -3070,14 +3093,27 @@ body.locked .hw-ad,body.b2b-on .hw-ad{opacity:0;pointer-events:none;}
   var now = new Date();
   var ad = document.getElementById("hw-ad");
   if (now >= END) { ["hw-style", "hw-ad", "hw-script"].forEach(function (id) { var el = document.getElementById(id); if (el) el.remove(); }); return; }
-  // Murciélagos en la portada
+  // Dibujos (telarañas, arañas, murciélagos y calabazas)
+  var SVG = {"web": "<svg viewBox=\"0 0 200 200\" aria-hidden=\"true\"><path d=\"M0 0L196.0 0.0 M0 0L189.3 50.7 M0 0L169.7 98.0 M0 0L138.6 138.6 M0 0L98.0 169.7 M0 0L50.7 189.3 M0 0L0.0 196.0 M43.1 0.0Q36.5 4.8 41.7 11.2Q34.0 14.1 37.3 21.6Q29.2 22.4 30.5 30.5Q22.4 29.2 21.6 37.3Q14.1 34.0 11.2 41.7Q4.8 36.5 0.0 43.1 M82.3 0.0Q69.6 9.2 79.5 21.3Q64.8 26.9 71.3 41.2Q55.7 42.7 58.2 58.2Q42.7 55.7 41.2 71.3Q26.9 64.8 21.3 79.5Q9.2 69.6 0.0 82.3 M121.5 0.0Q102.7 13.5 117.4 31.5Q95.7 39.7 105.2 60.8Q82.2 63.1 85.9 85.9Q63.1 82.2 60.8 105.2Q39.7 95.7 31.5 117.4Q13.5 102.7 0.0 121.5 M160.7 0.0Q135.9 17.9 155.2 41.6Q126.6 52.4 139.2 80.4Q108.7 83.4 113.6 113.6Q83.4 108.7 80.4 139.2Q52.4 126.6 41.6 155.2Q17.9 135.9 0.0 160.7 M196.0 0.0Q165.7 21.8 189.3 50.7Q154.4 64.0 169.7 98.0Q132.6 101.7 138.6 138.6Q101.7 132.6 98.0 169.7Q64.0 154.4 50.7 189.3Q21.8 165.7 0.0 196.0\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "web2": "<svg viewBox=\"0 0 170 170\" aria-hidden=\"true\"><path d=\"M0 0L166.6 0.0 M0 0L160.9 43.1 M0 0L144.3 83.3 M0 0L117.8 117.8 M0 0L83.3 144.3 M0 0L43.1 160.9 M41.6 0.0Q35.2 4.6 40.2 10.8Q32.8 13.6 36.1 20.8Q28.2 21.6 29.5 29.5Q21.6 28.2 20.8 36.1Q13.6 32.8 10.8 40.2 M83.3 0.0Q70.4 9.3 80.5 21.6Q65.6 27.2 72.1 41.6Q56.3 43.2 58.9 58.9Q43.2 56.3 41.7 72.1Q27.2 65.6 21.6 80.5 M124.9 0.0Q105.6 13.9 120.7 32.3Q98.4 40.8 108.2 62.5Q84.5 64.9 88.4 88.4Q64.9 84.5 62.5 108.2Q40.8 98.4 32.3 120.7 M166.6 0.0Q140.8 18.5 160.9 43.1Q131.2 54.4 144.3 83.3Q112.7 86.5 117.8 117.8Q86.5 112.7 83.3 144.3Q54.4 131.2 43.1 160.9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "spider": "<svg viewBox=\"0 0 60 52\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"#2b2119\" stroke-width=\"2.6\" stroke-linecap=\"round\"><path d=\"M22 26C14 20 8 22 4 14M22 30C12 28 6 32 2 28M23 34C14 36 10 42 6 46M25 37C20 42 18 48 16 51M38 26C46 20 52 22 56 14M38 30C48 28 54 32 58 28M37 34C46 36 50 42 54 46M35 37C40 42 42 48 44 51\"/></g><ellipse cx=\"30\" cy=\"33\" rx=\"11\" ry=\"10\" fill=\"#2b2119\"/><circle cx=\"30\" cy=\"20\" r=\"8.5\" fill=\"#3a2d22\"/><circle cx=\"26.5\" cy=\"19\" r=\"3.4\" fill=\"#fff\"/><circle cx=\"33.5\" cy=\"19\" r=\"3.4\" fill=\"#fff\"/><circle cx=\"27.2\" cy=\"19.8\" r=\"1.6\" fill=\"#2b2119\"/><circle cx=\"32.8\" cy=\"19.8\" r=\"1.6\" fill=\"#2b2119\"/><path d=\"M27 24.5q3 2 6 0\" fill=\"none\" stroke=\"#e8812e\" stroke-width=\"1.4\" stroke-linecap=\"round\"/></svg>", "bat": "<svg viewBox=\"0 0 90 46\" aria-hidden=\"true\"><path d=\"M45 14C40 6 30 2 18 4c4 3 6 7 5 11-5-3-12-3-19 1 6 1 10 5 11 10 4-2 9-2 13 1 2-4 6-6 10-5 3 1 5 3 7 6 2-3 4-5 7-6 4-1 8 1 10 5 4-3 9-3 13-1 1-5 5-9 11-10-7-4-14-4-19-1-1-4 1-8 5-11C60 2 50 6 45 14z\" fill=\"#3b2a4a\" stroke=\"#22172b\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M38 10l2-7 4 6M52 10l-2-7-4 6\" fill=\"#3b2a4a\" stroke=\"#22172b\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><ellipse cx=\"45\" cy=\"18\" rx=\"8.5\" ry=\"9\" fill=\"#3b2a4a\" stroke=\"#22172b\" stroke-width=\"1.6\"/><circle cx=\"41.8\" cy=\"16.5\" r=\"2.8\" fill=\"#fff\"/><circle cx=\"48.2\" cy=\"16.5\" r=\"2.8\" fill=\"#fff\"/><circle cx=\"42.3\" cy=\"17\" r=\"1.3\" fill=\"#111\"/><circle cx=\"47.7\" cy=\"17\" r=\"1.3\" fill=\"#111\"/><path d=\"M42.5 22l1 2 1-2M45.5 22l1 2 1-2\" fill=\"#fff\"/></svg>", "pk": "<svg viewBox=\"0 0 110 96\" aria-hidden=\"true\"><path d=\"M55 18c-1-8 3-14 10-15\" fill=\"none\" stroke=\"#4f7a2c\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M62 10c6-6 14-5 18 0-6 1-11 3-14 7\" fill=\"#6b9a3a\" stroke=\"#3f5f22\" stroke-width=\"1.6\"/><ellipse cx=\"32\" cy=\"56\" rx=\"27\" ry=\"34\" fill=\"#e07a2c\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><ellipse cx=\"78\" cy=\"56\" rx=\"27\" ry=\"34\" fill=\"#e07a2c\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><ellipse cx=\"55\" cy=\"56\" rx=\"24\" ry=\"37\" fill=\"#f0913a\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><path d=\"M33 44l12 8-14 3zM77 44l-12 8 14 3zM51 58l4-6 4 6z\" fill=\"#4a1e08\"/><path d=\"M30 68c8 12 42 12 50 0l-6 2-4-4-5 5-5-5-5 5-5-5-4 4z\" fill=\"#4a1e08\"/><path d=\"M35 46l6 4-6 1zM75 46l-6 4 6 1z\" fill=\"#ffcf5a\" opacity=\".55\"/></svg>", "pk2": "<svg viewBox=\"0 0 110 96\" aria-hidden=\"true\"><path d=\"M55 18c-1-8 3-14 10-15\" fill=\"none\" stroke=\"#4f7a2c\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M62 10c6-6 14-5 18 0-6 1-11 3-14 7\" fill=\"#6b9a3a\" stroke=\"#3f5f22\" stroke-width=\"1.6\"/><ellipse cx=\"32\" cy=\"56\" rx=\"27\" ry=\"34\" fill=\"#e07a2c\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><ellipse cx=\"78\" cy=\"56\" rx=\"27\" ry=\"34\" fill=\"#e07a2c\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><ellipse cx=\"55\" cy=\"56\" rx=\"24\" ry=\"37\" fill=\"#f0913a\" stroke=\"#8a3f12\" stroke-width=\"2.4\"/><path d=\"M42 30c-4 18-4 34 0 52M68 30c4 18 4 34 0 52\" fill=\"none\" stroke=\"#c4621f\" stroke-width=\"2\"/></svg>"};
+  function el(cls, svg) { return '<span class="' + cls + '">' + svg + "</span>"; }
   var hero = document.querySelector(".hero");
   if (hero) {
-    var bat = '<svg viewBox="0 0 64 30" aria-hidden="true"><path fill="currentColor" d="M32 9c-1-3-3-5-3-5s1 3 0 5c-4-4-11-6-18-4 4 2 7 6 7 10-4-3-10-3-15 0 7 2 12 7 13 13 3-3 8-4 12-3 2 1 3 2 4 4 1-2 2-3 4-4 4-1 9 0 12 3 1-6 6-11 13-13-5-3-11-3-15 0 0-4 3-8 7-10-7-2-14 0-18 4-1-2 0-5 0-5s-2 2-3 5z"/></svg>';
-    var wrap = document.createElement("div");
-    wrap.className = "hw-bats";
-    wrap.innerHTML = '<span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span><span class="hw-bat">' + bat + '</span>';
-    hero.appendChild(wrap);
+    var d = document.createElement("div");
+    d.className = "hw-deco";
+    d.setAttribute("aria-hidden", "true");
+    d.innerHTML = el("hw-web tl", SVG.web2) + el("hw-web tr", SVG.web) +
+      el("hw-spider s1", SVG.spider) + el("hw-spider s2", SVG.spider) +
+      el("hw-bat b1", SVG.bat) + el("hw-bat b2", SVG.bat) + el("hw-bat b3", SVG.bat) +
+      el("hw-pk p1", SVG.pk) + el("hw-pk p2", SVG.pk2) + el("hw-pk p3", SVG.pk);
+    hero.appendChild(d);
+  }
+  var shop = document.getElementById("colecciones");
+  if (shop) {
+    var d2 = document.createElement("div");
+    d2.className = "hw-deco";
+    d2.setAttribute("aria-hidden", "true");
+    d2.innerHTML = el("hw-web tr", SVG.web) + el("hw-spider s3", SVG.spider);
+    shop.insertBefore(d2, shop.firstChild);
   }
   // Aviso de envío: lo pedido desde el 27 de octubre llega el 1 o 2 de noviembre
   var cut = new Date(2026, 9, 27);
